@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://asistpro.app/sitemap.xml
