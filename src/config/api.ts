@@ -1,6 +1,7 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: 'https://ca3d89a17db5.ngrok-free.app',
+  BASE_URL: 'https://8565ac5210f8.ngrok-free.app',
+     
   ENDPOINTS: {
     CREATE_SUBSCRIPTION: '/api/subscriptions/create'
   },
