@@ -1,8 +1,8 @@
 import type { AppProps } from "next/app";
 import Script from "next/script";
-
 import Head from "next/head";
 import "../index.css";
+import LegalFooter from "../components/LegalFooter";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -61,7 +61,10 @@ export default function App({ Component, pageProps }: AppProps) {
         </Script>
       </Head>
 
-      <Component {...pageProps} />
+      <div className="min-h-screen flex flex-col">
+        <Component {...pageProps} />
+        <LegalFooter />
+      </div>
     </>
   );
 }
