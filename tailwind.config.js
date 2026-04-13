@@ -5,7 +5,7 @@ export default {
     extend: {
       fontFamily: {
         display: ['Syne', 'sans-serif'],
-        sans:    ['DM Sans', 'sans-serif'],
+        sans:    ['Outfit', 'sans-serif'],
       },
     },
   },
