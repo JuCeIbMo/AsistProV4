@@ -1,12 +1,17 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: 'https://8565ac5210f8.ngrok-free.app',
-     
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'https://8565ac5210f8.ngrok-free.app',
+
   ENDPOINTS: {
-    CREATE_SUBSCRIPTION: '/api/subscriptions/create'
+    // Existing
+    CREATE_SUBSCRIPTION: '/api/subscriptions/create',
+    // Auth
+    OTP_REQUEST: '/auth/otp/request',
+    OTP_VERIFY:  '/auth/otp/verify',
+    // Dashboard
+    SUMMARY: '/api/web/summary',
   },
-  TIMEOUT: 15000 // 15 seconds
+  TIMEOUT: 15000,
 };
 
-// Helper function to get full API URL
 export const getApiUrl = (endpoint: string) => `${API_CONFIG.BASE_URL}${endpoint}`;

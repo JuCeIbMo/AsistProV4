@@ -1,10 +1,15 @@
 import type { AppProps } from "next/app";
 import Script from "next/script";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import "../index.css";
 import LegalFooter from "../components/LegalFooter";
 
+const NO_FOOTER_PAGES = ['/login', '/dashboard'];
+
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const showFooter = !NO_FOOTER_PAGES.some(p => router.pathname.startsWith(p));
   return (
     <>
       <Head>
@@ -63,7 +68,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
       <div className="min-h-screen flex flex-col">
         <Component {...pageProps} />
-        <LegalFooter />
+        {showFooter && <LegalFooter />}
       </div>
     </>
   );
