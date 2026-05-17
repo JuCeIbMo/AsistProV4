@@ -216,7 +216,11 @@ function App() {
               ))}
             </nav>
 
-            <div className="hidden md:flex items-center">
+            <div className="hidden md:flex items-center gap-3">
+              <a href="/login"
+                className="text-[#6B5F55] hover:text-[#1C1209] text-sm font-medium transition-colors">
+                Iniciar sesión
+              </a>
               <a href="#pricing"
                 className="bg-orange-500 hover:bg-orange-400 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-all shadow-md shadow-orange-500/20">
                 Prueba Gratis
@@ -238,6 +242,10 @@ function App() {
                     {['Funciones','Testimonios','Precios','Contacto'][i]}
                   </a>
                 ))}
+                <a href="/login"
+                  className="text-[#6B5F55] text-sm font-medium text-center py-1">
+                  Iniciar sesión
+                </a>
                 <a href="#pricing"
                   className="bg-orange-500 text-white px-5 py-2 rounded-lg text-sm font-semibold text-center">
                   Prueba Gratis
