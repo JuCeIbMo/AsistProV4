@@ -10,6 +10,7 @@ export const API_CONFIG = {
     OTP_VERIFY:  '/auth/otp/verify',
     // Dashboard
     SUMMARY: '/api/web/summary',
+    TRANSACTIONS: '/api/web/transactions',
   },
   TIMEOUT: 15000,
 };
