@@ -81,8 +81,14 @@ async function apiGet<T>(endpoint: string, params?: Record<string, string | null
       if (v !== null && v !== undefined && v !== '') url.searchParams.set(k, v);
     }
   }
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
+
   try {
-    const res = await fetch(url.toString(), { credentials: 'include' });
+    const res = await fetch(url.toString(), {
+      credentials: 'include',
+      signal: controller.signal,
+    });
     if (res.status === 401 || res.status === 403) {
       await logout();
       return { ok: false, status: 'unauthorized' };
@@ -92,6 +98,8 @@ async function apiGet<T>(endpoint: string, params?: Record<string, string | null
     return { ok: true, data };
   } catch {
     return { ok: false, status: 'error' };
+  } finally {
+    window.clearTimeout(timeoutId);
   }
 }
 

@@ -10,6 +10,7 @@ const nextConfig = {
   output: 'standalone',
   poweredByHeader: false,
   trailingSlash: true,
+  skipTrailingSlashRedirect: true,
   images: {
     unoptimized: true
   },
