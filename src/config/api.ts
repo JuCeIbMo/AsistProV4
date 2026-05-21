@@ -1,13 +1,12 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'https://8565ac5210f8.ngrok-free.app',
+  BASE_URL: '/backend',
 
   ENDPOINTS: {
-    // Existing
-    CREATE_SUBSCRIPTION: '/api/subscriptions/create',
     // Auth
     OTP_REQUEST: '/auth/otp/request',
     OTP_VERIFY:  '/auth/otp/verify',
+    LOGOUT: '/auth/logout',
     // Dashboard
     SUMMARY: '/api/web/summary',
     TRANSACTIONS: '/api/web/transactions',
@@ -15,4 +14,8 @@ export const API_CONFIG = {
   TIMEOUT: 15000,
 };
 
-export const getApiUrl = (endpoint: string) => `${API_CONFIG.BASE_URL}${endpoint}`;
+export const getApiUrl = (endpoint: string) => {
+  const baseUrl = API_CONFIG.BASE_URL.replace(/\/$/, '');
+  const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  return `${baseUrl}${path}`;
+};

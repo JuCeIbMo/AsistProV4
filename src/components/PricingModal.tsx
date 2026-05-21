@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { X, ArrowLeft, Check, Loader2, Phone, CreditCard, Globe, Mail, AlertCircle } from 'lucide-react';
-import Select from 'react-select';
+import { X, ArrowLeft, Check, Phone, CreditCard, Globe, Mail, MessageCircle } from 'lucide-react';
+import Select, { type SingleValue, type StylesConfig } from 'react-select';
 import { validateEmail, validatePhoneE164, formatPhoneE164, mapPlanName } from '../utils/validation';
-import { SubscriptionService, CreateSubscriptionRequest, CreateSubscriptionError } from '../services/subscriptionService';
 
 interface PricingModalProps {
   isOpen: boolean;
@@ -90,10 +89,8 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [selectedPayment, setSelectedPayment] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [apiError, setApiError] = useState<string>('');
 
   useEffect(() => {
     if (isOpen) {
@@ -102,7 +99,6 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
       setEmail('');
       setSelectedPayment('');
       setErrors({});
-      setApiError('');
       setIsProcessing(false);
       document.body.style.overflow = 'hidden';
     } else {
@@ -149,60 +145,27 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
     }
   };
 
-  const handleConfirmPayment = async () => {
+  const handleConfirmPayment = () => {
     if (!selectedPlan) return;
 
-    setIsLoading(true);
     setIsProcessing(true);
-    setApiError('');
+    const phoneE164 = formatPhoneE164(selectedCountry.value, phoneNumber);
+    const paymentName = paymentMethods.find(p => p.id === selectedPayment)?.name || selectedPayment;
+    const message = [
+      'Hola, quiero activar AsistPro.',
+      `Plan: ${mapPlanName(selectedPlan.name)}`,
+      `Facturación: ${isAnnual ? 'annual' : 'monthly'}`,
+      `Pago preferido: ${paymentName}`,
+      `WhatsApp: ${phoneE164}`,
+      `Email: ${email.trim()}`,
+    ].join('\n');
 
-    try {
-      const subscriptionData: CreateSubscriptionRequest = {
-        plan: mapPlanName(selectedPlan.name),
-        periodicity: isAnnual ? 'annual' : 'monthly',
-        paymentProvider: selectedPayment as 'mercadopago' | 'paypal',
-        phoneE164: formatPhoneE164(selectedCountry.value, phoneNumber),
-        email: email.trim(),
-      };
-      console.log(subscriptionData)
-      const response = await SubscriptionService.createSubscription(subscriptionData);
-
-      // Show success message briefly before redirect
-      setIsLoading(false);
-      
-      // Auto-redirect to checkout URL
-      setTimeout(() => {
-        window.open(response.data.checkoutUrl, '_blank');
-        onClose();
-      }, 1000);
-
-    } catch (error) {
-      setIsLoading(false);
-      setIsProcessing(false);
-      
-      const apiError = error as CreateSubscriptionError;
-      
-      if (apiError.details && apiError.details.length > 0) {
-        // Handle validation errors
-        const newErrors: {[key: string]: string} = {};
-        apiError.details.forEach(detail => {
-          if (detail.param === 'email') {
-            newErrors.email = detail.msg;
-          } else if (detail.param === 'phoneE164') {
-            newErrors.phone = detail.msg;
-          }
-        });
-        setErrors(newErrors);
-        setStep(1); // Go back to form
-      } else {
-        // Handle general errors
-        setApiError(apiError.error || apiError.message || 'Error al procesar el pago');
-      }
-    }
+    window.open(`https://wa.me/5492604086606?text=${encodeURIComponent(message)}`, '_blank');
+    onClose();
   };
 
-  const customSelectStyles = {
-    control: (provided: any) => ({
+  const customSelectStyles: StylesConfig<CountryOption, false> = {
+    control: (provided) => ({
       ...provided,
       border: '2px solid #fed7aa',
       borderRadius: '12px',
@@ -216,14 +179,14 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
         boxShadow: '0 0 0 3px rgba(251, 146, 60, 0.1)',
       }
     }),
-    option: (provided: any, state: any) => ({
+    option: (provided, state) => ({
       ...provided,
       backgroundColor: state.isSelected ? '#ea580c' : state.isFocused ? '#fed7aa' : 'white',
       color: state.isSelected ? 'white' : '#1f2937',
       padding: '12px',
       cursor: 'pointer',
     }),
-    singleValue: (provided: any) => ({
+    singleValue: (provided) => ({
       ...provided,
       color: '#1f2937',
       fontWeight: '500',
@@ -280,7 +243,9 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
               </label>
               <Select
                 value={selectedCountry}
-                onChange={(option) => setSelectedCountry(option as CountryOption)}
+                onChange={(option: SingleValue<CountryOption>) => {
+                  if (option) setSelectedCountry(option);
+                }}
                 options={countries}
                 styles={customSelectStyles}
                 formatOptionLabel={(option: CountryOption) => (
@@ -418,7 +383,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                 Confirmar Suscripción
               </h3>
               <p className="text-gray-600">
-                Revisa los detalles antes de confirmar tu pago
+                Revisa los detalles antes de solicitar la activación
               </p>
             </div>
             {/* Status de los fetching aqui estaban  */}
@@ -498,57 +463,28 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                 🎉 ¡Prueba gratuita por 3 días! No se te cobrará hasta que termine tu período de prueba.
               </p>
             </div>
-  {/* API Error Display */}
-            {apiError && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start space-x-3">
-                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-red-800 font-medium">Error al procesar el pago</p>
-                  <p className="text-red-700 text-sm mt-1">{apiError}</p>
-                </div>
-              </div>
-            )}
-
             {/* Processing State */}
-            {isProcessing && !isLoading && (
+            {isProcessing && (
               <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center space-x-3">
                 <Check className="w-5 h-5 text-green-500" />
                 <p className="text-green-800 font-medium">
-                  ¡Suscripción creada! Redirigiendo a la plataforma de pago...
+                  Abriendo WhatsApp para coordinar la activación...
                 </p>
-              </div>
-            )}
-
-            {/* Loading State */}
-            {isLoading && (
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-center space-x-3">
-                <Loader2 className="w-5 h-5 animate-spin text-blue-500" />
-                <div>
-                  <p className="text-blue-800 font-medium">Creando tu suscripción...</p>
-                  <p className="text-blue-700 text-sm">Te redirigiremos a tu plataforma de pago</p>
-                </div>
               </div>
             )}
 
             {/* Confirm Button */}
             <button
               onClick={handleConfirmPayment}
-              disabled={isLoading || isProcessing}
+              disabled={isProcessing}
               className="w-full bg-gradient-to-r from-orange-600 to-orange-700 text-white py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-orange-800 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                  Procesando...
-                </>
-              ) : (
-                'Confirmar Pago'
-              )}
+              <MessageCircle className="w-5 h-5 mr-2" />
+              Solicitar Activación
             </button>
 
             <p className="text-center text-xs text-gray-500 mt-4">
-              Al confirmar, aceptas nuestros términos de servicio y política de privacidad.
-              Puedes cancelar en cualquier momento.
+              El checkout automático se habilitará cuando el backend de pagos esté disponible.
             </p>
           </div>
         )}

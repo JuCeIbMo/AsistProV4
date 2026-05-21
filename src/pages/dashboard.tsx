@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { AlertCircle } from 'lucide-react';
-import { clearToken, isAuthenticated } from '../services/authService';
+import { logout as logoutSession } from '../services/authService';
 import {
   fetchSummary,
   type DashboardSummary,
@@ -51,7 +51,6 @@ export default function DashboardPage() {
   const hasFetched = useRef(false);
 
   const goLogin = useCallback(() => {
-    clearToken();
     router.replace('/login');
   }, [router]);
 
@@ -73,18 +72,14 @@ export default function DashboardPage() {
   }, [goLogin]);
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace('/login');
-      return;
-    }
     if (!hasFetched.current) {
       hasFetched.current = true;
       load();
     }
   }, [router, load]);
 
-  function logout() {
-    clearToken();
+  async function logout() {
+    await logoutSession();
     router.push('/login');
   }
 

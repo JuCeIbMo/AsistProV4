@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Bot, Phone, ArrowRight, Loader2, ChevronLeft } from 'lucide-react';
-import { requestOtp, verifyOtp, setToken, isAuthenticated } from '../services/authService';
+import { requestOtp, verifyOtp } from '../services/authService';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,8 +15,7 @@ export default function LoginPage() {
   const codeRef  = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (isAuthenticated()) router.replace('/dashboard');
-    else phoneRef.current?.focus();
+    phoneRef.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -46,8 +45,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await verifyOtp(phone, code);
-      if (res.ok && res.token) {
-        setToken(res.token);
+      if (res.ok) {
         router.push('/dashboard');
       } else {
         setError(res.error || 'Código incorrecto o expirado.');

@@ -97,7 +97,6 @@ export function TransactionsList({ initialItems, loading, onUnauthorized }: Prop
   // first paginated fetch when the user hits "Cargar más" for the first time.
   async function loadMoreFromAllInitial() {
     if (items.length === 0) return;
-    const last = items[items.length - 1];
     // Build a cursor heuristic: we need backend cursor; since the initial recent_transactions
     // already came from `transactions_page(limit=10)` we just need to fetch more.
     // Simplest: re-fetch the first page of 25 to align, then continue. Skip dup by id.

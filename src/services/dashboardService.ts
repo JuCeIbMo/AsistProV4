@@ -1,5 +1,5 @@
 import { getApiUrl, API_CONFIG } from '../config/api';
-import { authHeaders, clearToken } from './authService';
+import { logout } from './authService';
 
 export interface AccountBalance {
   id: string;
@@ -74,16 +74,17 @@ export type FetchResult<T> =
   | { ok: false; status: 'unauthorized' | 'error' };
 
 async function apiGet<T>(endpoint: string, params?: Record<string, string | null>): Promise<FetchResult<T>> {
-  const url = new URL(getApiUrl(endpoint));
+  const base = typeof window === 'undefined' ? 'http://localhost' : window.location.origin;
+  const url = new URL(getApiUrl(endpoint), base);
   if (params) {
     for (const [k, v] of Object.entries(params)) {
       if (v !== null && v !== undefined && v !== '') url.searchParams.set(k, v);
     }
   }
   try {
-    const res = await fetch(url.toString(), { headers: authHeaders() });
+    const res = await fetch(url.toString(), { credentials: 'include' });
     if (res.status === 401 || res.status === 403) {
-      clearToken();
+      await logout();
       return { ok: false, status: 'unauthorized' };
     }
     if (!res.ok) return { ok: false, status: 'error' };

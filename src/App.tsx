@@ -77,12 +77,26 @@ const CHAT = [
   { side: 'bot',  text: '📊 Resumen de abril: Total $28.450. Alimentación 42%, Transporte 23%, Servicios 18%.', time: '14:36' },
 ] as const;
 
+type PricingPlan = {
+  name: string;
+  monthlyPrice: string;
+  annualPrice: string;
+  period: string;
+  savings: string | null;
+  description: string;
+  features: string[];
+  notIncluded: string[];
+  cardClass: string;
+  buttonClass: string;
+  popular?: boolean;
+};
+
 // ── Main component ──────────────────────────────────────────────
 function App() {
   const [isMenuOpen,    setIsMenuOpen]    = useState(false);
   const [isAnnual,      setIsAnnual]      = useState(false);
   const [modalOpen,     setModalOpen]     = useState(false);
-  const [selectedPlan,  setSelectedPlan]  = useState<any>(null);
+  const [selectedPlan,  setSelectedPlan]  = useState<PricingPlan | null>(null);
   const [scrolled,      setScrolled]      = useState(false);
   const [visibleCount,  setVisibleCount]  = useState(0);
   const [isTyping,      setIsTyping]      = useState(false);
@@ -181,7 +195,7 @@ function App() {
     { value: 3,     prefix: '',  suffix: '',  label: 'Países Disponibles' },
   ];
 
-  const openModal = (plan: any) => { setSelectedPlan(plan); setModalOpen(true); };
+  const openModal = (plan: PricingPlan) => { setSelectedPlan(plan); setModalOpen(true); };
   const whatsappRedirect = () => window.open('https://wa.me/5492604086606', '_blank');
 
   return (
