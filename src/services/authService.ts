@@ -45,6 +45,12 @@ export async function verifyOtp(
   return postForm(API_CONFIG.ENDPOINTS.OTP_VERIFY, form);
 }
 
+export async function resendOtp(phone: string): Promise<{ ok: boolean; error?: string }> {
+  const form = new FormData();
+  form.append('phone', phone);
+  return postForm(API_CONFIG.ENDPOINTS.OTP_REQUEST, form);
+}
+
 export async function logout(): Promise<void> {
   await postForm(API_CONFIG.ENDPOINTS.LOGOUT).catch(() => undefined);
 }

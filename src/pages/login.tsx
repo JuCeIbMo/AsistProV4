@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { Bot, Phone, ArrowRight, Loader2, ChevronLeft } from 'lucide-react';
-import { requestOtp, verifyOtp } from '../services/authService';
+import { Bot, Phone, ArrowRight, ChevronLeft } from 'lucide-react';
+import { requestOtp, verifyOtp, resendOtp } from '../services/authService';
+import { TextInput } from '../components/ui/TextInput';
+import { Button } from '../components/ui/Button';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -11,6 +13,7 @@ export default function LoginPage() {
   const [code, setCode]       = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState('');
+  const [countdown, setCountdown] = useState(0);
   const phoneRef = useRef<HTMLInputElement>(null);
   const codeRef  = useRef<HTMLInputElement>(null);
 
@@ -22,6 +25,12 @@ export default function LoginPage() {
     if (step === 2) setTimeout(() => codeRef.current?.focus(), 100);
   }, [step]);
 
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
   async function handleRequestOtp(e: React.FormEvent) {
     e.preventDefault();
     setError('');
@@ -30,6 +39,7 @@ export default function LoginPage() {
       const res = await requestOtp(phone);
       if (res.ok) {
         setStep(2);
+        setCountdown(60);
       } else {
         setError(res.error || 'No se pudo enviar el código. Intenta de nuevo.');
       }
@@ -58,6 +68,24 @@ export default function LoginPage() {
     setLoading(false);
   }
 
+  async function handleResendOtp() {
+    setError('');
+    setLoading(true);
+    try {
+      const res = await resendOtp(phone);
+      if (res.ok) {
+        setCountdown(60);
+        setCode('');
+        setTimeout(() => codeRef.current?.focus(), 50);
+      } else {
+        setError(res.error || 'No se pudo reenviar el código. Intenta de nuevo.');
+      }
+    } catch {
+      setError('Error de conexión.');
+    }
+    setLoading(false);
+  }
+
   return (
     <>
       <Head>
@@ -65,15 +93,15 @@ export default function LoginPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <div className="min-h-screen bg-[#0c0c12] flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="min-h-screen bg-dark-bg flex items-center justify-center p-4 relative overflow-x-hidden">
         {/* Ambient glows */}
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-orange-500/[0.06] blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-orange-400/[0.04] blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-orange-500/[0.06] blur-[140px] pointer-events-none" aria-hidden="true" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-orange-400/[0.04] blur-[120px] pointer-events-none" aria-hidden="true" />
 
         <div className="relative z-10 w-full max-w-sm">
 
           {/* Card */}
-          <div className="bg-[#13131c] border border-white/[0.07] rounded-3xl overflow-hidden shadow-2xl">
+          <div className="bg-dark-card border border-dark-border rounded-3xl overflow-hidden shadow-2xl">
 
             {/* Orange accent line */}
             <div className="h-1 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400" />
@@ -83,12 +111,12 @@ export default function LoginPage() {
               {/* Logo */}
               <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-700 shadow-lg shadow-orange-500/25 mb-4">
-                  <Bot className="w-8 h-8 text-white" />
+                  <Bot className="w-8 h-8 text-white" aria-hidden="true" />
                 </div>
-                <h1 className="font-display text-2xl font-bold text-white tracking-tight">
+                <h1 className="font-display text-2xl font-bold text-dark-text-primary tracking-tight">
                   AsistPro
                 </h1>
-                <p className="text-gray-500 text-sm mt-1">
+                <p className="text-dark-secondary text-sm mt-1">
                   {step === 1 ? 'Ingresa tu número de WhatsApp' : 'Verifica tu identidad'}
                 </p>
               </div>
@@ -102,36 +130,30 @@ export default function LoginPage() {
               {/* Step 1 */}
               {step === 1 && (
                 <form onSubmit={handleRequestOtp} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                      Número de WhatsApp
-                    </label>
-                    <div className="relative">
-                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
-                      <input
-                        ref={phoneRef}
-                        type="tel"
-                        value={phone}
-                        onChange={e => setPhone(e.target.value)}
-                        placeholder="+591 70 000 000"
-                        autoComplete="tel"
-                        disabled={loading}
-                        className="w-full pl-10 pr-4 py-3 bg-white/[0.05] border border-white/[0.08] rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/60 focus:bg-white/[0.07] transition text-sm"
-                      />
-                    </div>
-                    {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
-                  </div>
-                  <button
+                  <TextInput
+                    ref={phoneRef}
+                    label="Número de WhatsApp"
+                    type="tel"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
+                    placeholder="+591 70 000 000"
+                    autoComplete="tel"
+                    disabled={loading}
+                    icon={Phone}
+                    error={error || undefined}
+                  />
+                  <Button
                     type="submit"
-                    disabled={loading || !phone.trim()}
-                    className="w-full py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed bg-orange-500 hover:bg-orange-400 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30"
+                    variant="primary"
+                    size="lg"
+                    loading={loading}
+                    disabled={!phone.trim()}
+                    className="w-full"
                   >
-                    {loading ? (
-                      <><Loader2 className="w-4 h-4 animate-spin" /> Enviando...</>
-                    ) : (
-                      <>Enviar código <ArrowRight className="w-4 h-4" /></>
+                    {!loading && (
+                      <>Enviar código <ArrowRight className="w-4 h-4" aria-hidden="true" /></>
                     )}
-                  </button>
+                  </Button>
                 </form>
               )}
 
@@ -139,13 +161,13 @@ export default function LoginPage() {
               {step === 2 && (
                 <form onSubmit={handleVerifyOtp} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-semibold text-dark-secondary uppercase tracking-wider mb-2">
                       Código de verificación
                     </label>
-                    <p className="text-gray-500 text-xs mb-3">
-                      Enviado a <span className="text-gray-300">+{phone.replace(/^\+/, '')}</span> por WhatsApp
+                    <p className="text-dark-secondary text-xs mb-3">
+                      Enviado a <span className="text-dark-text">+{phone.replace(/^\+/, '')}</span> por WhatsApp
                     </p>
-                    <input
+                    <TextInput
                       ref={codeRef}
                       type="text"
                       inputMode="numeric"
@@ -155,27 +177,38 @@ export default function LoginPage() {
                       placeholder="000000"
                       autoComplete="one-time-code"
                       disabled={loading}
-                      className="w-full px-4 py-4 bg-white/[0.05] border border-white/[0.08] rounded-xl text-white placeholder-gray-700 focus:outline-none focus:border-orange-500/60 focus:bg-white/[0.07] transition text-3xl tracking-[0.7em] text-center font-mono"
+                      className="text-2xl sm:text-3xl tracking-[0.3em] sm:tracking-[0.5em] md:tracking-[0.7em] text-center font-mono py-4 min-h-[52px]"
+                      error={error || undefined}
                     />
-                    {error && <p className="text-red-400 text-xs mt-2 text-center">{error}</p>}
                   </div>
-                  <button
+                  <Button
                     type="submit"
-                    disabled={loading || code.length < 6}
-                    className="w-full py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed bg-orange-500 hover:bg-orange-400 text-white shadow-lg shadow-orange-500/20"
+                    variant="primary"
+                    size="lg"
+                    loading={loading}
+                    disabled={code.length < 6}
+                    className="w-full"
                   >
-                    {loading ? (
-                      <><Loader2 className="w-4 h-4 animate-spin" /> Verificando...</>
-                    ) : (
-                      <>Ingresar al panel <ArrowRight className="w-4 h-4" /></>
+                    {!loading && (
+                      <>Ingresar al panel <ArrowRight className="w-4 h-4" aria-hidden="true" /></>
                     )}
-                  </button>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleResendOtp}
+                    disabled={countdown > 0 || loading}
+                    className="w-full"
+                  >
+                    {countdown > 0 ? `Reenviar en ${countdown}s` : 'Reenviar código'}
+                  </Button>
                   <button
                     type="button"
-                    onClick={() => { setStep(1); setCode(''); setError(''); }}
-                    className="w-full py-2 text-xs text-gray-600 hover:text-gray-400 transition flex items-center justify-center gap-1"
+                    onClick={() => { setStep(1); setCode(''); setError(''); setCountdown(0); }}
+                    className="w-full py-2 text-xs text-dark-muted hover:text-dark-secondary transition flex items-center justify-center gap-1"
                   >
-                    <ChevronLeft className="w-3 h-3" /> Cambiar número
+                    <ChevronLeft className="w-3 h-3" aria-hidden="true" /> Cambiar número
                   </button>
                 </form>
               )}
@@ -183,7 +216,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <p className="text-center text-xs text-gray-700 mt-5">
+          <p className="text-center text-xs text-dark-muted-dim mt-5">
             Sesión válida 7 días · Código expira en 10 min
           </p>
 

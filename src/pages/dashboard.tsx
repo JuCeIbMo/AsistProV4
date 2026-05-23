@@ -13,26 +13,13 @@ import { ExpensePieChart } from '../components/dashboard/ExpensePieChart';
 import { MonthlyTrendBars } from '../components/dashboard/MonthlyTrendBars';
 import { TransactionsList } from '../components/dashboard/TransactionsList';
 import { fmt } from '../components/dashboard/format';
-
-function Skeleton({ className }: { className: string }) {
-  return (
-    <div
-      className={`rounded-lg ${className}`}
-      style={{
-        background:
-          'linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%)',
-        backgroundSize: '200% 100%',
-        animation: 'shimmer 1.4s infinite',
-      }}
-    />
-  );
-}
+import { Skeleton, Badge, Card } from '../components/ui';
 
 function ErrorPanel({ onRetry }: { onRetry: () => void }) {
   return (
-    <div className="bg-[#13131c] border border-red-500/20 rounded-2xl p-6 text-center">
-      <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
-      <p className="text-sm text-gray-300 mb-3">No pudimos cargar tus datos.</p>
+    <div className="bg-dark-card border border-red-500/20 rounded-2xl p-6 text-center">
+      <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" aria-hidden="true" />
+      <p className="text-sm text-dark-text mb-3">No pudimos cargar tus datos.</p>
       <button
         onClick={onRetry}
         className="text-xs font-medium px-4 py-2 rounded-lg bg-orange-500/15 text-orange-300 hover:bg-orange-500/25 transition"
@@ -90,11 +77,9 @@ export default function DashboardPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <style>{`@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
-
-      <div className="min-h-screen bg-[#0c0c12]">
+      <div className="min-h-screen bg-dark-bg overflow-x-hidden">
         <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-          <div className="lg:grid lg:grid-cols-[1fr_320px] lg:gap-6">
+          <div className="lg:grid lg:grid-cols-[1fr_20rem] lg:gap-6">
             {/* Right rail on desktop / top on mobile */}
             <aside className="lg:order-2 lg:sticky lg:top-6 lg:self-start mb-6 lg:mb-0">
               <SummaryCard
@@ -131,7 +116,7 @@ export default function DashboardPage() {
                   </div>
 
                   <section>
-                    <h2 className="text-[11px] font-semibold text-gray-600 uppercase tracking-widest mb-3">
+                    <h2 className="text-xs font-semibold text-dark-muted uppercase tracking-widest mb-3">
                       Cuentas
                     </h2>
                     {loading ? (
@@ -139,7 +124,7 @@ export default function DashboardPage() {
                         {[1, 2].map(n => (
                           <div
                             key={n}
-                            className="bg-[#13131c] border border-white/[0.07] rounded-xl p-4"
+                            className="bg-dark-card border border-dark-border rounded-xl p-4"
                           >
                             <Skeleton className="h-4 w-24 mb-2" />
                             <Skeleton className="h-7 w-32" />
@@ -151,28 +136,28 @@ export default function DashboardPage() {
                         {data?.accounts?.map(acc => (
                           <div
                             key={acc.id}
-                            className="bg-[#13131c] border border-white/[0.07] rounded-xl p-4 flex items-center justify-between hover:border-white/[0.12] transition-colors"
+                            className="bg-dark-card border border-dark-border rounded-xl p-4 flex items-center justify-between hover:border-dark-border-strong transition-colors"
                           >
                             <div className="min-w-0">
                               <div className="flex items-center gap-1.5">
-                                <p className="font-medium text-gray-200 text-sm truncate">
+                                <p className="font-medium text-dark-text text-sm truncate">
                                   {acc.name}
                                 </p>
                                 {acc.is_default && (
-                                  <span className="text-[9px] font-bold bg-orange-500/15 text-orange-400 border border-orange-500/20 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                                  <Badge variant="accent" size="sm">
                                     Principal
-                                  </span>
+                                  </Badge>
                                 )}
                               </div>
-                              <p className="text-xs text-gray-600 mt-0.5">{acc.currency}</p>
+                              <p className="text-xs text-dark-muted mt-0.5">{acc.currency}</p>
                             </div>
-                            <p className="text-lg font-bold font-display text-white tabular-nums ml-2">
+                            <p className="text-lg font-bold font-display text-dark-text-primary tabular-nums ml-2">
                               {fmt(acc.balance)}
                             </p>
                           </div>
                         ))}
                         {!data?.accounts?.length && (
-                          <p className="text-gray-600 text-sm col-span-2 py-4 text-center">
+                          <p className="text-dark-muted text-sm col-span-2 py-4 text-center">
                             Sin cuentas registradas.
                           </p>
                         )}
@@ -181,10 +166,10 @@ export default function DashboardPage() {
                   </section>
 
                   <section>
-                    <h2 className="text-[11px] font-semibold text-gray-600 uppercase tracking-widest mb-3">
+                    <h2 className="text-xs font-semibold text-dark-muted uppercase tracking-widest mb-3">
                       Presupuestos
                     </h2>
-                    <div className="bg-[#13131c] border border-white/[0.07] rounded-2xl p-5">
+                    <Card theme="dark">
                       {loading ? (
                         <div className="space-y-4">
                           {[1, 2, 3].map(n => (
@@ -210,25 +195,25 @@ export default function DashboardPage() {
                             return (
                               <div key={b.id}>
                                 <div className="flex justify-between text-xs mb-1.5">
-                                  <span className="font-medium text-gray-300">
+                                  <span className="font-medium text-dark-text">
                                     {b.category.display_name}
                                   </span>
-                                  <span className="text-gray-600 tabular-nums">
+                                  <span className="text-dark-muted tabular-nums">
                                     {fmt(b.spent_amount)} / {fmt(b.limit_amount)}
                                   </span>
                                 </div>
-                                <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden">
+                                <div className="h-2 bg-dark-border rounded-full overflow-hidden">
                                   <div
                                     className={`h-full rounded-full bg-gradient-to-r ${colorClass} transition-all duration-700`}
                                     style={{ width: `${pct}%` }}
                                   />
                                 </div>
                                 <div className="flex justify-between mt-1">
-                                  <span className="text-[10px] text-gray-700">
+                                  <span className="text-xs text-dark-muted-dim">
                                     {b.period === 'monthly' ? 'Mensual' : 'Semanal'}
                                   </span>
                                   <span
-                                    className={`text-[10px] font-semibold tabular-nums ${
+                                    className={`text-xs font-semibold tabular-nums ${
                                       b.threshold === 'over_limit'
                                         ? 'text-red-400'
                                         : b.threshold === 'warning'
@@ -245,10 +230,10 @@ export default function DashboardPage() {
                         </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center py-6 text-center">
-                          <p className="text-sm text-gray-600">Sin presupuestos activos</p>
+                          <p className="text-sm text-dark-muted">Sin presupuestos activos</p>
                         </div>
                       )}
-                    </div>
+                    </Card>
                   </section>
 
                   <TransactionsList
@@ -262,7 +247,7 @@ export default function DashboardPage() {
           </div>
 
           <footer className="max-w-6xl mx-auto pt-8 pb-6 text-center">
-            <p className="text-[11px] text-gray-800">AsistPro · Datos en tiempo real</p>
+            <p className="text-xs text-dark-muted-dim">AsistPro · Datos en tiempo real</p>
           </footer>
         </main>
       </div>

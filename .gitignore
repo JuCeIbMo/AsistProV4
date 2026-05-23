@@ -25,3 +25,8 @@ dist-ssr
 .env
 .next
 out
+
+# Tool artifacts
+.omo/
+.playwright-mcp/
+tsconfig.tsbuildinfo

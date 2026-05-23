@@ -10,6 +10,7 @@ export const API_CONFIG = {
     // Dashboard
     SUMMARY: '/api/web/summary',
     TRANSACTIONS: '/api/web/transactions',
+    TRANSACTION_DETAIL: '/api/web/transactions',
   },
   TIMEOUT: 15000,
 };

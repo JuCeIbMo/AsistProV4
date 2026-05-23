@@ -111,10 +111,18 @@ export function fetchTransactionsPage(
   cursor: string | null,
   direction: 'income' | 'expense' | null,
   limit = 25,
+  startDate?: string,
+  endDate?: string,
 ): Promise<FetchResult<TransactionsPage>> {
   return apiGet<TransactionsPage>(API_CONFIG.ENDPOINTS.TRANSACTIONS, {
     cursor,
     direction,
     limit: String(limit),
+    start_date: startDate || null,
+    end_date: endDate || null,
   });
+}
+
+export function fetchTransactionDetail(id: string): Promise<FetchResult<Transaction>> {
+  return apiGet<Transaction>(`${API_CONFIG.ENDPOINTS.TRANSACTIONS}/${id}`);
 }

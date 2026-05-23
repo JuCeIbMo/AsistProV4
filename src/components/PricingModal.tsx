@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
-import { X, ArrowLeft, Check, Phone, CreditCard, Globe, Mail, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Check, Phone, CreditCard, Globe, Mail, MessageCircle } from 'lucide-react';
 import Select, { type SingleValue, type StylesConfig } from 'react-select';
 import { validateEmail, validatePhoneE164, formatPhoneE164, mapPlanName } from '../utils/validation';
+import { Modal } from './ui/Modal';
+import { Button } from './ui/Button';
+import { lightColors, borderRadius, spacing } from '../styles/tokens';
 
 interface PricingModalProps {
   isOpen: boolean;
@@ -24,7 +27,7 @@ interface CountryOption {
 }
 
 const countries: CountryOption[] = [
- { value: '+54', label: 'Argentina', code: 'AR', flag: 'https://flagcdn.com/ar.svg' },
+  { value: '+54', label: 'Argentina', code: 'AR', flag: 'https://flagcdn.com/ar.svg' },
   { value: '+1', label: 'Estados Unidos', code: 'US', flag: 'https://flagcdn.com/us.svg' },
   { value: '+52', label: 'México', code: 'MX', flag: 'https://flagcdn.com/mx.svg' },
   { value: '+34', label: 'España', code: 'ES', flag: 'https://flagcdn.com/es.svg' },
@@ -92,6 +95,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
   const [isProcessing, setIsProcessing] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
+  // Reset form state when modal opens (Modal handles scroll lock)
   useEffect(() => {
     if (isOpen) {
       setStep(1);
@@ -100,15 +104,15 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
       setSelectedPayment('');
       setErrors({});
       setIsProcessing(false);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
     }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
   }, [isOpen]);
+
+  // Prevent closing during payment processing
+  const handleClose = () => {
+    if (!isProcessing) {
+      onClose();
+    }
+  };
 
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
@@ -164,84 +168,72 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
     onClose();
   };
 
+  // Token-based select styles (replaces hardcoded hex values)
   const customSelectStyles: StylesConfig<CountryOption, false> = {
     control: (provided) => ({
       ...provided,
-      border: '2px solid #fed7aa',
-      borderRadius: '12px',
-      padding: '8px',
+      border: `2px solid ${lightColors['accent-light']}`,
+      borderRadius: borderRadius.xl,
+      padding: spacing[2],
       boxShadow: 'none',
       '&:hover': {
-        border: '2px solid #fb923c',
+        border: `2px solid ${lightColors.accent}`,
       },
       '&:focus-within': {
-        border: '2px solid #ea580c',
-        boxShadow: '0 0 0 3px rgba(251, 146, 60, 0.1)',
+        border: `2px solid ${lightColors['accent-dark']}`,
+        boxShadow: `0 0 0 3px rgba(249, 115, 22, 0.1)`,
       }
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isSelected ? '#ea580c' : state.isFocused ? '#fed7aa' : 'white',
-      color: state.isSelected ? 'white' : '#1f2937',
-      padding: '12px',
+      backgroundColor: state.isSelected ? lightColors['accent-dark'] : state.isFocused ? lightColors['accent-light'] : lightColors.white,
+      color: state.isSelected ? lightColors.white : lightColors.text,
+      padding: spacing[3],
       cursor: 'pointer',
     }),
     singleValue: (provided) => ({
       ...provided,
-      color: '#1f2937',
+      color: lightColors.text,
       fontWeight: '500',
     }),
   };
 
-  if (!isOpen || !selectedPlan) return null;
+  if (!selectedPlan) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] flex flex-col transform transition-all duration-300 scale-100 opacity-100">
-        {/* Header sticky */}
-        <div className="bg-gradient-to-r from-orange-600 to-orange-700 text-white p-6 rounded-t-2xl sticky top-0 z-10">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold">{selectedPlan.name}</h2>
-              <p className="text-orange-100 text-sm">
-                {/* Mostrar precio en USD solo si PayPal está seleccionado */}
-                {selectedPayment === 'paypal' ? (
-                  isAnnual
-                    ? `${getUsdPrice(selectedPlan.name, true)} USD por año`
-                    : `${getUsdPrice(selectedPlan.name, false)} USD por mes`
-                ) : (
-                  <>
-                    {isAnnual ? selectedPlan.annualPrice : selectedPlan.monthlyPrice} {isAnnual ? ' por año' : ' por mes'}
-                  </>
-                )}
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-white hover:text-orange-200 transition-colors"
-              disabled={isProcessing}
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
+    <Modal isOpen={isOpen} onClose={handleClose} title={selectedPlan.name} theme="light">
+      {/* Price subtitle */}
+      <p className="text-sm mt-1" style={{ color: lightColors.secondary }}>
+        {/* Mostrar precio en USD solo si PayPal está seleccionado */}
+        {selectedPayment === 'paypal' ? (
+          isAnnual
+            ? `${getUsdPrice(selectedPlan.name, true)} USD por año`
+            : `${getUsdPrice(selectedPlan.name, false)} USD por mes`
+        ) : (
+          <>
+            {isAnnual ? selectedPlan.annualPrice : selectedPlan.monthlyPrice} {isAnnual ? ' por año' : ' por mes'}
+          </>
+        )}
+      </p>
 
-        {/* Contenido scrollable debajo de la cabecera sticky */}
-        <div className="flex-1 overflow-y-auto">
+      {/* Scrollable content */}
+      <div className="max-h-[50vh] sm:max-h-[60vh] overflow-y-auto mt-4">
         {step === 1 && (
-          <div className="p-6">
+          <div>
             <div className="mb-6">
-              <h4 className="text-xl font-semibold text-gray-900 mb-2">
+              <h4 className="text-xl font-semibold mb-2" style={{ color: lightColors.text }}>
                 Información de Contacto
               </h4>
             </div>
             {/* Country Selector */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Globe className="w-4 h-4 inline mr-1" />
+              <label htmlFor="country-select" className="block text-sm font-medium mb-2" style={{ color: lightColors.secondary }}>
+                <Globe className="w-4 h-4 inline mr-1" aria-hidden="true" />
                 País
               </label>
-              <Select
+              <Select<CountryOption, false>
+                inputId="country-select-input"
+                aria-label="Seleccionar país"
                 value={selectedCountry}
                 onChange={(option: SingleValue<CountryOption>) => {
                   if (option) setSelectedCountry(option);
@@ -252,7 +244,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                   <div className="flex items-center space-x-3">
                     <img src={option.flag} alt={option.label} className="w-6 h-4 object-cover rounded-sm border border-gray-200" />
                     <span>{option.label}</span>
-                    <span className="text-gray-500 text-sm">({option.value})</span>
+                    <span className="text-sm" style={{ color: lightColors.muted }}>({option.value})</span>
                   </div>
                 )}
                 isSearchable
@@ -262,15 +254,16 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
 
             {/* Phone Number */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Phone className="w-4 h-4 inline mr-1" />
+              <label htmlFor="phone-number" className="block text-sm font-medium mb-2" style={{ color: lightColors.secondary }}>
+                <Phone className="w-4 h-4 inline mr-1" aria-hidden="true" />
                 Número de WhatsApp
               </label>
               <div className="flex w-full">
-                <div className="bg-gray-100 border-2 border-r-0 border-orange-200 rounded-l-xl px-3 sm:px-4 py-3 flex items-center flex-shrink-0">
-                  <span className="font-medium text-gray-700">{selectedCountry.value}</span>
+                <div className="bg-gray-100 border-2 border-r-0 rounded-l-xl px-3 sm:px-4 py-3 flex items-center flex-shrink-0 min-h-[44px]" style={{ borderColor: lightColors['accent-light'] }}>
+                  <span className="font-medium" style={{ color: lightColors.secondary }}>{selectedCountry.value}</span>
                 </div>
                 <input
+                  id="phone-number"
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => {
@@ -279,60 +272,70 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                     setPhoneNumber(value);
                   }}
                   placeholder="1122334455"
-                  className={`flex-1 min-w-0 border-2 border-l-0 rounded-r-xl px-3 sm:px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
-                    errors.phone ? 'border-red-300' : 'border-orange-200'
+                  aria-invalid={Boolean(errors.phone)}
+                  aria-describedby={errors.phone ? 'phone-error' : undefined}
+                  className={`flex-1 min-w-0 border-2 border-l-0 rounded-r-xl px-3 sm:px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 min-h-[44px] ${
+                    errors.phone ? 'border-red-300' : ''
                   }`}
+                  style={!errors.phone ? { borderColor: lightColors['accent-light'] } : undefined}
                 />
               </div>
               {phoneNumber && !errors.phone && (
                 <p className="text-orange-600 text-xs mt-1 flex items-center">
-                  <Phone className="w-3 h-3 mr-1" />
+                  <Phone className="w-3 h-3 mr-1" aria-hidden="true" />
                   La activación del servicio se realizará para ese número
                 </p>
               )}
               {errors.phone && (
-                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                <p id="phone-error" className="text-red-500 text-sm mt-1" role="alert">{errors.phone}</p>
               )}
             </div>
 
             {/* Email Field */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Mail className="w-4 h-4 inline mr-1" />
+              <label htmlFor="email-input" className="block text-sm font-medium mb-2" style={{ color: lightColors.secondary }}>
+                <Mail className="w-4 h-4 inline mr-1" aria-hidden="true" />
                 Email
               </label>
               <input
+                id="email-input"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@email.com"
-                className={`w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
-                  errors.email ? 'border-red-300' : 'border-orange-200'
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={errors.email ? 'email-error' : undefined}
+                className={`w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 min-h-[44px] ${
+                  errors.email ? 'border-red-300' : ''
                 }`}
+                style={!errors.email ? { borderColor: lightColors['accent-light'] } : undefined}
               />
               {email && !errors.email && (
                 <p className="text-orange-600 text-xs mt-1 flex items-center">
-                  <Mail className="w-3 h-3 mr-1" />
+                  <Mail className="w-3 h-3 mr-1" aria-hidden="true" />
                   Ingresa el correo donde quieres recibir la transacción
                 </p>
               )}
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                <p id="email-error" className="text-red-500 text-sm mt-1" role="alert">{errors.email}</p>
               )}
             </div>
 
             {/* Payment Method */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                <CreditCard className="w-4 h-4 inline mr-1" />
+              <span id="payment-label" className="block text-sm font-medium mb-3" style={{ color: lightColors.secondary }}>
+                <CreditCard className="w-4 h-4 inline mr-1" aria-hidden="true" />
                 Método de Pago
-              </label>
-              <div className="flex gap-4">
+              </span>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4" role="radiogroup" aria-labelledby="payment-label">
                 {paymentMethods.map((method) => (
                   <button
                     key={method.id}
                     onClick={() => setSelectedPayment(method.id)}
-                    className={`border-2 rounded-xl transition-all flex items-center justify-center bg-white focus:outline-none relative w-1/2 h-14 ${
+                    aria-label={`Pago con ${method.name}`}
+                    role="radio"
+                    aria-checked={selectedPayment === method.id}
+                    className={`border-2 rounded-xl transition-all flex items-center justify-center bg-white focus:outline-none relative sm:w-1/2 h-14 min-h-[44px] ${
                       selectedPayment === method.id
                         ? 'border-orange-500 bg-orange-50'
                         : 'border-gray-200 hover:border-orange-300'
@@ -344,99 +347,98 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                       className="h-8 w-auto object-contain mx-auto"
                     />
                     {selectedPayment === method.id && (
-                      <Check className="w-5 h-5 text-orange-600 absolute top-2 right-2" />
+                      <Check className="w-5 h-5 text-orange-600 absolute top-2 right-2" aria-hidden="true" />
                     )}
                   </button>
                 ))}
               </div>
               {errors.payment && (
-                <p className="text-red-500 text-sm mt-1">{errors.payment}</p>
+                <p id="payment-error" className="text-red-500 text-sm mt-1" role="alert">{errors.payment}</p>
               )}
             </div>
 
             {/* Continue Button */}
-            <button
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full py-4"
               onClick={handleContinue}
-              className="w-full bg-gradient-to-r from-orange-600 to-orange-700 text-white py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-orange-800 transition-all transform hover:scale-105 shadow-lg"
             >
               Continuar con el Pago
-            </button>
+            </Button>
 
-            <p className="text-center text-sm text-gray-500 mt-4">
+            <p className="text-center text-sm mt-4" style={{ color: lightColors.muted }}>
               🔒 Tus datos están protegidos con encriptación SSL
             </p>
           </div>
         )}
 
         {step === 2 && (
-          <div className="p-6">
+          <div>
             <div className="mb-6">
               <button
                 onClick={() => setStep(1)}
                 className="flex items-center text-orange-600 hover:text-orange-700 transition-colors mb-4"
                 disabled={isProcessing}
+                aria-label="Volver al paso anterior"
               >
-                <ArrowLeft className="w-4 h-4 mr-1" />
+                <ArrowLeft className="w-4 h-4 mr-1" aria-hidden="true" />
                 Volver
               </button>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold mb-2" style={{ color: lightColors.text }}>
                 Confirmar Suscripción
               </h3>
-              <p className="text-gray-600">
+              <p style={{ color: lightColors.secondary }}>
                 Revisa los detalles antes de solicitar la activación
               </p>
             </div>
-            {/* Status de los fetching aqui estaban  */}
 
-          
             {/* Order Summary */}
             <div className="bg-orange-50 rounded-xl p-4 mb-6">
-              <h4 className="font-semibold text-gray-900 mb-3">Resumen del Pedido</h4>
+              <h4 className="font-semibold mb-3" style={{ color: lightColors.text }}>Resumen del Pedido</h4>
               
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Plan:</span>
+                  <span style={{ color: lightColors.secondary }}>Plan:</span>
                   <span className="font-semibold">{selectedPlan.name}</span>
                 </div>
                 
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Facturación:</span>
+                  <span style={{ color: lightColors.secondary }}>Facturación:</span>
                   <span className="font-semibold">
                     {isAnnual ? 'Anual' : 'Mensual'}
                   </span>
                 </div>
                 
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Precio:</span>
+                  <span style={{ color: lightColors.secondary }}>Precio:</span>
                   <span className="font-semibold text-orange-600">
-{/* Mostrar precio en USD solo si PayPal está seleccionado //                    {isAnnual ? selectedPlan.annualPrice : selectedPlan.monthlyPrice}
-//*/}
-                {selectedPayment === 'paypal' ? (
-                  isAnnual
-                    ? `${getUsdPrice(selectedPlan.name, true)} USD`
-                    : `${getUsdPrice(selectedPlan.name, false)} USD`
-                ) : (
-                  <>
-                    {isAnnual ? selectedPlan.annualPrice : selectedPlan.monthlyPrice} {isAnnual ? ' ' : ' '}
-                  </>
-                )}
+                    {selectedPayment === 'paypal' ? (
+                      isAnnual
+                        ? `${getUsdPrice(selectedPlan.name, true)} USD`
+                        : `${getUsdPrice(selectedPlan.name, false)} USD`
+                    ) : (
+                      <>
+                        {isAnnual ? selectedPlan.annualPrice : selectedPlan.monthlyPrice} {isAnnual ? ' ' : ' '}
+                      </>
+                    )}
                   </span>
                 </div>
                 
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Email:</span>
+                  <span style={{ color: lightColors.secondary }}>Email:</span>
                   <span className="font-semibold text-sm">{email}</span>
                 </div>
                 
                 <div className="flex justify-between">
-                  <span className="text-gray-600">WhatsApp:</span>
+                  <span style={{ color: lightColors.secondary }}>WhatsApp:</span>
                   <span className="font-semibold text-sm">
                     {selectedCountry.code} {formatPhoneE164(selectedCountry.value, phoneNumber)}
                   </span>
                 </div>
                 
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Pago:</span>
+                  <span style={{ color: lightColors.secondary }}>Pago:</span>
                   <span className="font-semibold">
                     {paymentMethods.find(p => p.id === selectedPayment)?.name}
                   </span>
@@ -446,12 +448,12 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
 
             {/* Features Included */}
             <div className="mb-6">
-              <h4 className="font-semibold text-gray-900 mb-3">Incluye:</h4>
+              <h4 className="font-semibold mb-3" style={{ color: lightColors.text }}>Incluye:</h4>
               <ul className="space-y-2">
                 {selectedPlan.features.slice(0, 4).map((feature, index) => (
                   <li key={index} className="flex items-center space-x-2">
-                    <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                    <span className="text-sm text-gray-700">{feature}</span>
+                    <Check className="w-4 h-4 text-green-500 flex-shrink-0" aria-hidden="true" />
+                    <span className="text-sm" style={{ color: lightColors.secondary }}>{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -464,32 +466,33 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
               </p>
             </div>
             {/* Processing State */}
-            {isProcessing && (
-              <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center space-x-3">
-                <Check className="w-5 h-5 text-green-500" />
-                <p className="text-green-800 font-medium">
-                  Abriendo WhatsApp para coordinar la activación...
-                </p>
-              </div>
-            )}
+              {isProcessing && (
+                <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center space-x-3">
+                  <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
+                  <p className="text-green-800 font-medium">
+                    Abriendo WhatsApp para coordinar la activación...
+                  </p>
+                </div>
+              )}
 
             {/* Confirm Button */}
-            <button
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full py-4"
               onClick={handleConfirmPayment}
               disabled={isProcessing}
-              className="w-full bg-gradient-to-r from-orange-600 to-orange-700 text-white py-4 rounded-xl font-semibold hover:from-orange-700 hover:to-orange-800 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
             >
-              <MessageCircle className="w-5 h-5 mr-2" />
+              <MessageCircle className="w-5 h-5 mr-2" aria-hidden="true" />
               Solicitar Activación
-            </button>
+            </Button>
 
-            <p className="text-center text-xs text-gray-500 mt-4">
+            <p className="text-center text-xs mt-4" style={{ color: lightColors.muted }}>
               El checkout automático se habilitará cuando el backend de pagos esté disponible.
             </p>
           </div>
         )}
-        </div>
       </div>
-    </div>
+    </Modal>
   );
 }

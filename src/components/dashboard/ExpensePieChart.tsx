@@ -1,5 +1,7 @@
+import { useState, useCallback } from 'react';
 import { PieChart } from 'lucide-react';
 import type { ExpenseCategoryItem } from '../../services/dashboardService';
+import { chartColors, darkColors } from '../../styles/tokens';
 import { fmt } from './format';
 
 interface Props {
@@ -7,8 +9,6 @@ interface Props {
   loading: boolean;
   currency?: string;
 }
-
-const PALETTE = ['#fb923c', '#f97316', '#ea580c', '#c2410c', '#9a3412', '#7c2d12', '#52525b'];
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
   const a = ((angleDeg - 90) * Math.PI) / 180;
@@ -25,7 +25,20 @@ function arcPath(cx: number, cy: number, r: number, startAngle: number, endAngle
   return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
 }
 
+function getSliceCenter(cx: number, cy: number, r: number, startAngle: number, endAngle: number) {
+  const midAngle = ((startAngle + endAngle) / 2 - 90) * (Math.PI / 180);
+  const distance = r * 0.65;
+  return {
+    x: cx + distance * Math.cos(midAngle),
+    y: cy + distance * Math.sin(midAngle),
+  };
+}
+
 export function ExpensePieChart({ categories, loading, currency }: Props) {
+  const [hover, setHover] = useState<number | null>(null);
+
+  const clearHover = useCallback(() => setHover(null), []);
+
   const slices = (() => {
     if (categories.length <= 6) return categories;
     const top = categories.slice(0, 5);
@@ -48,14 +61,18 @@ export function ExpensePieChart({ categories, loading, currency }: Props) {
   let cumulative = 0;
 
   return (
-    <div className="bg-[#13131c] border border-white/[0.07] rounded-2xl p-5">
-      <h2 className="text-[11px] font-semibold text-gray-600 uppercase tracking-widest mb-4">
+    <div
+      className="bg-dark-card border-dark-border rounded-2xl p-5"
+      onTouchStart={clearHover}
+    >
+      <h2 className="text-xs font-semibold text-dark-muted uppercase tracking-widest mb-4">
         Distribución de gastos
       </h2>
       {loading ? (
         <div className="flex items-center justify-center h-44">
           <div
             className="w-32 h-32 rounded-full"
+            aria-hidden="true"
             style={{
               background:
                 'conic-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
@@ -65,67 +82,147 @@ export function ExpensePieChart({ categories, loading, currency }: Props) {
         </div>
       ) : slices.length === 0 || total === 0 ? (
         <div className="flex flex-col items-center justify-center py-10 text-center">
-          <PieChart className="w-8 h-8 text-gray-700 mb-2" />
-          <p className="text-sm text-gray-600">Sin gastos este mes</p>
+          <PieChart className="w-8 h-8 text-dark-muted-dim mb-2" aria-hidden="true" />
+          <p className="text-sm text-dark-muted">Sin gastos este mes</p>
         </div>
       ) : (
         <div className="flex flex-col sm:flex-row items-center gap-5">
-          <svg viewBox="0 0 100 100" className="w-36 h-36 flex-shrink-0">
-            {slices.map((c, idx) => {
-              const start = (cumulative / total) * 360;
-              cumulative += parseFloat(c.amount);
-              const end = (cumulative / total) * 360;
-              const color = PALETTE[idx % PALETTE.length];
+          <div className="relative">
+            <svg
+              viewBox="0 0 100 100"
+              className="w-32 h-32 sm:w-36 sm:h-36 flex-shrink-0"
+              onClick={clearHover}
+              aria-label="Gráfico de distribución de gastos por categoría"
+              role="img"
+            >
+              {slices.map((c, idx) => {
+                const start = (cumulative / total) * 360;
+                cumulative += parseFloat(c.amount);
+                const end = (cumulative / total) * 360;
+                const color = chartColors[idx % chartColors.length];
+                const percentage = ((parseFloat(c.amount) / total) * 100).toFixed(1);
+                return (
+                  <path
+                    key={(c.slug || c.display_name) + idx}
+                    d={arcPath(50, 50, 48, start, end)}
+                    fill={color}
+                    stroke="#13131c"
+                    strokeWidth="0.5"
+                    className="transition-opacity duration-200 cursor-pointer"
+                    style={{ opacity: hover === idx ? 1 : 0.85 }}
+                    onMouseEnter={() => setHover(idx)}
+                    onMouseLeave={() => setHover(null)}
+                    onTouchStart={(e) => {
+                      e.stopPropagation();
+                      setHover(idx);
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setHover(hover === idx ? null : idx);
+                    }}
+                    aria-label={`Categoría: ${c.display_name}, Monto: ${fmt(parseFloat(c.amount))}, Porcentaje: ${percentage}%`}
+                  >
+                    <title>{`${c.display_name}: ${fmt(parseFloat(c.amount))} (${percentage}%)`}</title>
+                  </path>
+                );
+              })}
+              <circle cx="50" cy="50" r="26" fill="#13131c" />
+              <text
+                x="50"
+                y="49"
+                textAnchor="middle"
+                fill="#9ca3af"
+                fontSize="6"
+                fontFamily="Outfit, sans-serif"
+              >
+                Total
+              </text>
+              <text
+                x="50"
+                y="57"
+                textAnchor="middle"
+                fill="#fff"
+                fontSize="8"
+                fontWeight="700"
+                fontFamily="Syne, sans-serif"
+              >
+                {fmt(total)}
+              </text>
+            </svg>
+            {hover !== null && slices[hover] && (() => {
+              const idx = hover;
+              let startCumulative = 0;
+              for (let i = 0; i < idx; i++) {
+                startCumulative += parseFloat(slices[i].amount);
+              }
+              const start = (startCumulative / total) * 360;
+              const end = ((startCumulative + parseFloat(slices[hover].amount)) / total) * 360;
+              const pos = getSliceCenter(50, 50, 48, start, end);
+              const svgRect = { x: 0, y: 0, width: 144, height: 144 };
+              const pctX = (pos.x / 100) * svgRect.width + svgRect.x;
+              const pctY = (pos.y / 100) * svgRect.height + svgRect.y;
+              const tooltipOffsetX = pctX < svgRect.width / 2 ? 8 : -8;
+              const tooltipOffsetY = pctY < svgRect.height / 2 ? 8 : -8;
               return (
-                <path
-                  key={(c.slug || c.display_name) + idx}
-                  d={arcPath(50, 50, 48, start, end)}
-                  fill={color}
-                  stroke="#13131c"
-                  strokeWidth="0.5"
-                />
+                <div
+                  className="absolute pointer-events-none z-10 px-3 py-2 rounded-lg text-xs"
+                  style={{
+                    backgroundColor: darkColors.elevated,
+                    border: `1px solid ${darkColors['border-strong']}`,
+                    boxShadow: darkColors.shadow,
+                    top: pctY + tooltipOffsetY,
+                    left: pctX + tooltipOffsetX,
+                    transform: 'translate(-50%, -50%)',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <div className="font-medium text-dark-text">{slices[hover].display_name}</div>
+                  <div className="text-dark-secondary">
+                    {fmt(parseFloat(slices[hover].amount))} ({((parseFloat(slices[hover].amount) / total) * 100).toFixed(1)}%)
+                  </div>
+                </div>
               );
-            })}
-            <circle cx="50" cy="50" r="26" fill="#13131c" />
-            <text
-              x="50"
-              y="49"
-              textAnchor="middle"
-              fill="#9ca3af"
-              fontSize="6"
-              fontFamily="Outfit, sans-serif"
-            >
-              Total
-            </text>
-            <text
-              x="50"
-              y="57"
-              textAnchor="middle"
-              fill="#fff"
-              fontSize="8"
-              fontWeight="700"
-              fontFamily="Syne, sans-serif"
-            >
-              {fmt(total)}
-            </text>
-          </svg>
+            })()}
+          </div>
           <div className="flex-1 space-y-2 w-full">
             {slices.map((c, idx) => (
-              <div key={(c.slug || c.display_name) + idx} className="flex items-center justify-between text-xs">
+              <div
+                key={(c.slug || c.display_name) + idx}
+                className="flex items-center justify-between text-xs cursor-pointer"
+                onMouseEnter={() => setHover(idx)}
+                onMouseLeave={() => setHover(null)}
+                onTouchStart={(e) => {
+                  e.stopPropagation();
+                  setHover(idx);
+                }}
+                onClick={() => setHover(hover === idx ? null : idx)}
+                role="button"
+                tabIndex={0}
+                aria-label={`${c.display_name}: ${c.share.toFixed(0)}%`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setHover(hover === idx ? null : idx);
+                  }
+                }}
+              >
                 <div className="flex items-center gap-2 min-w-0">
                   <span
                     className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
-                    style={{ backgroundColor: PALETTE[idx % PALETTE.length] }}
+                    style={{ backgroundColor: chartColors[idx % chartColors.length] }}
+                    aria-hidden="true"
                   />
-                  <span className="text-gray-300 truncate">{c.display_name}</span>
+                  <span className={`truncate ${hover === idx ? 'text-dark-text' : 'text-dark-text/80'}`}>
+                    {c.display_name}
+                  </span>
                 </div>
-                <span className="text-gray-500 tabular-nums ml-2 whitespace-nowrap">
+                <span className="text-dark-secondary tabular-nums ml-2 whitespace-nowrap">
                   {c.share.toFixed(0)}%
                 </span>
               </div>
             ))}
             {currency && (
-              <p className="text-[10px] text-gray-700 pt-1">Montos en {currency}</p>
+              <p className="text-xs text-dark-muted-dim pt-1">Montos en {currency}</p>
             )}
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { PieChart } from 'lucide-react';
 import type { ExpenseCategoryItem } from '../../services/dashboardService';
 import { fmt } from './format';
+import { Skeleton } from '../ui';
 
 interface Props {
   categories: ExpenseCategoryItem[];
@@ -8,24 +9,10 @@ interface Props {
   currency?: string;
 }
 
-function Skeleton({ className }: { className: string }) {
-  return (
-    <div
-      className={`rounded-lg ${className}`}
-      style={{
-        background:
-          'linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%)',
-        backgroundSize: '200% 100%',
-        animation: 'shimmer 1.4s infinite',
-      }}
-    />
-  );
-}
-
 export function ExpenseCategoriesList({ categories, loading, currency }: Props) {
   return (
-    <div className="bg-[#13131c] border border-white/[0.07] rounded-2xl p-5">
-      <h2 className="text-[11px] font-semibold text-gray-600 uppercase tracking-widest mb-4">
+    <div className="bg-dark-card border border-dark-border rounded-2xl p-5 overflow-hidden">
+      <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-widest mb-4">
         Categorías de gasto
       </h2>
       {loading ? (
@@ -42,7 +29,7 @@ export function ExpenseCategoriesList({ categories, loading, currency }: Props) 
         </div>
       ) : categories.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-10 text-center">
-          <PieChart className="w-8 h-8 text-gray-700 mb-2" />
+          <PieChart className="w-8 h-8 text-gray-700 mb-2" aria-hidden="true" />
           <p className="text-sm text-gray-600">Sin gastos este mes</p>
         </div>
       ) : (

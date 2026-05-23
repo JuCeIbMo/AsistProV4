@@ -2,8 +2,12 @@ import { useEffect, useState } from 'react';
 import { Receipt } from 'lucide-react';
 import { fetchTransactionsPage, type Transaction } from '../../services/dashboardService';
 import { TxRow } from './TxRow';
+import { TransactionDetail } from './TransactionDetail';
+import { Skeleton } from '../ui';
+import { darkColors } from '../../styles/tokens';
 
 type DirFilter = 'all' | 'income' | 'expense';
+type DatePreset = 'this-month' | 'last-3-months' | 'last-year';
 
 interface Props {
   initialItems: Transaction[];
@@ -11,18 +15,28 @@ interface Props {
   onUnauthorized: () => void;
 }
 
-function Skeleton({ className }: { className: string }) {
-  return (
-    <div
-      className={`rounded-lg ${className}`}
-      style={{
-        background:
-          'linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%)',
-        backgroundSize: '200% 100%',
-        animation: 'shimmer 1.4s infinite',
-      }}
-    />
-  );
+function formatDate(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getFirstDayOfMonth(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+}
+
+function getMonthsAgo(n: number): string {
+  const now = new Date();
+  now.setMonth(now.getMonth() - n);
+  return formatDate(now);
+}
+
+function getYearsAgo(n: number): string {
+  const now = new Date();
+  now.setFullYear(now.getFullYear() - n);
+  return formatDate(now);
 }
 
 export function TransactionsList({ initialItems, loading, onUnauthorized }: Props) {
@@ -33,9 +47,53 @@ export function TransactionsList({ initialItems, loading, onUnauthorized }: Prop
   const [pageLoading, setPageLoading] = useState(false);
   const [pageError, setPageError] = useState(false);
 
-  // Reload from cursor=null when filter changes
+  // Date filter state
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+  const [activePreset, setActivePreset] = useState<DatePreset | null>(null);
+
+  // Detail panel state
+  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
+
+  function applyPreset(preset: DatePreset) {
+    const today = formatDate(new Date());
+    let start = '';
+    switch (preset) {
+      case 'this-month':
+        start = getFirstDayOfMonth();
+        break;
+      case 'last-3-months':
+        start = getMonthsAgo(3);
+        break;
+      case 'last-year':
+        start = getYearsAgo(1);
+        break;
+    }
+    setActivePreset(preset);
+    setStartDate(start);
+    setEndDate(today);
+  }
+
+  function clearDateFilter() {
+    setActivePreset(null);
+    setStartDate('');
+    setEndDate('');
+  }
+
+  function openDetail(tx: Transaction) {
+    setSelectedTx(tx);
+    setDetailOpen(true);
+  }
+
+  function closeDetail() {
+    setDetailOpen(false);
+    setSelectedTx(null);
+  }
+
+  // Reload from cursor=null when filter or date range changes
   useEffect(() => {
-    if (filter === 'all' && page === 0) {
+    if (filter === 'all' && page === 0 && !startDate && !endDate) {
       setItems(initialItems);
       setCursor(null);
       setPageError(false);
@@ -46,7 +104,13 @@ export function TransactionsList({ initialItems, loading, onUnauthorized }: Prop
       setPageLoading(true);
       setPageError(false);
       const dir = filter === 'all' ? null : filter;
-      const result = await fetchTransactionsPage(null, dir, 25);
+      const result = await fetchTransactionsPage(
+        null,
+        dir,
+        25,
+        startDate || undefined,
+        endDate || undefined
+      );
       if (cancelled) return;
       if (!result.ok) {
         if (result.status === 'unauthorized') onUnauthorized();
@@ -64,23 +128,29 @@ export function TransactionsList({ initialItems, loading, onUnauthorized }: Prop
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+  }, [filter, startDate, endDate]);
 
   // Refresh initial items when prop changes (e.g. user clicked refresh)
   useEffect(() => {
-    if (filter === 'all') {
+    if (filter === 'all' && !startDate && !endDate) {
       setItems(initialItems);
       setCursor(null);
       setPage(0);
     }
-  }, [initialItems, filter]);
+  }, [initialItems, filter, startDate, endDate]);
 
   async function loadMore() {
     if (!cursor) return;
     setPageLoading(true);
     setPageError(false);
     const dir = filter === 'all' ? null : filter;
-    const result = await fetchTransactionsPage(cursor, dir, 25);
+    const result = await fetchTransactionsPage(
+      cursor,
+      dir,
+      25,
+      startDate || undefined,
+      endDate || undefined
+    );
     if (!result.ok) {
       if (result.status === 'unauthorized') onUnauthorized();
       else setPageError(true);
@@ -103,7 +173,13 @@ export function TransactionsList({ initialItems, loading, onUnauthorized }: Prop
     setPageLoading(true);
     setPageError(false);
     const dir = filter === 'all' ? null : filter;
-    const result = await fetchTransactionsPage(null, dir, 25);
+    const result = await fetchTransactionsPage(
+      null,
+      dir,
+      25,
+      startDate || undefined,
+      endDate || undefined
+    );
     if (!result.ok) {
       if (result.status === 'unauthorized') onUnauthorized();
       else setPageError(true);
@@ -124,32 +200,114 @@ export function TransactionsList({ initialItems, loading, onUnauthorized }: Prop
     { id: 'expense', label: 'Egresos' },
   ];
 
+  const dateFilterActive = !!(startDate || endDate);
+
   return (
     <section>
+      {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-[11px] font-semibold text-gray-600 uppercase tracking-widest">
+        <h2 className="text-xs font-semibold text-dark-muted uppercase tracking-widest">
           Movimientos
         </h2>
-        <div className="flex items-center gap-1 bg-white/[0.03] border border-white/[0.05] rounded-lg p-0.5">
-          {tabs.map(t => (
-            <button
-              key={t.id}
-              onClick={() => setFilter(t.id)}
-              className={`px-3 py-1 text-xs font-medium rounded-md transition ${
-                filter === t.id
-                  ? 'bg-orange-500/15 text-orange-300'
-                  : 'text-gray-500 hover:text-gray-300'
-              }`}
-            >
+<div className="flex items-center gap-1 bg-white/[0.03] border border-white/[0.05] rounded-lg p-0.5">
+            {tabs.map(t => (
+              <button
+                key={t.id}
+                onClick={() => setFilter(t.id)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition min-h-[36px] ${
+                  filter === t.id
+                    ? 'bg-orange-500/15 text-orange-300'
+                    : 'text-dark-secondary hover:text-dark-text'
+                }`}
+              >
               {t.label}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="bg-[#13131c] border border-white/[0.07] rounded-2xl overflow-hidden">
+      {/* Date filter */}
+      <div className="mb-3 space-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+<button
+              onClick={() => applyPreset('this-month')}
+              className={`px-2.5 py-1.5 text-xs font-medium rounded-md transition min-h-[36px] ${
+                activePreset === 'this-month'
+                  ? 'bg-orange-500/15 text-orange-300'
+                  : 'bg-dark-elevated text-dark-secondary hover:text-dark-text'
+              }`}
+            >
+              Este mes
+            </button>
+            <button
+              onClick={() => applyPreset('last-3-months')}
+              className={`px-2.5 py-1.5 text-xs font-medium rounded-md transition min-h-[36px] ${
+                activePreset === 'last-3-months'
+                  ? 'bg-orange-500/15 text-orange-300'
+                  : 'bg-dark-elevated text-dark-secondary hover:text-dark-text'
+              }`}
+            >
+              Últimos 3 meses
+            </button>
+            <button
+              onClick={() => applyPreset('last-year')}
+              className={`px-2.5 py-1.5 text-xs font-medium rounded-md transition min-h-[36px] ${
+                activePreset === 'last-year'
+                  ? 'bg-orange-500/15 text-orange-300'
+                  : 'bg-dark-elevated text-dark-secondary hover:text-dark-text'
+              }`}
+            >
+              Último año
+            </button>
+          {dateFilterActive && (
+            <button
+              onClick={clearDateFilter}
+              className="px-2.5 py-1 text-xs font-medium rounded-md transition text-dark-secondary hover:text-dark-text"
+            >
+              Limpiar filtro
+            </button>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => {
+              setStartDate(e.target.value);
+              setActivePreset(null);
+            }}
+            className="px-2 py-1 text-xs rounded-md border outline-none focus:border-dark-accent"
+            style={{
+              backgroundColor: darkColors.elevated,
+              borderColor: darkColors.border,
+              color: darkColors.text,
+            }}
+            aria-label="Fecha inicial"
+          />
+          <span className="text-dark-muted text-xs">a</span>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => {
+              setEndDate(e.target.value);
+              setActivePreset(null);
+            }}
+            className="px-2 py-1 text-xs rounded-md border outline-none focus:border-dark-accent"
+            style={{
+              backgroundColor: darkColors.elevated,
+              borderColor: darkColors.border,
+              color: darkColors.text,
+            }}
+            aria-label="Fecha final"
+          />
+        </div>
+      </div>
+
+      {/* Transaction list */}
+      <div className="bg-dark-card border border-dark-border rounded-2xl overflow-hidden">
         {loading || (pageLoading && items.length === 0) ? (
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-dark-border-subtle">
             {[1, 2, 3, 4, 5].map(n => (
               <div key={n} className="px-5 py-3.5 flex items-center gap-3">
                 <Skeleton className="w-9 h-9 rounded-full flex-shrink-0" />
@@ -163,22 +321,22 @@ export function TransactionsList({ initialItems, loading, onUnauthorized }: Prop
           </div>
         ) : items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-14 text-center px-6">
-            <Receipt className="w-9 h-9 text-gray-700 mb-2" />
-            <p className="text-sm font-medium text-gray-500">Sin movimientos</p>
-            <p className="text-xs text-gray-700 mt-1">
-              {filter === 'all'
+            <Receipt className="w-9 h-9 text-dark-muted-dim mb-2" aria-hidden="true" />
+            <p className="text-sm font-medium text-dark-secondary">Sin movimientos</p>
+            <p className="text-xs text-dark-muted-dim mt-1">
+              {filter === 'all' && !dateFilterActive
                 ? 'Los movimientos que registres por WhatsApp aparecerán aquí.'
                 : 'No hay transacciones en este filtro.'}
             </p>
           </div>
         ) : (
           <>
-            <div className="divide-y divide-white/[0.04]">
+            <div className="divide-y divide-dark-border-subtle">
               {items.map(tx => (
-                <TxRow key={tx.id} tx={tx} />
+                <TxRow key={tx.id} tx={tx} onClick={() => openDetail(tx)} />
               ))}
             </div>
-            <div className="px-5 py-3 border-t border-white/[0.04] flex items-center justify-center">
+            <div className="px-5 py-3 border-t border-dark-border-subtle flex items-center justify-center">
               {pageError ? (
                 <button
                   onClick={() => (page === 0 ? loadMoreFromAllInitial() : loadMore())}
@@ -186,7 +344,7 @@ export function TransactionsList({ initialItems, loading, onUnauthorized }: Prop
                 >
                   Error al cargar. Reintentar
                 </button>
-              ) : page === 0 && filter === 'all' ? (
+              ) : page === 0 && filter === 'all' && !dateFilterActive ? (
                 <button
                   onClick={loadMoreFromAllInitial}
                   disabled={pageLoading}
@@ -203,12 +361,18 @@ export function TransactionsList({ initialItems, loading, onUnauthorized }: Prop
                   {pageLoading ? 'Cargando...' : 'Cargar más'}
                 </button>
               ) : (
-                <span className="text-[11px] text-gray-700">No hay más movimientos</span>
+                <span className="text-xs text-dark-muted-dim">No hay más movimientos</span>
               )}
             </div>
           </>
         )}
       </div>
+
+      <TransactionDetail
+        transaction={selectedTx}
+        isOpen={detailOpen}
+        onClose={closeDetail}
+      />
     </section>
   );
 }

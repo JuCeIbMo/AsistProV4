@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import PricingModal from './components/PricingModal';
-import ActivityTicker from './components/ActivityTicker';
 import {
   MessageCircle, Check, Star, Bot, Mic, Users, Clock, Shield,
   Menu, X, Phone, Video, MoreVertical, Send, Calendar, Wallet,
@@ -59,10 +58,10 @@ function StatCounter({
 
   return (
     <div ref={ref} className="text-center">
-      <p className="font-display text-4xl lg:text-5xl font-bold text-[#1C1209] mb-1">
+      <p className="font-display text-4xl lg:text-5xl font-bold text-light-text mb-1">
         {prefix}{fmt}{suffix}
       </p>
-      <p className="text-[#9E948C] text-sm font-medium">{label}</p>
+      <p className="text-light-muted text-sm font-medium">{label}</p>
     </div>
   );
 }
@@ -139,10 +138,10 @@ function App() {
   }, []);
 
   const features = [
-    { icon: <Calendar className="w-5 h-5 text-orange-500" />, title: 'Programación de Citas', description: 'Agenda automáticamente tus reuniones y citas a través de WhatsApp con comandos naturales.' },
-    { icon: <Wallet   className="w-5 h-5 text-orange-500" />, title: 'Gestión Financiera',    description: 'Registra tus gastos e ingresos automáticamente y mantén control de tu dinero.' },
-    { icon: <BarChart3 className="w-5 h-5 text-orange-500" />, title: 'Informes Inteligentes', description: 'Genera reportes detallados sobre tus gastos y patrones financieros.' },
-    { icon: <Mic      className="w-5 h-5 text-orange-500" />, title: 'Reconocimiento de Voz',  description: 'Habla naturalmente y AsistPro entenderá tus notas de voz perfectamente.' },
+    { icon: <Calendar className="w-5 h-5 text-orange-500" aria-hidden="true" />, title: 'Programación de Citas', description: 'Agenda automáticamente tus reuniones y citas a través de WhatsApp con comandos naturales.' },
+    { icon: <Wallet   className="w-5 h-5 text-orange-500" aria-hidden="true" />, title: 'Gestión Financiera',    description: 'Registra tus gastos e ingresos automáticamente y mantén control de tu dinero.' },
+    { icon: <BarChart3 className="w-5 h-5 text-orange-500" aria-hidden="true" />, title: 'Informes Inteligentes', description: 'Genera reportes detallados sobre tus gastos y patrones financieros.' },
+    { icon: <Mic      className="w-5 h-5 text-orange-500" aria-hidden="true" />, title: 'Reconocimiento de Voz',  description: 'Habla naturalmente y AsistPro entenderá tus notas de voz perfectamente.' },
   ];
 
   const testimonials = [
@@ -160,8 +159,8 @@ function App() {
       description: 'Ideal para quienes quieren comenzar a organizarse',
       features: ['40 recordatorios por mes','Reconocimiento de notas de voz','Recordatorios recurrentes','Creación de listas'],
       notIncluded: ['Múltiples recordatorios en un solo mensaje','Acceso anticipado a nuevas funciones','Respuestas del asistente por audio','Google Calendar','Finanzas personales'],
-      cardClass: 'bg-white border border-[#1C1209]/[0.08]',
-      buttonClass: 'bg-[#F3EFE8] hover:bg-[#EAE5DC] text-[#1C1209]',
+      cardClass: 'bg-white border border-light-border',
+      buttonClass: 'bg-light-elevated hover:bg-light-elevated/90 text-light-text',
     },
     {
       name: 'Pro',
@@ -199,13 +198,13 @@ function App() {
   const whatsappRedirect = () => window.open('https://wa.me/5492604086606', '_blank');
 
   return (
-    <div className="min-h-screen bg-[#FFFDF9] font-sans">
+    <div className="min-h-screen bg-light-bg font-sans overflow-x-hidden">
 
       {/* ── HEADER ── */}
       <header
         className={`sticky top-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-[#FFFDF9]/95 backdrop-blur-xl border-b border-[#1C1209]/[0.06] shadow-sm'
+            ? 'bg-light-bg/95 backdrop-blur-xl border-b border-light-border shadow-sm'
             : 'bg-transparent'
         }`}
       >
@@ -214,9 +213,9 @@ function App() {
 
             <div className="flex items-center space-x-2.5">
               <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md shadow-orange-500/25">
-                <Bot className="w-5 h-5 text-white" />
+                <Bot className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
-              <span className="text-xl font-bold text-[#1C1209] font-display tracking-tight">
+              <span className="text-xl font-bold text-light-text font-display tracking-tight">
                 AsistPro
               </span>
             </div>
@@ -224,7 +223,7 @@ function App() {
             <nav className="hidden md:flex space-x-8">
               {['#features','#testimonials','#pricing','#contact'].map((href, i) => (
                 <a key={i} href={href}
-                  className="text-[#6B5F55] hover:text-orange-500 transition-colors text-sm font-medium">
+                  className="text-light-secondary hover:text-orange-500 transition-colors text-sm font-medium min-h-[44px] inline-flex items-center">
                   {['Funciones','Testimonios','Precios','Contacto'][i]}
                 </a>
               ))}
@@ -232,36 +231,39 @@ function App() {
 
             <div className="hidden md:flex items-center gap-3">
               <a href="/login"
-                className="text-[#6B5F55] hover:text-[#1C1209] text-sm font-medium transition-colors">
+                className="text-light-secondary hover:text-light-text text-sm font-medium transition-colors min-h-[44px] inline-flex items-center">
                 Iniciar sesión
               </a>
               <a href="#pricing"
-                className="bg-orange-500 hover:bg-orange-400 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-all shadow-md shadow-orange-500/20">
+                className="bg-orange-500 hover:bg-orange-400 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md shadow-orange-500/20 min-h-[44px] inline-flex items-center">
                 Prueba Gratis
               </a>
             </div>
 
-            <button className="md:hidden text-[#6B5F55] hover:text-[#1C1209] transition-colors"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <button
+              className="md:hidden text-light-secondary hover:text-light-text transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            >
+              {isMenuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
             </button>
           </div>
 
           {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-[#1C1209]/[0.06]">
-              <nav className="flex flex-col space-y-4">
+            <div className="md:hidden py-4 border-t border-light-border">
+              <nav className="flex flex-col space-y-3">
                 {['#features','#testimonials','#pricing','#contact'].map((href, i) => (
                   <a key={i} href={href}
-                    className="text-[#6B5F55] hover:text-orange-500 transition-colors text-sm font-medium">
+                    className="text-light-secondary hover:text-orange-500 transition-colors text-sm font-medium py-2 min-h-[44px] flex items-center">
                     {['Funciones','Testimonios','Precios','Contacto'][i]}
                   </a>
                 ))}
                 <a href="/login"
-                  className="text-[#6B5F55] text-sm font-medium text-center py-1">
+                  className="text-light-secondary text-sm font-medium text-center py-2 min-h-[44px] flex items-center justify-center">
                   Iniciar sesión
                 </a>
                 <a href="#pricing"
-                  className="bg-orange-500 text-white px-5 py-2 rounded-lg text-sm font-semibold text-center">
+                  className="bg-orange-500 text-white px-5 py-3 rounded-lg text-sm font-semibold text-center min-h-[44px] flex items-center justify-center">
                   Prueba Gratis
                 </a>
               </nav>
@@ -271,9 +273,9 @@ function App() {
       </header>
 
       {/* ── HERO ── */}
-      <section className="relative bg-[#FFFDF9] py-24 lg:py-32 overflow-hidden">
-        <div className="absolute top-0 left-0 w-[700px] h-[700px] rounded-full bg-orange-400/[0.13] blur-[150px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-orange-300/[0.10] blur-[130px] translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+      <section className="relative bg-light-bg py-24 lg:py-32 overflow-hidden">
+        <div className="absolute top-0 left-0 w-[700px] h-[700px] rounded-full bg-orange-400/[0.13] blur-[150px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-orange-300/[0.10] blur-[130px] translate-x-1/3 -translate-y-1/3 pointer-events-none" aria-hidden="true" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid lg:grid-cols-2 gap-14 items-center">
@@ -281,13 +283,13 @@ function App() {
             {/* Copy */}
             <div>
               <div className="inline-flex items-center space-x-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-1.5 mb-8 animate-fade-in-up">
-                <div className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" />
+                <div className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" aria-hidden="true" />
                 <span className="text-orange-600 text-xs font-semibold tracking-wide uppercase">
                   Disponible 24/7 en WhatsApp
                 </span>
               </div>
 
-              <h1 className="font-display text-5xl lg:text-6xl xl:text-7xl font-extrabold text-[#1C1209] mb-6 leading-[1.03] tracking-tight animate-fade-in-up-1">
+              <h1 className="font-display text-5xl lg:text-6xl xl:text-7xl font-extrabold text-light-text mb-6 leading-[1.03] tracking-tight animate-fade-in-up-1">
                 Tu{' '}
                 <span className="text-orange-500">Asistente</span>
                 <br />
@@ -295,34 +297,34 @@ function App() {
                 <span className="text-orange-500">Inteligente</span>
               </h1>
 
-              <p className="text-[#6B5F55] text-lg mb-10 leading-relaxed max-w-md animate-fade-in-up-2">
+              <p className="text-light-secondary text-lg mb-10 leading-relaxed max-w-md animate-fade-in-up-2">
                 AsistPro organiza tu vida automáticamente. Programa citas,
                 controla gastos y genera informes detallados, todo desde
                 WhatsApp con inteligencia artificial avanzada.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-10 animate-fade-in-up-3">
-                <a href="#pricing"
-                  className="bg-orange-500 hover:bg-orange-400 text-white px-8 py-3.5 rounded-xl font-semibold transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-2">
-                  Comenzar Prueba Gratuita
-                  <ChevronRight className="w-4 h-4" />
-                </a>
-                <button className="border border-[#1C1209]/10 text-[#6B5F55] hover:border-[#1C1209]/20 hover:text-[#1C1209] px-8 py-3.5 rounded-xl font-semibold transition-all bg-white/60">
+                  <a href="#pricing"
+                    className="bg-orange-500 hover:bg-orange-400 text-white px-8 py-3.5 rounded-xl font-semibold transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-2">
+                    Comenzar Prueba Gratuita
+                    <ChevronRight className="w-4 h-4" aria-hidden="true" />
+                  </a>
+                <button className="border border-light-text/10 text-light-secondary hover:border-light-text/20 hover:text-light-text px-8 py-3.5 rounded-xl font-semibold transition-all bg-white/60">
                   Ver Demo
                 </button>
               </div>
 
-              <div className="flex flex-wrap items-center gap-6 text-sm text-[#9E948C] animate-fade-in-up-4">
+              <div className="flex flex-wrap items-center gap-6 text-sm text-light-muted animate-fade-in-up-4">
                 <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-orange-400" />
+                  <Shield className="w-4 h-4 text-orange-400" aria-hidden="true" />
                   <span>3 días gratis</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-orange-400" />
+                  <Users className="w-4 h-4 text-orange-400" aria-hidden="true" />
                   <span>+10,000 usuarios</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-orange-400" />
+                  <Clock className="w-4 h-4 text-orange-400" aria-hidden="true" />
                   <span>Disponible 24/7</span>
                 </div>
               </div>
@@ -330,14 +332,14 @@ function App() {
 
             {/* Animated WhatsApp mockup */}
             <div className="relative flex flex-col items-center">
-              <div className="absolute inset-0 bg-orange-400/[0.10] rounded-3xl blur-[80px] pointer-events-none" />
+              <div className="absolute inset-0 bg-orange-400/[0.10] rounded-3xl blur-[80px] pointer-events-none" aria-hidden="true" />
 
               <div className="animate-float relative z-10 w-full max-w-sm mx-auto shadow-2xl shadow-orange-500/10 rounded-2xl">
                 {/* Header bar */}
                 <div className="bg-[#075e54] rounded-t-2xl text-white p-4 flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-white" />
+                      <Bot className="w-5 h-5 text-white" aria-hidden="true" />
                     </div>
                     <div>
                       <p className="font-semibold text-sm">AsistPro</p>
@@ -345,7 +347,7 @@ function App() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-4 text-white/70">
-                    <Video className="w-4 h-4" /><Phone className="w-4 h-4" /><MoreVertical className="w-4 h-4" />
+                    <Video className="w-4 h-4" aria-hidden="true" /><Phone className="w-4 h-4" aria-hidden="true" /><MoreVertical className="w-4 h-4" aria-hidden="true" />
                   </div>
                 </div>
 
@@ -376,9 +378,9 @@ function App() {
                     {isTyping && (
                       <div className="flex justify-start animate-message">
                         <div className="bg-white rounded-lg px-4 py-3 shadow-sm flex items-center gap-1">
-                          {[0, 150, 300].map((d) => (
+                            {[0, 150, 300].map((d) => (
                             <span key={d} className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                              style={{ animationDelay: `${d}ms` }} />
+                              style={{ animationDelay: `${d}ms` }} aria-hidden="true" />
                           ))}
                         </div>
                       </div>
@@ -391,21 +393,21 @@ function App() {
                   <div className="flex-1 bg-white rounded-full px-4 py-2 flex items-center space-x-2">
                     <input type="text" placeholder="Escribe un mensaje..."
                       className="flex-1 outline-none text-sm text-gray-500" disabled />
-                    <Mic className="w-4 h-4 text-gray-400" />
+                    <Mic className="w-4 h-4 text-gray-400" aria-hidden="true" />
                   </div>
-                  <button className="bg-[#25d366] p-2 rounded-full">
-                    <Send className="w-4 h-4 text-white" />
+                  <button className="bg-[#25d366] p-2 rounded-full" aria-label="Enviar mensaje">
+                    <Send className="w-4 h-4 text-white" aria-hidden="true" />
                   </button>
                 </div>
               </div>
 
               <div className="mt-8 text-center relative z-10">
                 <button onClick={whatsappRedirect}
-                  className="bg-[#25d366] hover:bg-[#20c55a] text-white px-6 py-3 rounded-full font-semibold transition-all hover:scale-105 shadow-xl shadow-[#25d366]/20 flex items-center space-x-2 mx-auto">
-                  <MessageCircle className="w-5 h-5" />
+                  className="bg-[#25d366] hover:bg-[#20c55a] text-white px-6 py-3 rounded-full font-semibold transition-all hover:scale-105 shadow-xl shadow-[#25d366]/20 flex items-center space-x-2 mx-auto min-h-[44px]">
+                  <MessageCircle className="w-5 h-5" aria-hidden="true" />
                   <span>Chatear con AsistPro</span>
                 </button>
-                <p className="text-sm text-[#9E948C] mt-2">
+                <p className="text-sm text-light-muted mt-2">
                   Comienza tu prueba gratuita ahora
                 </p>
               </div>
@@ -415,9 +417,9 @@ function App() {
       </section>
 
       {/* ── STATS ── */}
-      <section className="py-16 bg-[#F3EFE8]">
+      <section className="py-16 bg-light-elevated">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10">
             {stats.map((s, i) => (
               <div key={i} className={`reveal reveal-delay-${i + 1}`}>
                 <StatCounter value={s.value} prefix={s.prefix} suffix={s.suffix} label={s.label} />
@@ -428,18 +430,18 @@ function App() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section id="features" className="py-24 bg-[#FFFDF9]">
+      <section id="features" className="py-24 bg-light-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 reveal">
             <p className="text-orange-500 text-xs font-bold uppercase tracking-widest mb-3">
               Funcionalidades
             </p>
-            <h2 className="font-display text-4xl lg:text-5xl font-bold text-[#1C1209] mb-4">
+            <h2 className="font-display text-4xl lg:text-5xl font-bold text-light-text mb-4">
               Todo lo que Necesitas
               <br />
               en un Solo Lugar
             </h2>
-            <p className="text-[#6B5F55] text-lg max-w-2xl mx-auto">
+            <p className="text-light-secondary text-lg max-w-2xl mx-auto">
               AsistPro combina inteligencia artificial avanzada con simplicidad
               de uso para transformar cómo gestionas tu tiempo y dinero.
             </p>
@@ -452,10 +454,10 @@ function App() {
                 <div className="w-11 h-11 bg-orange-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-500/20 transition-colors">
                   {feature.icon}
                 </div>
-                <h3 className="font-display text-lg font-bold text-[#1C1209] mb-2">
+                <h3 className="font-display text-lg font-bold text-light-text mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-[#6B5F55] text-sm leading-relaxed">
+                <p className="text-light-secondary text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>
@@ -465,18 +467,18 @@ function App() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section id="testimonials" className="py-24 bg-[#F3EFE8] relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-orange-400/[0.07] rounded-full blur-[120px] pointer-events-none" />
+      <section id="testimonials" className="py-24 bg-light-elevated relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-orange-400/[0.07] rounded-full blur-[120px] pointer-events-none" aria-hidden="true" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-16 reveal">
             <p className="text-orange-500 text-xs font-bold uppercase tracking-widest mb-3">
               Testimonios
             </p>
-            <h2 className="font-display text-4xl lg:text-5xl font-bold text-[#1C1209] mb-4">
+            <h2 className="font-display text-4xl lg:text-5xl font-bold text-light-text mb-4">
               Lo que Dicen Nuestros Usuarios
             </h2>
-            <p className="text-[#6B5F55] text-lg">
+            <p className="text-light-secondary text-lg">
               Miles de personas ya transformaron su productividad con AsistPro
             </p>
           </div>
@@ -484,16 +486,16 @@ function App() {
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, index) => (
               <div key={index}
-                className={`glass rounded-2xl p-6 relative hover:shadow-md transition-all duration-300 reveal reveal-delay-${index + 1}`}>
-                <div className="text-orange-400/20 text-9xl font-serif leading-none absolute top-2 right-4 select-none pointer-events-none">
+                className={`glass rounded-2xl p-6 relative hover:shadow-md transition-all duration-300 overflow-hidden reveal reveal-delay-${index + 1}`}>
+                <div className="text-orange-400/20 text-9xl font-serif leading-none absolute top-2 right-4 select-none pointer-events-none" aria-hidden="true">
                   "
                 </div>
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(t.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-orange-400 fill-current" />
+                    <Star key={i} className="w-4 h-4 text-orange-400 fill-current" aria-hidden="true" />
                   ))}
                 </div>
-                <p className="text-[#4A3E35] mb-5 leading-relaxed text-sm relative z-10">
+                <p className="text-light-text/80 mb-5 leading-relaxed text-sm relative z-10">
                   "{t.content}"
                 </p>
                 <div className="flex items-center gap-3">
@@ -501,8 +503,8 @@ function App() {
                     <span className="text-orange-600 text-xs font-bold">{t.initials}</span>
                   </div>
                   <div>
-                    <p className="text-[#1C1209] text-sm font-semibold">{t.name}</p>
-                    <p className="text-[#9E948C] text-xs">{t.role}</p>
+                    <p className="text-light-text text-sm font-semibold">{t.name}</p>
+                    <p className="text-light-muted text-xs">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -512,32 +514,32 @@ function App() {
       </section>
 
       {/* ── PRICING ── */}
-      <section id="pricing" className="py-24 bg-[#FFFDF9]">
+      <section id="pricing" className="py-24 bg-light-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 reveal">
             <p className="text-orange-500 text-xs font-bold uppercase tracking-widest mb-3">
               Precios
             </p>
-            <h2 className="font-display text-4xl lg:text-5xl font-bold text-[#1C1209] mb-4">
+            <h2 className="font-display text-4xl lg:text-5xl font-bold text-light-text mb-4">
               Planes que Se Adaptan a Ti
             </h2>
-            <p className="text-[#6B5F55] text-lg mb-8">
+            <p className="text-light-secondary text-lg mb-8">
               Elige el plan perfecto para tus necesidades. Todos incluyen 3 días
               de prueba gratuita.
             </p>
 
             {/* Billing toggle */}
             <div className="flex items-center justify-center gap-4">
-              <span className={`text-sm font-medium transition-colors ${!isAnnual ? 'text-[#1C1209]' : 'text-[#9E948C]'}`}>
+              <span className={`text-sm font-medium transition-colors ${!isAnnual ? 'text-light-text' : 'text-light-muted'}`}>
                 Mensual
               </span>
               <button
                 onClick={() => setIsAnnual(!isAnnual)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isAnnual ? 'bg-orange-500' : 'bg-[#1C1209]/15'}`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isAnnual ? 'bg-orange-500' : 'bg-light-text/15'}`}
               >
                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${isAnnual ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>
-              <span className={`text-sm font-medium transition-colors ${isAnnual ? 'text-[#1C1209]' : 'text-[#9E948C]'}`}>
+              <span className={`text-sm font-medium transition-colors ${isAnnual ? 'text-light-text' : 'text-light-muted'}`}>
                 Anual
               </span>
               {isAnnual && (
@@ -555,23 +557,23 @@ function App() {
                 {plan.popular && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                     <span className="bg-orange-500 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-lg shadow-orange-500/30 flex items-center gap-1">
-                      <Zap className="w-3 h-3" />
+                      <Zap className="w-3 h-3" aria-hidden="true" />
                       Más Popular
                     </span>
                   </div>
                 )}
 
                 <div className="mb-6">
-                  <h3 className="font-display text-xl font-bold text-[#1C1209] mb-1">{plan.name}</h3>
-                  <p className="text-[#9E948C] text-sm">{plan.description}</p>
+                  <h3 className="font-display text-xl font-bold text-light-text mb-1">{plan.name}</h3>
+                  <p className="text-light-muted text-sm">{plan.description}</p>
                 </div>
 
                 <div className="mb-7">
                   <div className="flex items-baseline gap-2">
-                    <span className="font-display text-3xl font-bold text-[#1C1209]">
+                    <span className="font-display text-3xl font-bold text-light-text">
                       {isAnnual ? plan.annualPrice : plan.monthlyPrice}
                     </span>
-                    <span className="text-[#9E948C] text-sm">{plan.period}</span>
+                    <span className="text-light-muted text-sm">{plan.period}</span>
                   </div>
                   {plan.savings && isAnnual && (
                     <p className="text-orange-500 text-xs font-medium mt-1">{plan.savings}</p>
@@ -582,22 +584,22 @@ function App() {
                 </div>
 
                 <div className="space-y-2.5 mb-8">
-                  <p className="text-[#9E948C] text-[11px] font-bold uppercase tracking-wider">Incluye:</p>
+                  <p className="text-light-muted text-xs font-bold uppercase tracking-wider">Incluye:</p>
                   {plan.features.map((f, fi) => (
                     <div key={fi} className="flex items-start gap-2.5">
                       <div className="w-4 h-4 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <Check className="w-2.5 h-2.5 text-orange-500" />
+                        <Check className="w-2.5 h-2.5 text-orange-500" aria-hidden="true" />
                       </div>
-                      <span className="text-[#4A3E35] text-sm">{f}</span>
+                      <span className="text-light-text/80 text-sm">{f}</span>
                     </div>
                   ))}
                   {plan.notIncluded.length > 0 && (
                     <>
-                      <p className="text-[#C4B8B0] text-[11px] font-bold uppercase tracking-wider pt-2">No incluye:</p>
+                      <p className="text-light-muted/60 text-xs font-bold uppercase tracking-wider pt-2">No incluye:</p>
                       {plan.notIncluded.map((f, fi) => (
                         <div key={fi} className="flex items-start gap-2.5">
-                          <X className="w-4 h-4 text-[#C4B8B0] flex-shrink-0 mt-0.5" />
-                          <span className="text-[#C4B8B0] text-sm">{f}</span>
+                          <X className="w-4 h-4 text-light-muted/60 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                          <span className="text-light-muted/60 text-sm">{f}</span>
                         </div>
                       ))}
                     </>
@@ -605,7 +607,7 @@ function App() {
                 </div>
 
                 <button onClick={() => openModal(plan)}
-                  className={`w-full py-3 px-6 rounded-xl font-semibold transition-all ${plan.buttonClass}`}>
+                  className={`w-full py-3.5 px-6 rounded-xl font-semibold transition-all min-h-[44px] ${plan.buttonClass}`}>
                   Comenzar Prueba Gratuita
                 </button>
               </div>
@@ -615,30 +617,30 @@ function App() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24 bg-[#F3EFE8] relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-orange-400/[0.06] via-orange-400/[0.03] to-transparent pointer-events-none" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-orange-400/[0.09] rounded-full blur-[100px] pointer-events-none" />
+      <section className="py-24 bg-light-elevated relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-orange-400/[0.06] via-orange-400/[0.03] to-transparent pointer-events-none" aria-hidden="true" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-orange-400/[0.09] rounded-full blur-[100px] pointer-events-none" aria-hidden="true" />
 
         <div className="max-w-3xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative">
           <div className="reveal">
             <p className="text-orange-500 text-xs font-bold uppercase tracking-widest mb-5">
               Empieza hoy
             </p>
-            <h2 className="font-display text-4xl lg:text-5xl font-bold text-[#1C1209] mb-6">
+            <h2 className="font-display text-4xl lg:text-5xl font-bold text-light-text mb-6">
               ¿Listo para Transformar
               <br />
               tu Productividad?
             </h2>
-            <p className="text-[#6B5F55] text-lg mb-10">
+            <p className="text-light-secondary text-lg mb-10">
               Únete a miles de usuarios que ya optimizaron su tiempo y finanzas
               con AsistPro. Comienza tu prueba gratuita hoy mismo.
             </p>
-            <a href="#pricing"
-              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white px-8 py-4 rounded-xl font-semibold transition-all hover:scale-105 shadow-2xl shadow-orange-500/20 text-lg">
-              Comenzar Ahora — Gratis por 3 Días
-              <ChevronRight className="w-5 h-5" />
-            </a>
-            <p className="text-[#9E948C] mt-5 text-sm">
+              <a href="#pricing"
+                className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white px-8 py-4 rounded-xl font-semibold transition-all hover:scale-105 shadow-2xl shadow-orange-500/20 text-lg">
+                Comenzar Ahora — Gratis por 3 Días
+                <ChevronRight className="w-5 h-5" aria-hidden="true" />
+              </a>
+            <p className="text-light-muted mt-5 text-sm">
               Sin tarjeta de crédito requerida · Cancela en cualquier momento
             </p>
           </div>
@@ -646,17 +648,17 @@ function App() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer id="contact" className="bg-[#F3EFE8] border-t border-[#1C1209]/[0.06] py-16">
+      <footer id="contact" className="bg-light-elevated border-t border-light-border py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-4 gap-10 mb-12">
             <div>
               <div className="flex items-center space-x-2.5 mb-4">
-                <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20">
-                  <Bot className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-xl font-bold text-[#1C1209] font-display">AsistPro</span>
+              <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20">
+                <Bot className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
-              <p className="text-[#9E948C] text-sm leading-relaxed">
+                <span className="text-xl font-bold text-light-text font-display">AsistPro</span>
+              </div>
+              <p className="text-light-muted text-sm leading-relaxed">
                 Tu asistente virtual inteligente para una vida más organizada y
                 productiva.
               </p>
@@ -668,11 +670,11 @@ function App() {
               { title: 'Empresa',  links: ['Sobre Nosotros','Blog','Carreras','Privacidad'] },
             ].map((col, i) => (
               <div key={i}>
-                <h3 className="text-[#1C1209] font-semibold text-sm mb-5">{col.title}</h3>
-                <ul className="space-y-3 text-[#9E948C] text-sm">
+                <h3 className="text-light-text font-semibold text-sm mb-5">{col.title}</h3>
+                <ul className="space-y-3 text-light-muted text-sm">
                   {col.links.map((link, j) => (
                     <li key={j}>
-                      <a href="#" className="hover:text-orange-500 transition-colors">{link}</a>
+                      <a href="#" className="hover:text-orange-500 transition-colors inline-block min-h-[44px] flex items-center">{link}</a>
                     </li>
                   ))}
                 </ul>
@@ -680,7 +682,7 @@ function App() {
             ))}
           </div>
 
-          <div className="border-t border-[#1C1209]/[0.06] pt-8 text-center text-[#C4B8B0] text-sm">
+          <div className="border-t border-light-border pt-8 text-center text-light-muted/60 text-sm">
             <p>© 2026 AsistPro. Todos los derechos reservados.</p>
           </div>
         </div>
@@ -693,8 +695,6 @@ function App() {
         isAnnual={isAnnual}
       />
 
-      {/* Activity Ticker — componente aislado, eliminar sin efectos secundarios */}
-      <ActivityTicker />
     </div>
   );
 }

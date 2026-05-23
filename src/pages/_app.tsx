@@ -66,7 +66,13 @@ export default function App({ Component, pageProps }: AppProps) {
         </Script>
       </Head>
 
-      <div className="min-h-screen flex flex-col">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[9999] focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:font-medium"
+      >
+        Saltar al contenido principal
+      </a>
+      <div id="main-content" className="min-h-screen flex flex-col overflow-x-hidden">
         <Component {...pageProps} />
         {showFooter && <LegalFooter />}
       </div>

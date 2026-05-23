@@ -2,7 +2,12 @@ import { ArrowUpRight, ArrowDownLeft, ArrowLeftRight } from 'lucide-react';
 import type { Transaction } from '../../services/dashboardService';
 import { fmt } from './format';
 
-export function TxRow({ tx }: { tx: Transaction }) {
+interface TxRowProps {
+  tx: Transaction;
+  onClick?: (tx: Transaction) => void;
+}
+
+export function TxRow({ tx, onClick }: TxRowProps) {
   const isIncome = tx.direction === 'income';
   const isExpense = tx.direction === 'expense';
   const Icon = isIncome ? ArrowUpRight : isExpense ? ArrowDownLeft : ArrowLeftRight;
@@ -12,16 +17,41 @@ export function TxRow({ tx }: { tx: Transaction }) {
   const prefix = isIncome ? '+' : isExpense ? '-' : '';
   const label = tx.description || tx.category || (isIncome ? 'Ingreso' : isExpense ? 'Gasto' : 'Transferencia');
 
+  const formattedDate = new Date(tx.occurred_at).toLocaleDateString('es-ES', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.key === 'Enter' || e.key === ' ') && onClick) {
+      e.preventDefault();
+      onClick(tx);
+    }
+  };
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick(tx);
+    }
+  };
+
   return (
-    <div className="flex items-center justify-between px-5 py-3.5 hover:bg-white/[0.03] transition-colors">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      className="flex items-center justify-between px-5 py-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors min-h-[44px]"
+    >
       <div className="flex items-center gap-3 min-w-0">
         <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${iconBg}`}>
-          <Icon className={`w-4 h-4 ${iconCol}`} />
+          <Icon className={`w-4 h-4 ${iconCol}`} aria-hidden="true" />
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-medium text-gray-200 truncate">{label}</p>
-          <p className="text-xs text-gray-600 truncate">
-            {tx.category && tx.description ? `${tx.category} · ` : ''}{tx.occurred_at}
+          <p className="text-sm font-medium text-dark-text truncate">{label}</p>
+          <p className="text-xs text-dark-muted truncate">
+            {tx.category && tx.description ? `${tx.category} · ` : ''}{formattedDate}
           </p>
         </div>
       </div>
