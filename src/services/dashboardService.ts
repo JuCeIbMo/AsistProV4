@@ -69,6 +69,31 @@ export interface TransactionsPage {
   next_cursor: string | null;
 }
 
+export type AppointmentStatus = 'scheduled' | 'completed' | 'cancelled' | 'missed';
+
+export interface AppointmentCategory {
+  id: string;
+  kind: string;
+  slug: string;
+  display_name: string;
+  is_active: boolean;
+  sort_order: number;
+}
+
+export interface Appointment {
+  id: string;
+  title: string;
+  description: string | null;
+  category: AppointmentCategory | null;
+  starts_at: string;
+  ends_at: string | null;
+  location: string | null;
+  with_person: string | null;
+  status: AppointmentStatus;
+  reminder_minutes: number | null;
+  raw_input: string | null;
+}
+
 export type FetchResult<T> =
   | { ok: true; data: T }
   | { ok: false; status: 'unauthorized' | 'error' };
@@ -86,6 +111,32 @@ async function apiGet<T>(endpoint: string, params?: Record<string, string | null
 
   try {
     const res = await fetch(url.toString(), {
+      credentials: 'include',
+      signal: controller.signal,
+    });
+    if (res.status === 401 || res.status === 403) {
+      await logout();
+      return { ok: false, status: 'unauthorized' };
+    }
+    if (!res.ok) return { ok: false, status: 'error' };
+    const data = (await res.json()) as T;
+    return { ok: true, data };
+  } catch {
+    return { ok: false, status: 'error' };
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
+async function apiPatch<T>(endpoint: string, body: unknown): Promise<FetchResult<T>> {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
+
+  try {
+    const res = await fetch(getApiUrl(endpoint), {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
       credentials: 'include',
       signal: controller.signal,
     });
@@ -125,4 +176,32 @@ export function fetchTransactionsPage(
 
 export function fetchTransactionDetail(id: string): Promise<FetchResult<Transaction>> {
   return apiGet<Transaction>(`${API_CONFIG.ENDPOINTS.TRANSACTIONS}/${id}`);
+}
+
+export function fetchAppointments(filters: {
+  status?: AppointmentStatus | null;
+  startDate?: string;
+  endDate?: string;
+}): Promise<FetchResult<{ appointments: Appointment[] }>> {
+  return apiGet<{ appointments: Appointment[] }>(API_CONFIG.ENDPOINTS.APPOINTMENTS, {
+    status: filters.status || null,
+    start_date: filters.startDate || null,
+    end_date: filters.endDate || null,
+  });
+}
+
+export function fetchAppointmentDetail(
+  id: string,
+): Promise<FetchResult<{ appointment: Appointment }>> {
+  return apiGet<{ appointment: Appointment }>(`${API_CONFIG.ENDPOINTS.APPOINTMENTS}/${id}`);
+}
+
+export function updateAppointmentStatus(
+  id: string,
+  status: AppointmentStatus,
+): Promise<FetchResult<{ appointment: Appointment }>> {
+  return apiPatch<{ appointment: Appointment }>(
+    `${API_CONFIG.ENDPOINTS.APPOINTMENTS}/${id}`,
+    { status },
+  );
 }

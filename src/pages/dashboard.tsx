@@ -12,6 +12,7 @@ import { ExpenseCategoriesList } from '../components/dashboard/ExpenseCategories
 import { ExpensePieChart } from '../components/dashboard/ExpensePieChart';
 import { MonthlyTrendBars } from '../components/dashboard/MonthlyTrendBars';
 import { TransactionsList } from '../components/dashboard/TransactionsList';
+import { AppointmentsList } from '../components/dashboard/AppointmentsList';
 import { fmt } from '../components/dashboard/format';
 import { Skeleton, Badge, Card } from '../components/ui';
 
@@ -241,6 +242,8 @@ export default function DashboardPage() {
                     loading={loading}
                     onUnauthorized={goLogin}
                   />
+
+                  <AppointmentsList onUnauthorized={goLogin} />
                 </>
               )}
             </div>
