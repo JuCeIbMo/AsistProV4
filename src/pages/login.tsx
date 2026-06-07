@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Bot, Phone, ArrowRight, ChevronLeft } from 'lucide-react';
-import { requestOtp, verifyOtp, resendOtp } from '../services/authService';
+import { requestOtp, verifyOtp, resendOtp, checkAuth } from '../services/authService';
 import { TextInput } from '../components/ui/TextInput';
 import { Button } from '../components/ui/Button';
 
@@ -14,12 +14,20 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState('');
   const [countdown, setCountdown] = useState(0);
+  const [checking, setChecking] = useState(true);
   const phoneRef = useRef<HTMLInputElement>(null);
   const codeRef  = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    phoneRef.current?.focus();
-  }, []);
+    checkAuth().then(res => {
+      if (res.ok) {
+        router.replace('/dashboard');
+      } else {
+        setChecking(false);
+        phoneRef.current?.focus();
+      }
+    });
+  }, [router]);
 
   useEffect(() => {
     if (step === 2) setTimeout(() => codeRef.current?.focus(), 100);
@@ -127,6 +135,13 @@ export default function LoginPage() {
                 <div className={`flex-1 h-0.5 rounded-full transition-colors duration-300 ${step === 2 ? 'bg-orange-500' : 'bg-white/10'}`} />
               </div>
 
+              {checking ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="w-8 h-8 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mb-4" />
+                  <p className="text-sm text-dark-muted">Verificando sesión...</p>
+                </div>
+              ) : (
+                <>
               {/* Step 1 */}
               {step === 1 && (
                 <form onSubmit={handleRequestOtp} className="space-y-4">
@@ -211,6 +226,8 @@ export default function LoginPage() {
                     <ChevronLeft className="w-3 h-3" aria-hidden="true" /> Cambiar número
                   </button>
                 </form>
+              )}
+                </>
               )}
 
             </div>

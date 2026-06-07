@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { AlertCircle, Settings } from 'lucide-react';
-import { logout as logoutSession } from '../services/authService';
+import { logout as logoutSession, checkAuth } from '../services/authService';
 import {
   fetchSummary,
   fetchAppointments,
@@ -38,6 +38,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
   const hasFetched = useRef(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
 
@@ -84,9 +85,16 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!hasFetched.current) {
       hasFetched.current = true;
-      load();
+      checkAuth().then(res => {
+        if (!res.ok) {
+          goLogin();
+          return;
+        }
+        setAuthChecking(false);
+        load();
+      });
     }
-  }, [router, load]);
+  }, [router, load, goLogin]);
 
   async function logout() {
     await logoutSession();
@@ -129,7 +137,12 @@ export default function DashboardPage() {
                 </button>
               </div>
 
-              {error ? (
+              {authChecking ? (
+                <div className="flex flex-col items-center justify-center h-96">
+                  <div className="w-8 h-8 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mb-4" />
+                  <p className="text-sm text-dark-muted">Verificando sesión...</p>
+                </div>
+              ) : error ? (
                 <ErrorPanel onRetry={load} />
               ) : (
                 <>

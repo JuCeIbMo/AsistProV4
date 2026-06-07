@@ -8,6 +8,7 @@ vi.mock('../services/authService', () => ({
   requestOtp: vi.fn(),
   verifyOtp: vi.fn(),
   resendOtp: vi.fn(),
+  checkAuth: vi.fn().mockResolvedValue({ ok: false }),
 }));
 
 describe('OTP Resend Integration', () => {
@@ -24,6 +25,7 @@ describe('OTP Resend Integration', () => {
     vi.mocked(authService.requestOtp).mockResolvedValue({ ok: true });
 
     render(<LoginPage />);
+    await act(async () => { await Promise.resolve(); });
 
     const phoneInput = screen.getByPlaceholderText('+591 70 000 000');
     await act(async () => {
@@ -45,6 +47,7 @@ describe('OTP Resend Integration', () => {
     vi.mocked(authService.requestOtp).mockResolvedValue({ ok: true });
 
     render(<LoginPage />);
+    await act(async () => { await Promise.resolve(); });
 
     const phoneInput = screen.getByPlaceholderText('+591 70 000 000');
     await act(async () => {
@@ -66,6 +69,7 @@ describe('OTP Resend Integration', () => {
     vi.mocked(authService.requestOtp).mockResolvedValue({ ok: true });
 
     render(<LoginPage />);
+    await act(async () => { await Promise.resolve(); });
 
     const phoneInput = screen.getByPlaceholderText('+591 70 000 000');
     await act(async () => {
@@ -88,6 +92,7 @@ describe('OTP Resend Integration', () => {
     vi.mocked(authService.requestOtp).mockResolvedValue({ ok: true });
 
     render(<LoginPage />);
+    await act(async () => { await Promise.resolve(); });
 
     const phoneInput = screen.getByPlaceholderText('+591 70 000 000');
     await act(async () => {
@@ -123,6 +128,7 @@ describe('OTP Resend Integration', () => {
     vi.mocked(authService.resendOtp).mockResolvedValue({ ok: true });
 
     render(<LoginPage />);
+    await act(async () => { await Promise.resolve(); });
 
     const phoneInput = screen.getByPlaceholderText('+591 70 000 000');
     await act(async () => {

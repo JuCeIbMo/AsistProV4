@@ -51,6 +51,35 @@ export async function resendOtp(phone: string): Promise<{ ok: boolean; error?: s
   return postForm(API_CONFIG.ENDPOINTS.OTP_REQUEST, form);
 }
 
+export interface AuthUser {
+  phone: string;
+  currency: string;
+  timezone: string;
+}
+
+export async function checkAuth(): Promise<{ ok: boolean; user?: AuthUser; error?: string }> {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
+
+  try {
+    const res = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.AUTH_ME), {
+      method: 'GET',
+      credentials: 'include',
+      signal: controller.signal,
+    });
+    const payload = await res.json().catch(() => null) as { ok: boolean; user?: AuthUser; error?: string } | null;
+
+    if (!res.ok || !payload?.ok) {
+      return { ok: false, error: payload?.error || 'No autenticado.' };
+    }
+    return { ok: true, user: payload.user };
+  } catch {
+    return { ok: false, error: 'Error de conexión.' };
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
 export async function logout(): Promise<void> {
   await postForm(API_CONFIG.ENDPOINTS.LOGOUT).catch(() => undefined);
 }

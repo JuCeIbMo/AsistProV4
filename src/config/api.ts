@@ -7,6 +7,7 @@ export const API_CONFIG = {
     OTP_REQUEST: '/auth/otp/request',
     OTP_VERIFY:  '/auth/otp/verify',
     LOGOUT: '/auth/logout',
+    AUTH_ME: '/auth/me',
     // Dashboard
     SUMMARY: '/api/web/summary',
     TRANSACTIONS: '/api/web/transactions',
