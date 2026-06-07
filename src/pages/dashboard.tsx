@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Settings } from 'lucide-react';
 import { logout as logoutSession } from '../services/authService';
 import {
   fetchSummary,
+  fetchAppointments,
   type DashboardSummary,
 } from '../services/dashboardService';
 import { SummaryCard } from '../components/dashboard/SummaryCard';
@@ -13,6 +14,7 @@ import { ExpensePieChart } from '../components/dashboard/ExpensePieChart';
 import { MonthlyTrendBars } from '../components/dashboard/MonthlyTrendBars';
 import { TransactionsList } from '../components/dashboard/TransactionsList';
 import { AppointmentsList } from '../components/dashboard/AppointmentsList';
+import { CategoryManager } from '../components/dashboard/CategoryManager';
 import { fmt } from '../components/dashboard/format';
 import { Skeleton, Badge, Card } from '../components/ui';
 
@@ -37,6 +39,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const hasFetched = useRef(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
 
   const goLogin = useCallback(() => {
     router.replace('/login');
@@ -45,18 +48,37 @@ export default function DashboardPage() {
   const load = useCallback(async () => {
     setLoading(true);
     setError(false);
-    const result = await fetchSummary();
-    if (!result.ok) {
-      if (result.status === 'unauthorized') {
+    const controller = new AbortController();
+
+    try {
+      const [summaryResult, appointmentsResult] = await Promise.all([
+        fetchSummary(),
+        fetchAppointments({}),
+      ]);
+
+      if (!summaryResult.ok) {
+        if (summaryResult.status === 'unauthorized') {
+          goLogin();
+          return;
+        }
+        setError(true);
+        setLoading(false);
+        return;
+      }
+
+      if (!appointmentsResult.ok && appointmentsResult.status === 'unauthorized') {
         goLogin();
         return;
       }
+
+      setData(summaryResult.data);
+      setLoading(false);
+    } catch {
       setError(true);
       setLoading(false);
-      return;
     }
-    setData(result.data);
-    setLoading(false);
+
+    return () => controller.abort();
   }, [goLogin]);
 
   useEffect(() => {
@@ -93,6 +115,20 @@ export default function DashboardPage() {
 
             {/* Main content */}
             <div className="lg:order-1 space-y-5 min-w-0">
+              {/* Header with category settings */}
+              <div className="flex items-center justify-between">
+                <h1 className="text-lg font-semibold text-dark-text-primary">
+                  Dashboard
+                </h1>
+                <button
+                  onClick={() => setCategoriesOpen(true)}
+                  className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg bg-dark-elevated border border-dark-border text-dark-secondary hover:text-dark-text hover:border-dark-border-strong transition"
+                >
+                  <Settings className="w-4 h-4" />
+                  Categorías
+                </button>
+              </div>
+
               {error ? (
                 <ErrorPanel onRetry={load} />
               ) : (
@@ -254,6 +290,12 @@ export default function DashboardPage() {
           </footer>
         </main>
       </div>
+
+      <CategoryManager
+        isOpen={categoriesOpen}
+        onClose={() => setCategoriesOpen(false)}
+        onUnauthorized={goLogin}
+      />
     </>
   );
 }

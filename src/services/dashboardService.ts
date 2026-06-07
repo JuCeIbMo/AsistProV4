@@ -205,3 +205,29 @@ export function updateAppointmentStatus(
     { status },
   );
 }
+
+export interface Category {
+  id: string;
+  kind: 'expense' | 'income' | 'appointment';
+  slug: string;
+  display_name: string;
+  is_active: boolean;
+  sort_order: number;
+}
+
+export interface CategoryUpdatePayload {
+  display_name?: string;
+  is_active?: boolean;
+  sort_order?: number;
+}
+
+export function fetchCategories(): Promise<FetchResult<{ categories: Category[] }>> {
+  return apiGet<{ categories: Category[] }>('/api/web/categories');
+}
+
+export function updateCategory(
+  id: string,
+  payload: CategoryUpdatePayload,
+): Promise<FetchResult<{ category: Category }>> {
+  return apiPatch<{ category: Category }>(`/api/web/categories/${id}`, payload);
+}
