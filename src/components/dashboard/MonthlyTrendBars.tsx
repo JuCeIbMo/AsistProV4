@@ -99,7 +99,7 @@ export function MonthlyTrendBars({ trend, loading, currency }: Props) {
                 return (
                   <div
                     key={`${p.year}-${p.month}`}
-                    className="flex-1 flex flex-col items-center gap-1 cursor-pointer relative"
+                    className="flex-1 flex flex-col items-center gap-1 cursor-pointer relative h-full"
                     onMouseEnter={() => setHover(idx)}
                     onMouseLeave={() => setHover(null)}
                     onTouchStart={(e) => {
@@ -120,7 +120,7 @@ export function MonthlyTrendBars({ trend, loading, currency }: Props) {
                       }
                     }}
                   >
-                    <div className="w-full h-full flex items-end justify-center gap-0.5 relative">
+                    <div className="w-full flex-1 min-h-0 flex items-end justify-center gap-0.5 relative">
                       <div
                         className={`w-1/2 rounded-t bg-gradient-to-b from-emerald-400 to-emerald-600 transition-all duration-500 ${hover === idx ? 'opacity-100' : 'opacity-90'}`}
                         style={{ height: `${iH}%` }}
