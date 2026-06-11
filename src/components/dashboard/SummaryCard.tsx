@@ -1,21 +1,23 @@
-import { Bot, LogOut, RefreshCw, TrendingDown, TrendingUp, Wallet, PiggyBank } from 'lucide-react';
+import { useState } from 'react';
+import { Bot, LogOut, RefreshCw, Settings, TrendingDown, TrendingUp, Wallet, PiggyBank } from 'lucide-react';
 import type { DashboardSummary } from '../../services/dashboardService';
 import { fmt } from './format';
 import { Badge, Button, Skeleton } from '../ui';
+import { SettingsModal } from './SettingsModal';
 
 interface Props {
   data: DashboardSummary | null;
   loading: boolean;
   onRefresh: () => void;
   onLogout: () => void;
+  onUnauthorized: () => void;
 }
 
-export function SummaryCard({ data, loading, onRefresh, onLogout }: Props) {
+export function SummaryCard({ data, loading, onRefresh, onLogout, onUnauthorized }: Props) {
   const net = parseFloat(data?.month?.net || '0');
-  const income = parseFloat(data?.month?.income || '0');
-  const expense = parseFloat(data?.month?.expense || '0');
   const savings = data?.month?.savings_rate ?? 0;
   const isPositive = net >= 0;
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <div className="bg-dark-card border border-dark-border rounded-2xl p-5 space-y-5 overflow-hidden">
@@ -44,6 +46,16 @@ export function SummaryCard({ data, loading, onRefresh, onLogout }: Props) {
           <Button
             variant="ghost"
             size="sm"
+            onClick={() => setSettingsOpen(true)}
+            disabled={!data}
+            aria-label="Configuración"
+            className="!p-2.5"
+          >
+            <Settings className="w-4 h-4" aria-hidden="true" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onLogout}
             aria-label="Salir"
             className="!p-2.5 !text-gray-600 hover:!text-red-400 hover:!bg-red-500/[0.08]"
@@ -52,6 +64,16 @@ export function SummaryCard({ data, loading, onRefresh, onLogout }: Props) {
           </Button>
         </div>
       </div>
+
+      {data && (
+        <SettingsModal
+          isOpen={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          currentCurrency={data.currency}
+          onSaved={onRefresh}
+          onUnauthorized={onUnauthorized}
+        />
+      )}
 
       {/* Hero: Saldo del mes */}
       <div

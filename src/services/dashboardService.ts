@@ -231,3 +231,17 @@ export function updateCategory(
 ): Promise<FetchResult<{ category: Category }>> {
   return apiPatch<{ category: Category }>(`/api/web/categories/${id}`, payload);
 }
+
+export interface ProfileSettings {
+  currency: string;
+  timezone: string;
+  locale: string | null;
+}
+
+// Sólo se envían los campos a cambiar. La moneda se infiere por región telefónica
+// en el onboarding; esto permite corregirla desde el dashboard.
+export function updateSettings(
+  changes: { base_currency?: string; timezone?: string; locale?: string },
+): Promise<FetchResult<ProfileSettings>> {
+  return apiPatch<ProfileSettings>(API_CONFIG.ENDPOINTS.SETTINGS, changes);
+}

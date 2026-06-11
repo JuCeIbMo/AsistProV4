@@ -118,6 +118,7 @@ export default function DashboardPage() {
                 loading={loading}
                 onRefresh={load}
                 onLogout={logout}
+                onUnauthorized={goLogin}
               />
             </aside>
 

@@ -13,6 +13,7 @@ export const API_CONFIG = {
     TRANSACTIONS: '/api/web/transactions',
     TRANSACTION_DETAIL: '/api/web/transactions',
     APPOINTMENTS: '/api/web/appointments',
+    SETTINGS: '/api/web/settings',
   },
   TIMEOUT: 15000,
 };
