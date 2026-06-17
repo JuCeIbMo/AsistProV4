@@ -1,22 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { Bot, Phone, ArrowRight, ChevronLeft } from 'lucide-react';
+import { Bot, Phone, ArrowRight, ChevronLeft, ShieldCheck, Sparkles } from 'lucide-react';
 import { requestOtp, verifyOtp, resendOtp, checkAuth } from '../services/authService';
 import { TextInput } from '../components/ui/TextInput';
 import { Button } from '../components/ui/Button';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [step, setStep]       = useState<1 | 2>(1);
-  const [phone, setPhone]     = useState('');
-  const [code, setCode]       = useState('');
+  const [step, setStep] = useState<1 | 2>(1);
+  const [phone, setPhone] = useState('');
+  const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState('');
+  const [error, setError] = useState('');
   const [countdown, setCountdown] = useState(0);
   const [checking, setChecking] = useState(true);
   const phoneRef = useRef<HTMLInputElement>(null);
-  const codeRef  = useRef<HTMLInputElement>(null);
+  const codeRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     checkAuth().then(res => {
@@ -101,142 +101,192 @@ export default function LoginPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <div className="min-h-screen bg-dark-bg flex items-center justify-center p-4 relative overflow-x-hidden">
-        {/* Ambient glows */}
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-orange-500/[0.06] blur-[140px] pointer-events-none" aria-hidden="true" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-orange-400/[0.04] blur-[120px] pointer-events-none" aria-hidden="true" />
+      <div className="min-h-screen bg-dark-bg text-dark-text overflow-x-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(182,138,62,0.16),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(93,133,179,0.12),transparent_22%)]" aria-hidden="true" />
 
-        <div className="relative z-10 w-full max-w-sm">
-
-          {/* Card */}
-          <div className="bg-dark-card border border-dark-border rounded-3xl overflow-hidden shadow-2xl">
-
-            {/* Orange accent line */}
-            <div className="h-1 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-400" />
-
-            <div className="p-8">
-
-              {/* Logo */}
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-700 shadow-lg shadow-orange-500/25 mb-4">
-                  <Bot className="w-8 h-8 text-white" aria-hidden="true" />
-                </div>
-                <h1 className="font-display text-2xl font-bold text-dark-text-primary tracking-tight">
-                  AsistPro
-                </h1>
-                <p className="text-dark-secondary text-sm mt-1">
-                  {step === 1 ? 'Ingresa tu número de WhatsApp' : 'Verifica tu identidad'}
-                </p>
-              </div>
-
-              {/* Step dots */}
-              <div className="flex gap-2 mb-7">
-                <div className="flex-1 h-0.5 rounded-full bg-orange-500 transition-colors" />
-                <div className={`flex-1 h-0.5 rounded-full transition-colors duration-300 ${step === 2 ? 'bg-orange-500' : 'bg-white/10'}`} />
-              </div>
-
-              {checking ? (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <div className="w-8 h-8 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mb-4" />
-                  <p className="text-sm text-dark-muted">Verificando sesión...</p>
-                </div>
-              ) : (
-                <>
-              {/* Step 1 */}
-              {step === 1 && (
-                <form onSubmit={handleRequestOtp} className="space-y-4">
-                  <TextInput
-                    ref={phoneRef}
-                    label="Número de WhatsApp"
-                    type="tel"
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                    placeholder="+591 70 000 000"
-                    autoComplete="tel"
-                    disabled={loading}
-                    icon={Phone}
-                    error={error || undefined}
-                  />
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    loading={loading}
-                    disabled={!phone.trim()}
-                    className="w-full"
-                  >
-                    {!loading && (
-                      <>Enviar código <ArrowRight className="w-4 h-4" aria-hidden="true" /></>
-                    )}
-                  </Button>
-                </form>
-              )}
-
-              {/* Step 2 */}
-              {step === 2 && (
-                <form onSubmit={handleVerifyOtp} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-dark-secondary uppercase tracking-wider mb-2">
-                      Código de verificación
-                    </label>
-                    <p className="text-dark-secondary text-xs mb-3">
-                      Enviado a <span className="text-dark-text">+{phone.replace(/^\+/, '')}</span> por WhatsApp
-                    </p>
-                    <TextInput
-                      ref={codeRef}
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={6}
-                      value={code}
-                      onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
-                      placeholder="000000"
-                      autoComplete="one-time-code"
-                      disabled={loading}
-                      className="text-2xl sm:text-3xl tracking-[0.3em] sm:tracking-[0.5em] md:tracking-[0.7em] text-center font-mono py-4 min-h-[52px]"
-                      error={error || undefined}
-                    />
+        <div className="relative z-10 min-h-screen grid lg:grid-cols-[0.95fr_1.05fr]">
+          <section className="hidden lg:flex border-r border-dark-border p-10 xl:p-14">
+            <div className="max-w-xl flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-dark-accent text-dark-bg flex items-center justify-center">
+                    <Bot className="w-6 h-6" aria-hidden="true" />
                   </div>
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    loading={loading}
-                    disabled={code.length < 6}
-                    className="w-full"
-                  >
-                    {!loading && (
-                      <>Ingresar al panel <ArrowRight className="w-4 h-4" aria-hidden="true" /></>
-                    )}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleResendOtp}
-                    disabled={countdown > 0 || loading}
-                    className="w-full"
-                  >
-                    {countdown > 0 ? `Reenviar en ${countdown}s` : 'Reenviar código'}
-                  </Button>
-                  <button
-                    type="button"
-                    onClick={() => { setStep(1); setCode(''); setError(''); setCountdown(0); }}
-                    className="w-full py-2 text-xs text-dark-muted hover:text-dark-secondary transition flex items-center justify-center gap-1"
-                  >
-                    <ChevronLeft className="w-3 h-3" aria-hidden="true" /> Cambiar número
-                  </button>
-                </form>
-              )}
-                </>
-              )}
+                  <div>
+                    <p className="font-display text-3xl text-dark-text-primary">AsistPro</p>
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-dark-secondary">
+                      Access checkpoint
+                    </p>
+                  </div>
+                </div>
 
+                <div className="mt-16">
+                  <div className="editorial-kicker !text-dark-accent-dark before:!bg-current">Ingreso seguro</div>
+                  <h1 className="mt-5 font-display text-5xl xl:text-6xl leading-[0.95] text-dark-text-primary">
+                    Entrá al panel con un flujo simple y sin ruido.
+                  </h1>
+                  <p className="mt-6 text-lg text-dark-secondary leading-relaxed">
+                    El acceso sigue siendo por OTP de WhatsApp, pero ahora vive dentro de una experiencia más clara, más sobria y mejor jerarquizada.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                {[
+                  ['Confirmación por WhatsApp', 'Un código corto, una sola acción y foco inmediato.'],
+                  ['Sesión de 7 días', 'Persistencia suficiente para uso real sin fricción excesiva.'],
+                  ['Interfaz más legible', 'Tipografía, color y progresión pensadas como producto, no como plantilla.'],
+                ].map(([title, copy]) => (
+                  <div key={title} className="section-frame rounded-2xl bg-dark-card/70 p-5">
+                    <p className="text-sm font-semibold text-dark-text-primary">{title}</p>
+                    <p className="mt-2 text-sm text-dark-secondary">{copy}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          </section>
 
-          <p className="text-center text-xs text-dark-muted-dim mt-5">
-            Sesión válida 7 días · Código expira en 10 min
-          </p>
+          <section className="flex items-center justify-center p-4 sm:p-6 lg:p-10">
+            <div className="w-full max-w-xl">
+              <div className="section-frame rounded-[2rem] bg-dark-card/92 p-6 sm:p-8 lg:p-10 shadow-2xl shadow-black/30">
+                <div className="flex items-start justify-between gap-4 mb-8">
+                  <div>
+                    <div className="editorial-kicker !text-dark-accent-dark before:!bg-current">
+                      {step === 1 ? 'Identidad' : 'Verificación'}
+                    </div>
+                    <h2 className="mt-4 font-display text-4xl sm:text-5xl leading-none text-dark-text-primary">
+                      {step === 1 ? 'Ingresar' : 'Confirmar código'}
+                    </h2>
+                    <p className="mt-3 text-sm sm:text-base text-dark-secondary max-w-md">
+                      {step === 1
+                        ? 'Usá tu número de WhatsApp para recibir el código de acceso.'
+                        : 'Escribí el código recibido para abrir el panel.'}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 rounded-2xl border border-dark-border bg-dark-bg flex items-center justify-center text-dark-accent-dark">
+                    {step === 1 ? <Sparkles className="w-5 h-5" aria-hidden="true" /> : <ShieldCheck className="w-5 h-5" aria-hidden="true" />}
+                  </div>
+                </div>
 
+                <div className="grid grid-cols-2 gap-3 mb-8">
+                  <div className="rounded-full h-1.5 bg-dark-accent" />
+                  <div className={`rounded-full h-1.5 transition-colors ${step === 2 ? 'bg-dark-accent' : 'bg-dark-elevated'}`} />
+                </div>
+
+                {checking ? (
+                  <div className="flex flex-col items-center justify-center py-16">
+                    <div className="w-9 h-9 border-2 border-dark-accent/30 border-t-dark-accent rounded-full animate-spin mb-4" />
+                    <p className="text-sm text-dark-secondary">Verificando sesión...</p>
+                  </div>
+                ) : (
+                  <>
+                    {step === 1 && (
+                      <form onSubmit={handleRequestOtp} className="space-y-5">
+                        <TextInput
+                          ref={phoneRef}
+                          label="Número de WhatsApp"
+                          type="tel"
+                          value={phone}
+                          onChange={e => setPhone(e.target.value)}
+                          placeholder="+591 70 000 000"
+                          autoComplete="tel"
+                          disabled={loading}
+                          icon={Phone}
+                          error={error || undefined}
+                        />
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          size="lg"
+                          loading={loading}
+                          disabled={!phone.trim()}
+                          className="w-full"
+                        >
+                          {!loading && (
+                            <>
+                              Enviar código
+                              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                            </>
+                          )}
+                        </Button>
+                      </form>
+                    )}
+
+                    {step === 2 && (
+                      <form onSubmit={handleVerifyOtp} className="space-y-5">
+                        <div>
+                          <label className="block text-[11px] font-semibold text-dark-secondary uppercase tracking-[0.22em] mb-2">
+                            Código de verificación
+                          </label>
+                          <p className="text-dark-secondary text-xs mb-3">
+                            Enviado a <span className="text-dark-text-primary">+{phone.replace(/^\+/, '')}</span>
+                          </p>
+                          <TextInput
+                            ref={codeRef}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={6}
+                            value={code}
+                            onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
+                            placeholder="000000"
+                            autoComplete="one-time-code"
+                            disabled={loading}
+                            className="text-2xl sm:text-3xl tracking-[0.3em] sm:tracking-[0.55em] text-center font-mono"
+                            error={error || undefined}
+                          />
+                        </div>
+
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          size="lg"
+                          loading={loading}
+                          disabled={code.length < 6}
+                          className="w-full"
+                        >
+                          {!loading && (
+                            <>
+                              Abrir panel
+                              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                            </>
+                          )}
+                        </Button>
+
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleResendOtp}
+                          disabled={countdown > 0 || loading}
+                          className="w-full"
+                        >
+                          {countdown > 0 ? `Reenviar en ${countdown}s` : 'Reenviar código'}
+                        </Button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setStep(1);
+                            setCode('');
+                            setError('');
+                            setCountdown(0);
+                          }}
+                          className="w-full py-2 text-xs text-dark-muted hover:text-dark-secondary transition flex items-center justify-center gap-1 cursor-pointer"
+                        >
+                          <ChevronLeft className="w-3 h-3" aria-hidden="true" />
+                          Cambiar número
+                        </button>
+                      </form>
+                    )}
+                  </>
+                )}
+              </div>
+
+              <p className="text-center text-xs uppercase tracking-[0.18em] text-dark-muted mt-5">
+                Sesión válida 7 días · Código expira en 10 minutos
+              </p>
+            </div>
+          </section>
         </div>
       </div>
     </>

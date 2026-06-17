@@ -16,9 +16,11 @@ function getCardStyles(variant: CardVariant, theme: CardTheme): CSSProperties {
   const isLight = theme === 'light';
 
   const baseStyles: CSSProperties = {
-    backgroundColor: isLight ? lightColors.bg : darkColors.card,
-    borderRadius: borderRadius['2xl'],
+    backgroundColor: isLight ? 'rgba(255, 251, 245, 0.84)' : 'rgba(16, 25, 39, 0.94)',
+    borderRadius: borderRadius.xl,
     padding: spacing[5],
+    position: 'relative',
+    overflow: 'hidden',
   };
 
   switch (variant) {
@@ -26,17 +28,19 @@ function getCardStyles(variant: CardVariant, theme: CardTheme): CSSProperties {
       return {
         ...baseStyles,
         border: `1px solid ${colors.border}`,
+        boxShadow: isLight ? shadows.sm : shadows.md,
       };
     case 'elevated':
       return {
         ...baseStyles,
-        border: `1px solid ${colors.border}`,
-        boxShadow: isLight ? shadows.lg : shadows.xl,
+        border: `1px solid ${colors['border-strong']}`,
+        boxShadow: isLight ? shadows.xl : shadows['2xl'],
       };
     case 'outline':
       return {
         ...baseStyles,
-        border: `2px solid ${colors['border-strong']}`,
+        border: `1px solid ${colors['border-strong']}`,
+        boxShadow: 'none',
       };
     default:
       return baseStyles;
@@ -53,7 +57,7 @@ export function Card({
 
   return (
     <div
-      className={className}
+      className={['section-frame', className].filter(Boolean).join(' ')}
       style={styles}
       data-theme={theme}
       data-variant={variant}

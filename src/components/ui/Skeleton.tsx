@@ -12,7 +12,7 @@ export function Skeleton({ className }: SkeletonProps) {
       className={`rounded-lg ${className}`}
       style={{
         background:
-          'linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%)',
+          'linear-gradient(90deg,rgba(167,176,194,0.10) 25%,rgba(167,176,194,0.18) 50%,rgba(167,176,194,0.10) 75%)',
         backgroundSize: '200% 100%',
         animation: 'shimmer 1.4s infinite',
       }}

@@ -242,7 +242,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                 styles={customSelectStyles}
                 formatOptionLabel={(option: CountryOption) => (
                   <div className="flex items-center space-x-3">
-                    <img src={option.flag} alt={option.label} className="w-6 h-4 object-cover rounded-sm border border-gray-200" />
+                    <img src={option.flag} alt={option.label} className="w-6 h-4 object-cover rounded-sm border border-light-border" />
                     <span>{option.label}</span>
                     <span className="text-sm" style={{ color: lightColors.muted }}>({option.value})</span>
                   </div>
@@ -259,7 +259,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                 Número de WhatsApp
               </label>
               <div className="flex w-full">
-                <div className="bg-gray-100 border-2 border-r-0 rounded-l-xl px-3 sm:px-4 py-3 flex items-center flex-shrink-0 min-h-[44px]" style={{ borderColor: lightColors['accent-light'] }}>
+                <div className="bg-light-elevated border-2 border-r-0 rounded-l-xl px-3 sm:px-4 py-3 flex items-center flex-shrink-0 min-h-[44px]" style={{ borderColor: lightColors['accent-light'] }}>
                   <span className="font-medium" style={{ color: lightColors.secondary }}>{selectedCountry.value}</span>
                 </div>
                 <input
@@ -274,14 +274,14 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                   placeholder="1122334455"
                   aria-invalid={Boolean(errors.phone)}
                   aria-describedby={errors.phone ? 'phone-error' : undefined}
-                  className={`flex-1 min-w-0 border-2 border-l-0 rounded-r-xl px-3 sm:px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 min-h-[44px] ${
+                  className={`flex-1 min-w-0 border-2 border-l-0 rounded-r-xl px-3 sm:px-4 py-3 focus:outline-none focus:ring-2 focus:ring-light-accent-dark focus:border-light-accent-dark min-h-[44px] ${
                     errors.phone ? 'border-red-300' : ''
                   }`}
                   style={!errors.phone ? { borderColor: lightColors['accent-light'] } : undefined}
                 />
               </div>
               {phoneNumber && !errors.phone && (
-                <p className="text-orange-600 text-xs mt-1 flex items-center">
+                <p className="text-light-accent-dark text-xs mt-1 flex items-center">
                   <Phone className="w-3 h-3 mr-1" aria-hidden="true" />
                   La activación del servicio se realizará para ese número
                 </p>
@@ -305,13 +305,13 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                 placeholder="tu@email.com"
                 aria-invalid={Boolean(errors.email)}
                 aria-describedby={errors.email ? 'email-error' : undefined}
-                className={`w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 min-h-[44px] ${
+                className={`w-full border-2 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-light-accent-dark focus:border-light-accent-dark min-h-[44px] ${
                   errors.email ? 'border-red-300' : ''
                 }`}
                 style={!errors.email ? { borderColor: lightColors['accent-light'] } : undefined}
               />
               {email && !errors.email && (
-                <p className="text-orange-600 text-xs mt-1 flex items-center">
+                <p className="text-light-accent-dark text-xs mt-1 flex items-center">
                   <Mail className="w-3 h-3 mr-1" aria-hidden="true" />
                   Ingresa el correo donde quieres recibir la transacción
                 </p>
@@ -335,10 +335,10 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                     aria-label={`Pago con ${method.name}`}
                     role="radio"
                     aria-checked={selectedPayment === method.id}
-                    className={`border-2 rounded-xl transition-all flex items-center justify-center bg-white focus:outline-none relative sm:w-1/2 h-14 min-h-[44px] ${
+                    className={`border-2 rounded-xl transition-all flex items-center justify-center bg-[rgba(255,251,245,0.92)] focus:outline-none relative sm:w-1/2 h-14 min-h-[44px] ${
                       selectedPayment === method.id
-                        ? 'border-orange-500 bg-orange-50'
-                        : 'border-gray-200 hover:border-orange-300'
+                        ? 'border-light-accent-dark bg-light-accent-light'
+                        : 'border-light-border hover:border-light-accent'
                     }`}
                   >
                     <img 
@@ -347,7 +347,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                       className="h-8 w-auto object-contain mx-auto"
                     />
                     {selectedPayment === method.id && (
-                      <Check className="w-5 h-5 text-orange-600 absolute top-2 right-2" aria-hidden="true" />
+                      <Check className="w-5 h-5 text-light-accent-dark absolute top-2 right-2" aria-hidden="true" />
                     )}
                   </button>
                 ))}
@@ -368,7 +368,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
             </Button>
 
             <p className="text-center text-sm mt-4" style={{ color: lightColors.muted }}>
-              🔒 Tus datos están protegidos con encriptación SSL
+              Tus datos están protegidos con encriptación SSL
             </p>
           </div>
         )}
@@ -378,7 +378,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
             <div className="mb-6">
               <button
                 onClick={() => setStep(1)}
-                className="flex items-center text-orange-600 hover:text-orange-700 transition-colors mb-4"
+                className="flex items-center text-light-accent-dark hover:text-light-text transition-colors mb-4"
                 disabled={isProcessing}
                 aria-label="Volver al paso anterior"
               >
@@ -394,7 +394,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
             </div>
 
             {/* Order Summary */}
-            <div className="bg-orange-50 rounded-xl p-4 mb-6">
+            <div className="bg-light-accent-light rounded-xl p-4 mb-6 border border-light-border">
               <h4 className="font-semibold mb-3" style={{ color: lightColors.text }}>Resumen del Pedido</h4>
               
               <div className="space-y-3">
@@ -412,7 +412,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
                 
                 <div className="flex justify-between">
                   <span style={{ color: lightColors.secondary }}>Precio:</span>
-                  <span className="font-semibold text-orange-600">
+                  <span className="font-semibold text-light-accent-dark">
                     {selectedPayment === 'paypal' ? (
                       isAnnual
                         ? `${getUsdPrice(selectedPlan.name, true)} USD`
@@ -460,14 +460,14 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
             </div>
 
             {/* Trial Notice */}
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
-              <p className="text-green-800 text-sm font-medium">
-                🎉 ¡Prueba gratuita por 3 días! No se te cobrará hasta que termine tu período de prueba.
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6">
+              <p className="text-emerald-800 text-sm font-medium">
+                Prueba gratuita por 3 días. No se te cobrará hasta que termine tu período de prueba.
               </p>
             </div>
             {/* Processing State */}
               {isProcessing && (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center space-x-3">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6 flex items-center space-x-3">
                   <Check className="w-5 h-5 text-green-500" aria-hidden="true" />
                   <p className="text-green-800 font-medium">
                     Abriendo WhatsApp para coordinar la activación...

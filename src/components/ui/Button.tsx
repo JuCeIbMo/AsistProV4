@@ -13,19 +13,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-orange-500 hover:bg-orange-400 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30',
+    'bg-light-text hover:bg-dark-bg text-light-bg shadow-lg shadow-dark-bg/20',
   secondary:
-    'bg-transparent border border-white/[0.12] text-gray-300 hover:bg-white/[0.06] hover:text-white',
+    'bg-light-accent-light text-light-text border border-light-border hover:border-light-accent hover:bg-light-bg/70',
   ghost:
-    'bg-transparent text-gray-400 hover:text-gray-200 hover:bg-white/[0.06]',
+    'bg-transparent text-dark-secondary hover:text-dark-text hover:bg-dark-elevated/80',
   danger:
-    'bg-red-500/15 hover:bg-red-500/25 text-red-400 border border-red-500/20',
+    'bg-red-500/12 hover:bg-red-500/18 text-red-300 border border-red-500/20',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-xs rounded-lg min-h-[36px]',
-  md: 'px-4 py-2 text-sm rounded-xl min-h-[40px]',
-  lg: 'px-5 py-3 text-sm rounded-xl min-h-[44px]',
+  sm: 'px-3 py-1.5 text-xs rounded-md min-h-[36px]',
+  md: 'px-4 py-2.5 text-sm rounded-lg min-h-[42px]',
+  lg: 'px-5 py-3 text-sm rounded-lg min-h-[46px]',
 };
 
 export function Button({
@@ -43,7 +43,7 @@ export function Button({
       type={type}
       disabled={disabled || loading}
       className={[
-        'font-semibold transition-all flex items-center justify-center gap-2',
+        'font-semibold tracking-[0.02em] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer',
         'disabled:opacity-40 disabled:cursor-not-allowed',
         variantClasses[variant],
         sizeClasses[size],

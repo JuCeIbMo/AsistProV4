@@ -62,10 +62,10 @@ export function ExpensePieChart({ categories, loading, currency }: Props) {
 
   return (
     <div
-      className="bg-dark-card border-dark-border rounded-2xl p-5"
+      className="section-frame bg-dark-card/92 border border-dark-border rounded-[1.75rem] p-5"
       onTouchStart={clearHover}
     >
-      <h2 className="text-xs font-semibold text-dark-muted uppercase tracking-widest mb-4">
+      <h2 className="text-[11px] font-semibold text-dark-secondary uppercase tracking-[0.22em] mb-4">
         Distribución de gastos
       </h2>
       {loading ? (
@@ -106,7 +106,7 @@ export function ExpensePieChart({ categories, loading, currency }: Props) {
                     key={(c.slug || c.display_name) + idx}
                     d={arcPath(50, 50, 48, start, end)}
                     fill={color}
-                    stroke="#13131c"
+                    stroke="#09111B"
                     strokeWidth="0.5"
                     className="transition-opacity duration-200 cursor-pointer"
                     style={{ opacity: hover === idx ? 1 : 0.85 }}
@@ -126,7 +126,7 @@ export function ExpensePieChart({ categories, loading, currency }: Props) {
                   </path>
                 );
               })}
-              <circle cx="50" cy="50" r="26" fill="#13131c" />
+              <circle cx="50" cy="50" r="26" fill="#09111B" />
               <text
                 x="50"
                 y="49"

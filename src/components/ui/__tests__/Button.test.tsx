@@ -9,28 +9,28 @@ describe('Button', () => {
     const button = screen.getByRole('button', { name: /click me/i });
 
     expect(button).toBeInTheDocument();
-    expect(button).toHaveClass('bg-orange-500');
+    expect(button).toHaveClass('bg-light-text', 'text-light-bg');
   });
 
   it('renders secondary variant', () => {
     render(<Button variant="secondary">Secondary</Button>);
     const button = screen.getByRole('button', { name: /secondary/i });
 
-    expect(button).toHaveClass('bg-transparent');
+    expect(button).toHaveClass('bg-light-accent-light', 'border-light-border');
   });
 
   it('renders ghost variant', () => {
     render(<Button variant="ghost">Ghost</Button>);
     const button = screen.getByRole('button', { name: /ghost/i });
 
-    expect(button).toHaveClass('bg-transparent', 'text-gray-400');
+    expect(button).toHaveClass('bg-transparent', 'text-dark-secondary');
   });
 
   it('renders danger variant', () => {
     render(<Button variant="danger">Danger</Button>);
     const button = screen.getByRole('button', { name: /danger/i });
 
-    expect(button).toHaveClass('bg-red-500/15', 'text-red-400');
+    expect(button).toHaveClass('bg-red-500/12', 'text-red-300');
   });
 
   it('renders small size', () => {
@@ -44,7 +44,7 @@ describe('Button', () => {
     render(<Button>Medium</Button>);
     const button = screen.getByRole('button', { name: /medium/i });
 
-    expect(button).toHaveClass('px-4', 'py-2', 'text-sm');
+    expect(button).toHaveClass('px-4', 'py-2.5', 'text-sm');
   });
 
   it('renders large size', () => {

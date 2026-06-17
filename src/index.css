@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..900,50,1&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,35 +7,35 @@
 /* CSS variables synced with src/styles/tokens.ts — keep values aligned */
 
 :root {
-  --bg-base:     #FFFDF9;
-  --bg-elevated: #F3EFE8;
-  --bg-footer:   #F3EFE8;
-  --text-primary:   #1C1209;
-  --text-secondary: #6B5F55;
-  --text-muted:     #9E948C;
-  --accent:      #F97316;
-  --accent-dark: #EA580C;
-  --accent-light: #FFF7ED;
-  --border:      rgba(28, 18, 9, 0.07);
-  --shadow-sm:   0 1px 3px rgba(28,18,9,0.07), 0 1px 2px rgba(28,18,9,0.05);
-  --shadow-md:   0 4px 20px rgba(28,18,9,0.08), 0 1px 4px rgba(28,18,9,0.05);
-  --shadow-orange: 0 8px 32px rgba(249,115,22,0.22);
+  --bg-base: #F3EDE3;
+  --bg-elevated: #E5DCCB;
+  --bg-footer: #D9CFBB;
+  --text-primary: #131A26;
+  --text-secondary: #4F5B70;
+  --text-muted: #7A808D;
+  --accent: #B68A3E;
+  --accent-dark: #8D6827;
+  --accent-light: #F0E3C7;
+  --border: rgba(19, 26, 38, 0.10);
+  --shadow-sm: 0 8px 18px rgba(10, 17, 27, 0.08), 0 2px 6px rgba(10, 17, 27, 0.04);
+  --shadow-md: 0 22px 40px rgba(10, 17, 27, 0.12), 0 6px 16px rgba(10, 17, 27, 0.07);
+  --shadow-accent: 0 16px 44px rgba(182, 138, 62, 0.18);
 }
 
 .dark {
-  --bg-base:     #0c0c12;
-  --bg-elevated: #1a1a24;
-  --bg-footer:   #13131c;
-  --text-primary:   #f3f4f6;
-  --text-secondary: #9ca3af;
-  --text-muted:     #6b7280;
-  --accent:      #F97316;
-  --accent-dark: #EA580C;
-  --accent-light: rgba(249, 115, 22, 0.15);
-  --border:      rgba(255, 255, 255, 0.07);
-  --shadow-sm:   0 1px 3px rgba(0,0,0,0.30), 0 1px 2px rgba(0,0,0,0.20);
-  --shadow-md:   0 4px 20px rgba(0,0,0,0.40), 0 1px 4px rgba(0,0,0,0.30);
-  --shadow-orange: 0 8px 32px rgba(249,115,22,0.22);
+  --bg-base: #09111B;
+  --bg-elevated: #172234;
+  --bg-footer: #101927;
+  --text-primary: #F7F1E8;
+  --text-secondary: #A7B0C2;
+  --text-muted: #57657C;
+  --accent: #B68A3E;
+  --accent-dark: #D2AD63;
+  --accent-light: rgba(182, 138, 62, 0.16);
+  --border: rgba(197, 210, 228, 0.10);
+  --shadow-sm: 0 10px 24px rgba(4, 8, 14, 0.34), 0 2px 6px rgba(4, 8, 14, 0.24);
+  --shadow-md: 0 28px 52px rgba(4, 8, 14, 0.46), 0 8px 18px rgba(4, 8, 14, 0.32);
+  --shadow-accent: 0 20px 54px rgba(182, 138, 62, 0.14);
 }
 
 html {
@@ -43,19 +43,23 @@ html {
 }
 
 body {
-  font-family: 'Outfit', sans-serif;
-  background-color: var(--bg-base);
+  font-family: 'IBM Plex Sans', sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(182, 138, 62, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(93, 133, 179, 0.14), transparent 24%),
+    linear-gradient(180deg, var(--bg-base) 0%, color-mix(in srgb, var(--bg-base) 88%, #ffffff 12%) 100%);
   color: var(--text-primary);
   overflow-x: hidden;
+  letter-spacing: -0.01em;
 }
 
-/* Subtle warm grain for depth */
+/* Subtle paper grain for depth */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: 0.022;
+  opacity: 0.028;
   pointer-events: none;
   z-index: 9998;
   mix-blend-mode: multiply;
@@ -75,13 +79,13 @@ body::after {
 @keyframes glowPulse {
   0%, 100% {
     box-shadow:
-      0 0 0 1px rgba(249,115,22,0.25),
-      0 0 40px rgba(249,115,22,0.10);
+      0 0 0 1px rgba(182, 138, 62, 0.22),
+      0 0 42px rgba(182, 138, 62, 0.10);
   }
   50% {
     box-shadow:
-      0 0 0 1px rgba(249,115,22,0.45),
-      0 0 70px rgba(249,115,22,0.18);
+      0 0 0 1px rgba(182, 138, 62, 0.38),
+      0 0 70px rgba(182, 138, 62, 0.14);
   }
 }
 
@@ -133,11 +137,44 @@ body::after {
 
 /* ── Glassmorphism card (light) ── */
 .glass {
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid rgba(28, 18, 9, 0.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 250, 241, 0.72);
+  border: 1px solid rgba(19, 26, 38, 0.10);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow-sm);
+}
+
+.section-frame {
+  position: relative;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.section-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.editorial-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+}
+
+.editorial-kicker::before {
+  content: '';
+  width: 2.75rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.65;
 }
 
 /* ── Reduced motion ── */

@@ -50,9 +50,9 @@ export function MonthlyTrendBars({ trend, loading, currency }: Props) {
   const chartMax = ticks[ticks.length - 1] || 1;
 
   return (
-    <div className="bg-dark-card border border-dark-border rounded-2xl p-5">
+    <div className="section-frame bg-dark-card/92 border border-dark-border rounded-[1.75rem] p-5">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xs font-semibold text-dark-muted uppercase tracking-widest">
+        <h2 className="text-[11px] font-semibold text-dark-secondary uppercase tracking-[0.22em]">
           Tendencia 12 meses
         </h2>
         <div className="flex items-center gap-3 text-xs">

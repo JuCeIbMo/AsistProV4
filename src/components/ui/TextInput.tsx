@@ -33,12 +33,12 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function T
   const hasIcon = Boolean(Icon);
 
   const inputClasses = [
-    'w-full px-4 py-3 bg-white/[0.05] border rounded-xl text-white placeholder-gray-600 transition min-h-[44px]',
-    'focus:outline-none focus:border-orange-500/60 focus:bg-white/[0.07]',
+    'w-full px-4 py-3 bg-dark-bg/75 border rounded-lg text-dark-text-primary placeholder:text-dark-muted transition min-h-[46px]',
+    'focus:outline-none focus:border-dark-accent focus:bg-dark-card/90',
     'disabled:opacity-40 disabled:cursor-not-allowed',
     hasError
       ? 'border-red-500/50 focus:border-red-500/70'
-      : 'border-white/[0.08] hover:border-white/[0.12]',
+      : 'border-dark-border hover:border-dark-border-strong',
     hasIcon ? 'pl-10' : '',
     className,
   ]
@@ -50,14 +50,14 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function T
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-xs font-semibold text-gray-500 uppercase tracking-wider"
+          className="block text-[11px] font-semibold text-dark-secondary uppercase tracking-[0.22em]"
         >
           {label}
         </label>
       )}
       <div className="relative">
         {Icon && (
-          <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" aria-hidden="true" />
+          <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-muted pointer-events-none" aria-hidden="true" />
         )}
         <input
           ref={ref}
@@ -75,7 +75,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function T
         />
       </div>
       {hasError && (
-        <p id={`${inputId}-error`} className="text-red-400 text-xs mt-1.5" role="alert">
+        <p id={`${inputId}-error`} className="text-red-300 text-xs mt-1.5" role="alert">
           {error}
         </p>
       )}

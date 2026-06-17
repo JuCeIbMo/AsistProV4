@@ -54,8 +54,8 @@ const config: Config = {
 
       // ── Font Family (preserved from original config) ──
       fontFamily: {
-        display: ['Syne', 'sans-serif'],
-        sans: ['Outfit', 'sans-serif'],
+        display: ['Fraunces', 'serif'],
+        sans: ['IBM Plex Sans', 'sans-serif'],
       },
     },
   },

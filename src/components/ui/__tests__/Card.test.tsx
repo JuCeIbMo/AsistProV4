@@ -36,7 +36,7 @@ describe('Card', () => {
     const card = container.firstChild as HTMLElement;
 
     expect(card).toHaveAttribute('data-variant', 'outline');
-    expect(card.style.border).toContain('2px solid');
+    expect(card.style.border).toContain('1px solid');
   });
 
   it('works in light theme', () => {

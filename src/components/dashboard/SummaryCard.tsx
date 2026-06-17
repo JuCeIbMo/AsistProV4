@@ -20,16 +20,17 @@ export function SummaryCard({ data, loading, onRefresh, onLogout, onUnauthorized
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
-    <div className="bg-dark-card border border-dark-border rounded-2xl p-5 space-y-5 overflow-hidden">
-      {/* Header */}
+    <div className="section-frame rounded-[1.9rem] bg-dark-card/95 p-5 sm:p-6 space-y-5 overflow-hidden">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center shadow-lg shadow-orange-500/20 flex-shrink-0">
-            <Bot className="w-4 h-4 text-white" aria-hidden="true" />
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-2xl bg-dark-accent text-dark-bg flex items-center justify-center shadow-lg shadow-black/20 flex-shrink-0">
+            <Bot className="w-5 h-5" aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <p className="font-display font-bold text-white text-sm leading-none">AsistPro</p>
-            <p className="text-xs text-gray-500 mt-1 truncate">{data?.month_label || 'Cargando...'}</p>
+            <p className="font-display text-xl leading-none text-dark-text-primary">AsistPro</p>
+            <p className="text-[11px] uppercase tracking-[0.18em] text-dark-secondary mt-1 truncate">
+              {data?.month_label || 'Cargando...'}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -58,7 +59,7 @@ export function SummaryCard({ data, loading, onRefresh, onLogout, onUnauthorized
             size="sm"
             onClick={onLogout}
             aria-label="Salir"
-            className="!p-2.5 !text-gray-600 hover:!text-red-400 hover:!bg-red-500/[0.08]"
+            className="!p-2.5 !text-dark-muted hover:!text-red-300 hover:!bg-red-500/[0.08]"
           >
             <LogOut className="w-4 h-4" aria-hidden="true" />
           </Button>
@@ -74,88 +75,94 @@ export function SummaryCard({ data, loading, onRefresh, onLogout, onUnauthorized
           onUnauthorized={onUnauthorized}
         />
       )}
-
-      {/* Hero: Saldo del mes */}
       <div
-        className={`rounded-xl p-5 relative overflow-hidden ${
+        className={`rounded-[1.5rem] p-5 relative overflow-hidden border ${
           isPositive
-            ? 'bg-gradient-to-br from-emerald-500/[0.08] to-emerald-600/[0.04] border border-emerald-500/20'
-            : 'bg-gradient-to-br from-red-500/[0.08] to-red-600/[0.04] border border-red-500/20'
+            ? 'bg-gradient-to-br from-emerald-500/[0.10] to-dark-card border-emerald-500/18'
+            : 'bg-gradient-to-br from-red-500/[0.10] to-dark-card border-red-500/18'
         }`}
       >
         <div className="relative z-10">
           <p
-            className={`text-xs font-semibold uppercase tracking-wider ${
-              isPositive ? 'text-emerald-400/70' : 'text-red-400/70'
+            className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${
+              isPositive ? 'text-emerald-300/80' : 'text-red-300/80'
             }`}
           >
             Saldo del mes
           </p>
           {loading ? (
-            <Skeleton className="h-10 w-40 mt-2" />
+            <Skeleton className="h-10 w-40 mt-3" />
           ) : (
             <p
-              className={`text-3xl font-bold font-display tracking-tight mt-1 ${
-                isPositive ? 'text-emerald-400' : 'text-red-400'
+              className={`text-4xl font-display font-semibold tracking-tight mt-2 ${
+                isPositive ? 'text-emerald-300' : 'text-red-300'
               }`}
             >
               {isPositive ? '+' : ''}
               {fmt(data?.month?.net)}
             </p>
           )}
-          <p className="text-xs text-gray-500 mt-1">{data?.currency}</p>
+          <p className="text-xs uppercase tracking-[0.16em] text-dark-secondary mt-2">
+            {data?.currency}
+          </p>
         </div>
         <div
-          className={`absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-xl flex items-center justify-center ${
+          className={`absolute right-4 top-4 w-12 h-12 rounded-2xl flex items-center justify-center ${
             isPositive ? 'bg-emerald-500/10' : 'bg-red-500/10'
           }`}
         >
           <Wallet
-            className={`w-5 h-5 ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}
+            className={`w-5 h-5 ${isPositive ? 'text-emerald-300' : 'text-red-300'}`}
             aria-hidden="true"
           />
         </div>
       </div>
 
-      {/* Metrics row: Ingresos | Gastos | Tasa de ahorro */}
       <div className="grid grid-cols-3 gap-3">
-        {/* Ingresos */}
-        <div className="bg-dark-bg/50 rounded-lg p-3 border border-white/[0.04]">
-          <div className="flex items-center gap-1.5 mb-2">
-            <div className="w-6 h-6 rounded-md bg-emerald-500/10 flex items-center justify-center">
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
+        <div className="rounded-[1.1rem] p-3 border border-dark-border bg-dark-bg/55">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+              <TrendingUp className="w-3.5 h-3.5 text-emerald-300" aria-hidden="true" />
             </div>
-            <span className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Ingresos</span>
+            <span className="text-[10px] text-dark-secondary font-semibold uppercase tracking-[0.16em]">
+              Ingresos
+            </span>
           </div>
           {loading ? (
             <Skeleton className="h-5 w-20" />
           ) : (
-            <p className="text-sm font-semibold text-emerald-400 tabular-nums">+{fmt(data?.month?.income)}</p>
+            <p className="text-sm font-semibold text-emerald-300 tabular-nums">
+              +{fmt(data?.month?.income)}
+            </p>
           )}
         </div>
 
-        {/* Gastos */}
-        <div className="bg-dark-bg/50 rounded-lg p-3 border border-white/[0.04]">
-          <div className="flex items-center gap-1.5 mb-2">
-            <div className="w-6 h-6 rounded-md bg-red-500/10 flex items-center justify-center">
-              <TrendingDown className="w-3.5 h-3.5 text-red-400" aria-hidden="true" />
+        <div className="rounded-[1.1rem] p-3 border border-dark-border bg-dark-bg/55">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-red-500/10 flex items-center justify-center">
+              <TrendingDown className="w-3.5 h-3.5 text-red-300" aria-hidden="true" />
             </div>
-            <span className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Gastos</span>
+            <span className="text-[10px] text-dark-secondary font-semibold uppercase tracking-[0.16em]">
+              Gastos
+            </span>
           </div>
           {loading ? (
             <Skeleton className="h-5 w-20" />
           ) : (
-            <p className="text-sm font-semibold text-red-400 tabular-nums">-{fmt(data?.month?.expense)}</p>
+            <p className="text-sm font-semibold text-red-300 tabular-nums">
+              -{fmt(data?.month?.expense)}
+            </p>
           )}
         </div>
 
-        {/* Tasa de ahorro */}
-        <div className="bg-dark-bg/50 rounded-lg p-3 border border-white/[0.04]">
-          <div className="flex items-center gap-1.5 mb-2">
-            <div className="w-6 h-6 rounded-md bg-blue-500/10 flex items-center justify-center">
-              <PiggyBank className="w-3.5 h-3.5 text-blue-400" aria-hidden="true" />
+        <div className="rounded-[1.1rem] p-3 border border-dark-border bg-dark-bg/55">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-sky-500/10 flex items-center justify-center">
+              <PiggyBank className="w-3.5 h-3.5 text-sky-300" aria-hidden="true" />
             </div>
-            <span className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Ahorro</span>
+            <span className="text-[10px] text-dark-secondary font-semibold uppercase tracking-[0.16em]">
+              Ahorro
+            </span>
           </div>
           {loading ? (
             <Skeleton className="h-5 w-16" />
@@ -167,14 +174,13 @@ export function SummaryCard({ data, loading, onRefresh, onLogout, onUnauthorized
         </div>
       </div>
 
-      {/* Footer: Balance total histórico */}
-      <div className="flex items-center justify-center pt-1 border-t border-white/[0.04]">
+      <div className="pt-3 border-t border-dark-border-subtle">
         {loading ? (
-          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-4 w-32 mx-auto" />
         ) : (
-          <div className="flex items-center gap-1.5 text-xs text-gray-600">
-            <span>Balance acumulado:</span>
-            <span className="font-medium text-gray-400 tabular-nums">
+          <div className="flex items-center justify-center gap-1.5 text-xs text-dark-secondary">
+            <span className="uppercase tracking-[0.16em]">Balance acumulado</span>
+            <span className="font-medium text-dark-text-primary tabular-nums">
               {fmt(data?.total_balance)} {data?.currency}
             </span>
           </div>

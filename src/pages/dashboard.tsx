@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { AlertCircle, Settings } from 'lucide-react';
+import { AlertCircle, Settings, Sparkles } from 'lucide-react';
 import { logout as logoutSession, checkAuth } from '../services/authService';
 import {
   fetchSummary,
@@ -20,12 +20,15 @@ import { Skeleton, Badge, Card } from '../components/ui';
 
 function ErrorPanel({ onRetry }: { onRetry: () => void }) {
   return (
-    <div className="bg-dark-card border border-red-500/20 rounded-2xl p-6 text-center">
-      <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" aria-hidden="true" />
-      <p className="text-sm text-dark-text mb-3">No pudimos cargar tus datos.</p>
+    <div className="section-frame rounded-[1.75rem] bg-dark-card/95 border border-red-500/20 p-8 text-center">
+      <AlertCircle className="w-8 h-8 text-red-300 mx-auto mb-3" aria-hidden="true" />
+      <p className="text-base text-dark-text-primary mb-2">No pudimos cargar tus datos.</p>
+      <p className="text-sm text-dark-secondary mb-5">
+        Reintentá para recuperar el estado del panel.
+      </p>
       <button
         onClick={onRetry}
-        className="text-xs font-medium px-4 py-2 rounded-lg bg-orange-500/15 text-orange-300 hover:bg-orange-500/25 transition"
+        className="text-xs font-semibold uppercase tracking-[0.18em] px-5 py-3 rounded-lg bg-dark-accent-light text-dark-accent-dark hover:bg-dark-accent/25 transition cursor-pointer"
       >
         Reintentar
       </button>
@@ -108,10 +111,44 @@ export default function DashboardPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <div className="min-h-screen bg-dark-bg overflow-x-hidden">
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-          <div className="lg:grid lg:grid-cols-[1fr_20rem] lg:gap-6">
-            {/* Right rail on desktop / top on mobile */}
+      <div className="min-h-screen bg-dark-bg text-dark-text overflow-x-hidden">
+        <div
+          className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(182,138,62,0.15),transparent_22%),radial-gradient(circle_at_top_right,rgba(93,133,179,0.10),transparent_18%)]"
+          aria-hidden="true"
+        />
+
+        <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          <section className="section-frame rounded-[2rem] bg-dark-card/82 px-5 py-6 sm:px-7 sm:py-7 mb-6">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+              <div>
+                <div className="editorial-kicker !text-dark-accent-dark before:!bg-current">
+                  Control brief
+                </div>
+                <h1 className="mt-4 font-display text-4xl sm:text-5xl leading-none text-dark-text-primary">
+                  Dashboard
+                </h1>
+                <p className="mt-3 text-sm sm:text-base text-dark-secondary max-w-2xl">
+                  Lectura rápida del mes, estado de cuentas y actividad reciente sin ruido visual.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                <div className="inline-flex items-center gap-2 rounded-full border border-dark-border px-4 py-2 text-xs uppercase tracking-[0.18em] text-dark-secondary">
+                  <Sparkles className="w-3.5 h-3.5 text-dark-accent-dark" aria-hidden="true" />
+                  Datos en tiempo real
+                </div>
+                <button
+                  onClick={() => setCategoriesOpen(true)}
+                  className="inline-flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] px-4 py-3 rounded-lg bg-dark-elevated border border-dark-border text-dark-secondary hover:text-dark-text-primary hover:border-dark-border-strong transition cursor-pointer"
+                >
+                  <Settings className="w-4 h-4" aria-hidden="true" />
+                  Categorías
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_21rem] lg:gap-6">
             <aside className="lg:order-2 lg:sticky lg:top-6 lg:self-start mb-6 lg:mb-0">
               <SummaryCard
                 data={data}
@@ -122,26 +159,11 @@ export default function DashboardPage() {
               />
             </aside>
 
-            {/* Main content */}
-            <div className="lg:order-1 space-y-5 min-w-0">
-              {/* Header with category settings */}
-              <div className="flex items-center justify-between">
-                <h1 className="text-lg font-semibold text-dark-text-primary">
-                  Dashboard
-                </h1>
-                <button
-                  onClick={() => setCategoriesOpen(true)}
-                  className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg bg-dark-elevated border border-dark-border text-dark-secondary hover:text-dark-text hover:border-dark-border-strong transition"
-                >
-                  <Settings className="w-4 h-4" />
-                  Categorías
-                </button>
-              </div>
-
+            <div className="lg:order-1 space-y-6 min-w-0">
               {authChecking ? (
-                <div className="flex flex-col items-center justify-center h-96">
-                  <div className="w-8 h-8 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mb-4" />
-                  <p className="text-sm text-dark-muted">Verificando sesión...</p>
+                <div className="section-frame rounded-[1.75rem] bg-dark-card/92 h-96 flex flex-col items-center justify-center">
+                  <div className="w-9 h-9 border-2 border-dark-accent/30 border-t-dark-accent rounded-full animate-spin mb-4" />
+                  <p className="text-sm text-dark-secondary">Verificando sesión...</p>
                 </div>
               ) : error ? (
                 <ErrorPanel onRetry={load} />
@@ -153,7 +175,7 @@ export default function DashboardPage() {
                     currency={data?.currency}
                   />
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <ExpensePieChart
                       categories={data?.expense_categories || []}
                       loading={loading}
@@ -167,31 +189,34 @@ export default function DashboardPage() {
                   </div>
 
                   <section>
-                    <h2 className="text-xs font-semibold text-dark-muted uppercase tracking-widest mb-3">
-                      Cuentas
-                    </h2>
+                    <div className="mb-3">
+                      <p className="text-[11px] font-semibold text-dark-secondary uppercase tracking-[0.22em]">
+                        Cuentas
+                      </p>
+                    </div>
+
                     {loading ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {[1, 2].map(n => (
                           <div
                             key={n}
-                            className="bg-dark-card border border-dark-border rounded-xl p-4"
+                            className="section-frame rounded-[1.35rem] bg-dark-card/90 p-5"
                           >
-                            <Skeleton className="h-4 w-24 mb-2" />
+                            <Skeleton className="h-4 w-24 mb-3" />
                             <Skeleton className="h-7 w-32" />
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {data?.accounts?.map(acc => (
                           <div
                             key={acc.id}
-                            className="bg-dark-card border border-dark-border rounded-xl p-4 flex items-center justify-between hover:border-dark-border-strong transition-colors"
+                            className="section-frame rounded-[1.35rem] bg-dark-card/90 p-5 flex items-center justify-between hover:border-dark-border-strong transition-colors"
                           >
                             <div className="min-w-0">
-                              <div className="flex items-center gap-1.5">
-                                <p className="font-medium text-dark-text text-sm truncate">
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium text-dark-text-primary text-sm truncate">
                                   {acc.name}
                                 </p>
                                 {acc.is_default && (
@@ -200,15 +225,17 @@ export default function DashboardPage() {
                                   </Badge>
                                 )}
                               </div>
-                              <p className="text-xs text-dark-muted mt-0.5">{acc.currency}</p>
+                              <p className="text-xs uppercase tracking-[0.18em] text-dark-muted mt-1">
+                                {acc.currency}
+                              </p>
                             </div>
-                            <p className="text-lg font-bold font-display text-dark-text-primary tabular-nums ml-2">
+                            <p className="text-xl font-semibold font-display text-dark-text-primary tabular-nums ml-3">
                               {fmt(acc.balance)}
                             </p>
                           </div>
                         ))}
                         {!data?.accounts?.length && (
-                          <p className="text-dark-muted text-sm col-span-2 py-4 text-center">
+                          <p className="text-dark-muted text-sm col-span-2 py-6 text-center">
                             Sin cuentas registradas.
                           </p>
                         )}
@@ -217,9 +244,11 @@ export default function DashboardPage() {
                   </section>
 
                   <section>
-                    <h2 className="text-xs font-semibold text-dark-muted uppercase tracking-widest mb-3">
-                      Presupuestos
-                    </h2>
+                    <div className="mb-3">
+                      <p className="text-[11px] font-semibold text-dark-secondary uppercase tracking-[0.22em]">
+                        Presupuestos
+                      </p>
+                    </div>
                     <Card theme="dark">
                       {loading ? (
                         <div className="space-y-4">
@@ -239,14 +268,14 @@ export default function DashboardPage() {
                             const pct = Math.min(parseFloat(b.percentage_used), 100);
                             const colorClass =
                               b.threshold === 'over_limit'
-                                ? 'from-red-500 to-rose-500'
+                                ? 'from-red-500 to-rose-400'
                                 : b.threshold === 'warning'
-                                ? 'from-yellow-400 to-amber-500'
-                                : 'from-emerald-400 to-emerald-500';
+                                ? 'from-amber-500 to-yellow-300'
+                                : 'from-emerald-500 to-emerald-300';
                             return (
                               <div key={b.id}>
-                                <div className="flex justify-between text-xs mb-1.5">
-                                  <span className="font-medium text-dark-text">
+                                <div className="flex justify-between text-xs mb-2">
+                                  <span className="font-medium text-dark-text-primary">
                                     {b.category.display_name}
                                   </span>
                                   <span className="text-dark-muted tabular-nums">
@@ -259,17 +288,17 @@ export default function DashboardPage() {
                                     style={{ width: `${pct}%` }}
                                   />
                                 </div>
-                                <div className="flex justify-between mt-1">
-                                  <span className="text-xs text-dark-muted-dim">
+                                <div className="flex justify-between mt-2">
+                                  <span className="text-[11px] uppercase tracking-[0.18em] text-dark-muted">
                                     {b.period === 'monthly' ? 'Mensual' : 'Semanal'}
                                   </span>
                                   <span
                                     className={`text-xs font-semibold tabular-nums ${
                                       b.threshold === 'over_limit'
-                                        ? 'text-red-400'
+                                        ? 'text-red-300'
                                         : b.threshold === 'warning'
-                                        ? 'text-yellow-400'
-                                        : 'text-emerald-400'
+                                        ? 'text-amber-300'
+                                        : 'text-emerald-300'
                                     }`}
                                   >
                                     {b.percentage_used}%
@@ -299,8 +328,10 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <footer className="max-w-6xl mx-auto pt-8 pb-6 text-center">
-            <p className="text-xs text-dark-muted-dim">AsistPro · Datos en tiempo real</p>
+          <footer className="pt-8 pb-6 text-center">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-dark-muted">
+              AsistPro · Datos en tiempo real
+            </p>
           </footer>
         </main>
       </div>

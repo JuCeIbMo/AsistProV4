@@ -85,8 +85,9 @@ export function Modal({
         className="absolute inset-0"
         style={{
           backgroundColor: isLight
-            ? 'rgba(28, 18, 9, 0.50)'
-            : 'rgba(0, 0, 0, 0.70)',
+            ? 'rgba(19, 26, 38, 0.58)'
+            : 'rgba(4, 8, 14, 0.78)',
+          backdropFilter: 'blur(10px)',
         }}
         aria-hidden="true"
       />
@@ -103,8 +104,9 @@ export function Modal({
           className,
         ].join(' ')}
         style={{
-          backgroundColor: isLight ? lightColors.bg : darkColors.card,
-          borderRadius: borderRadius['2xl'],
+          backgroundColor: isLight ? 'rgba(255, 251, 245, 0.96)' : 'rgba(16, 25, 39, 0.98)',
+          border: `1px solid ${isLight ? lightColors['border-strong'] : darkColors['border-strong']}`,
+          borderRadius: borderRadius.xl,
           padding: spacing[6],
           boxShadow: shadows['2xl'],
           color: isLight ? lightColors.text : darkColors.text,
@@ -124,7 +126,7 @@ export function Modal({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-lg transition-colors"
+            className="p-2 rounded-lg transition-colors cursor-pointer"
             style={{
               color: isLight ? lightColors.secondary : darkColors.secondary,
             }}

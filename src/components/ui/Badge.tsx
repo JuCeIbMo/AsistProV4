@@ -11,17 +11,17 @@ interface BadgeProps {
 }
 
 const variantClasses: Record<BadgeVariant, string> = {
-  default: 'bg-white/[0.08] text-gray-400 border-white/[0.12]',
-  success: 'bg-green-500/15 text-green-400 border-green-500/20',
-  warning: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/20',
-  danger: 'bg-red-500/15 text-red-400 border-red-500/20',
-  info: 'bg-blue-500/15 text-blue-400 border-blue-500/20',
-  accent: 'bg-orange-500/15 text-orange-400 border-orange-500/20',
+  default: 'bg-dark-elevated/90 text-dark-secondary border-dark-border',
+  success: 'bg-emerald-500/12 text-emerald-300 border-emerald-500/20',
+  warning: 'bg-amber-500/12 text-amber-300 border-amber-500/20',
+  danger: 'bg-red-500/12 text-red-300 border-red-500/20',
+  info: 'bg-sky-500/12 text-sky-300 border-sky-500/20',
+  accent: 'bg-dark-accent-light text-dark-accent-dark border-dark-accent/20',
 };
 
 const sizeClasses: Record<BadgeSize, string> = {
-  sm: 'text-xs px-1.5 py-0.5',
-  md: 'text-xs px-2 py-1',
+  sm: 'text-[11px] px-2 py-0.5',
+  md: 'text-xs px-2.5 py-1',
 };
 
 export function Badge({
@@ -33,7 +33,7 @@ export function Badge({
   return (
     <span
       className={[
-        'font-bold rounded-full whitespace-nowrap border',
+        'font-bold rounded-full whitespace-nowrap border tracking-[0.04em]',
         variantClasses[variant],
         sizeClasses[size],
         className,
