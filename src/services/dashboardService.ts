@@ -1,5 +1,6 @@
-import { getApiUrl, API_CONFIG } from '../config/api';
+import { API_CONFIG } from '../config/api';
 import { logout } from './authService';
+import { buildApiUrl, fetchWithTimeout, isUnauthorizedStatus } from './httpClient';
 
 export interface AccountBalance {
   id: string;
@@ -98,59 +99,44 @@ export type FetchResult<T> =
   | { ok: true; data: T }
   | { ok: false; status: 'unauthorized' | 'error' };
 
-async function apiGet<T>(endpoint: string, params?: Record<string, string | null>): Promise<FetchResult<T>> {
-  const base = typeof window === 'undefined' ? 'http://localhost' : window.location.origin;
-  const url = new URL(getApiUrl(endpoint), base);
-  if (params) {
-    for (const [k, v] of Object.entries(params)) {
-      if (v !== null && v !== undefined && v !== '') url.searchParams.set(k, v);
-    }
-  }
-  const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
+type QueryParams = Record<string, string | null | undefined>;
 
+async function handleJsonResponse<T>(response: Response): Promise<FetchResult<T>> {
+  if (isUnauthorizedStatus(response.status)) {
+    await logout();
+    return { ok: false, status: 'unauthorized' };
+  }
+
+  if (!response.ok) {
+    return { ok: false, status: 'error' };
+  }
+
+  const data = (await response.json()) as T;
+  return { ok: true, data };
+}
+
+async function apiGet<T>(endpoint: string, params?: QueryParams): Promise<FetchResult<T>> {
   try {
-    const res = await fetch(url.toString(), {
+    const response = await fetchWithTimeout(buildApiUrl(endpoint, params), {
       credentials: 'include',
-      signal: controller.signal,
     });
-    if (res.status === 401 || res.status === 403) {
-      await logout();
-      return { ok: false, status: 'unauthorized' };
-    }
-    if (!res.ok) return { ok: false, status: 'error' };
-    const data = (await res.json()) as T;
-    return { ok: true, data };
+    return handleJsonResponse<T>(response);
   } catch {
     return { ok: false, status: 'error' };
-  } finally {
-    window.clearTimeout(timeoutId);
   }
 }
 
 async function apiPatch<T>(endpoint: string, body: unknown): Promise<FetchResult<T>> {
-  const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
-
   try {
-    const res = await fetch(getApiUrl(endpoint), {
+    const response = await fetchWithTimeout(buildApiUrl(endpoint), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
       credentials: 'include',
-      signal: controller.signal,
     });
-    if (res.status === 401 || res.status === 403) {
-      await logout();
-      return { ok: false, status: 'unauthorized' };
-    }
-    if (!res.ok) return { ok: false, status: 'error' };
-    const data = (await res.json()) as T;
-    return { ok: true, data };
+    return handleJsonResponse<T>(response);
   } catch {
     return { ok: false, status: 'error' };
-  } finally {
-    window.clearTimeout(timeoutId);
   }
 }
 

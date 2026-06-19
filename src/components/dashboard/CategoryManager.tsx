@@ -1,10 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Settings, Save, X, AlertCircle, ToggleLeft, ToggleRight } from 'lucide-react';
+import { AlertCircle, ToggleLeft, ToggleRight } from 'lucide-react';
 import {
   fetchCategories,
   updateCategory,
   type Category,
-  type CategoryUpdatePayload,
 } from '../../services/dashboardService';
 import { Modal, Button, Skeleton } from '../ui';
 
