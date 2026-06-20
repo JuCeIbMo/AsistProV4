@@ -1,21 +1,38 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Settings, Sparkles } from 'lucide-react';
-import { AppointmentsList } from '../components/dashboard/AppointmentsList';
-import {
-  AccountsSection,
-  AuthCheckingPanel,
-  BudgetsSection,
-  ErrorPanel,
-} from '../components/dashboard/DashboardSections';
+import { AuthCheckingPanel, ErrorPanel } from '../components/dashboard/DashboardSections';
 import { CategoryManager } from '../components/dashboard/CategoryManager';
-import { ExpenseCategoriesList } from '../components/dashboard/ExpenseCategoriesList';
-import { ExpensePieChart } from '../components/dashboard/ExpensePieChart';
-import { MonthlyTrendBars } from '../components/dashboard/MonthlyTrendBars';
-import { SummaryCard } from '../components/dashboard/SummaryCard';
-import { TransactionsList } from '../components/dashboard/TransactionsList';
+import { MesaSidebar } from '../components/dashboard/mesa/MesaSidebar';
+import { MesaHeader } from '../components/dashboard/mesa/MesaHeader';
+import { MesaMetrics, type MesaMetric } from '../components/dashboard/mesa/MesaMetrics';
+import { MesaAgenda } from '../components/dashboard/mesa/MesaAgenda';
+import { MesaBookings } from '../components/dashboard/mesa/MesaBookings';
+import { MesaCorkBoard } from '../components/dashboard/mesa/MesaCorkBoard';
+import { MesaFinance } from '../components/dashboard/mesa/MesaFinance';
+import { MesaDeskProps } from '../components/dashboard/mesa/MesaDeskProps';
+import { fmt } from '../components/dashboard/format';
 import { useDashboardPageData } from '../hooks/useDashboardPageData';
+
+const DESK_BG =
+  "radial-gradient(140% 110% at 50% -10%, rgba(255,253,246,.65), rgba(220,210,186,0) 50%)," +
+  "radial-gradient(130% 120% at 50% 125%, rgba(120,105,75,.18), rgba(120,105,75,0) 55%)," +
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E\")";
+
+function greetingForHour(hour: number): string {
+  if (hour < 12) return 'Buenos días';
+  if (hour < 19) return 'Buenas tardes';
+  return 'Buenas noches';
+}
+
+function isToday(iso: string, now: Date): boolean {
+  const d = new Date(iso);
+  return (
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate()
+  );
+}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -25,115 +42,159 @@ export default function DashboardPage() {
     router.replace('/login');
   }, [router]);
 
-  const { authChecking, data, error, load, loading, logout } = useDashboardPageData(goLogin);
+  const { appointments, authChecking, data, error, load, logout } =
+    useDashboardPageData(goLogin);
 
-  async function handleLogout() {
+  const handleLogout = useCallback(async () => {
     await logout();
     router.push('/login');
-  }
+  }, [logout, router]);
+
+  const now = useMemo(() => new Date(), []);
+  const currency = data?.currency || 'Bs';
+
+  const dateLabel = useMemo(
+    () =>
+      now.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }),
+    [now],
+  );
+  const dayNumber = String(now.getDate());
+  const monthLabel = useMemo(
+    () => now.toLocaleDateString('es-ES', { weekday: 'long', month: 'long' }),
+    [now],
+  );
+
+  const todays = useMemo(
+    () =>
+      appointments
+        .filter(a => isToday(a.starts_at, now))
+        .sort((a, b) => a.starts_at.localeCompare(b.starts_at)),
+    [appointments, now],
+  );
+
+  const scheduledToday = todays.filter(a => a.status === 'scheduled').length;
+
+  const metrics: MesaMetric[] = useMemo(
+    () => [
+      {
+        label: 'Ingresos del mes',
+        value: `${currency} ${fmt(data?.month.income)}`,
+        hint: data?.month_label || '',
+        hintColor: '#547552',
+        rotation: -0.6,
+      },
+      {
+        label: 'Citas hoy',
+        value: String(todays.length),
+        hint: `${scheduledToday} programadas`,
+        hintColor: '#C48B1E',
+        rotation: 0.5,
+      },
+      {
+        label: 'Neto del mes',
+        value: `${currency} ${fmt(data?.month.net)}`,
+        hint: `Ahorro ${data ? Math.round(data.month.savings_rate * 100) : 0}%`,
+        hintColor: '#9a824a',
+        valueColor: '#C94E2C',
+        rotation: -0.3,
+      },
+    ],
+    [currency, data, todays.length, scheduledToday],
+  );
+
+  const subtitle = `${todays.length} citas hoy · ${scheduledToday} programadas · ${currency} ${fmt(
+    data?.month.expense,
+  )} en gastos`;
 
   return (
     <>
       <Head>
-        <title>AsistPro — Dashboard</title>
+        <title>AsistPro — Escritorio</title>
         <meta name="robots" content="noindex" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&family=Dancing+Script:wght@600;700&family=Caveat:wght@500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </Head>
 
-      <div className="min-h-screen bg-dark-bg text-dark-text overflow-x-hidden">
+      <div
+        style={{
+          position: 'relative',
+          minHeight: '100vh',
+          padding: '30px 40px 70px',
+          overflow: 'hidden',
+          fontFamily: "'DM Sans',system-ui,sans-serif",
+          color: '#1A1816',
+          backgroundColor: '#E4DCC8',
+          backgroundImage: DESK_BG,
+        }}
+      >
         <div
-          className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(182,138,62,0.15),transparent_22%),radial-gradient(circle_at_top_right,rgba(93,133,179,0.10),transparent_18%)]"
-          aria-hidden="true"
-        />
+          style={{
+            display: 'flex',
+            gap: 30,
+            maxWidth: 1500,
+            margin: '0 auto',
+            alignItems: 'flex-start',
+            position: 'relative',
+            zIndex: 2,
+          }}
+        >
+          <MesaSidebar
+            userName="Mi cuenta"
+            userRole="Plan Pro · WhatsApp"
+            onSettings={() => setCategoriesOpen(true)}
+            onLogout={handleLogout}
+          />
 
-        <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <section className="section-frame rounded-[2rem] bg-dark-card/82 px-5 py-6 sm:px-7 sm:py-7 mb-6">
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
-              <div>
-                <div className="editorial-kicker !text-dark-accent-dark before:!bg-current">
-                  Control brief
-                </div>
-                <h1 className="mt-4 font-display text-4xl sm:text-5xl leading-none text-dark-text-primary">
-                  Dashboard
-                </h1>
-                <p className="mt-3 text-sm sm:text-base text-dark-secondary max-w-2xl">
-                  Lectura rápida del mes, estado de cuentas y actividad reciente sin ruido visual.
-                </p>
-              </div>
+          <main style={{ flex: 1, minWidth: 0 }}>
+            <MesaHeader
+              dateLabel={dateLabel}
+              greeting={greetingForHour(now.getHours())}
+              subtitle={subtitle}
+              onReminder={() => setCategoriesOpen(true)}
+            />
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-                <div className="inline-flex items-center gap-2 rounded-full border border-dark-border px-4 py-2 text-xs uppercase tracking-[0.18em] text-dark-secondary">
-                  <Sparkles className="w-3.5 h-3.5 text-dark-accent-dark" aria-hidden="true" />
-                  Datos en tiempo real
-                </div>
-                <button
-                  onClick={() => setCategoriesOpen(true)}
-                  className="inline-flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] px-4 py-3 rounded-lg bg-dark-elevated border border-dark-border text-dark-secondary hover:text-dark-text-primary hover:border-dark-border-strong transition cursor-pointer"
-                >
-                  <Settings className="w-4 h-4" aria-hidden="true" />
-                  Categorías
-                </button>
-              </div>
-            </div>
-          </section>
-
-          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_21rem] lg:gap-6">
-            <aside className="lg:order-2 lg:sticky lg:top-6 lg:self-start mb-6 lg:mb-0">
-              <SummaryCard
-                data={data}
-                loading={loading}
-                onRefresh={load}
-                onLogout={handleLogout}
-                onUnauthorized={goLogin}
-              />
-            </aside>
-
-            <div className="lg:order-1 space-y-6 min-w-0">
-              {authChecking ? (
+            {authChecking ? (
+              <div style={{ marginTop: 26 }}>
                 <AuthCheckingPanel />
-              ) : error ? (
+              </div>
+            ) : error ? (
+              <div style={{ marginTop: 26 }}>
                 <ErrorPanel onRetry={load} />
-              ) : (
-                <>
-                  <MonthlyTrendBars
-                    trend={data?.monthly_trend || []}
-                    loading={loading}
-                    currency={data?.currency}
-                  />
+              </div>
+            ) : (
+              <>
+                <MesaMetrics metrics={metrics} />
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <ExpensePieChart
-                      categories={data?.expense_categories || []}
-                      loading={loading}
-                      currency={data?.currency}
-                    />
-                    <ExpenseCategoriesList
-                      categories={data?.expense_categories || []}
-                      loading={loading}
-                      currency={data?.currency}
-                    />
+                <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', marginTop: 26, flexWrap: 'wrap' }}>
+                  <div style={{ flex: 1.5, minWidth: 340, display: 'flex', flexDirection: 'column', gap: 30 }}>
+                    <MesaAgenda dayNumber={dayNumber} monthLabel={monthLabel} appointments={todays} />
+                    <MesaBookings transactions={data?.recent_transactions || []} currency={currency} />
                   </div>
 
-                  <AccountsSection accounts={data?.accounts} loading={loading} />
-                  <BudgetsSection budgets={data?.budgets} loading={loading} />
+                  <div style={{ flex: 1, minWidth: 300, display: 'flex', flexDirection: 'column', gap: 34 }}>
+                    <MesaCorkBoard />
+                    <MesaFinance
+                      monthLabel={data?.month_label || ''}
+                      income={data?.month.income || '0'}
+                      expense={data?.month.expense || '0'}
+                      net={data?.month.net || '0'}
+                      currency={currency}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+          </main>
+        </div>
 
-                  <TransactionsList
-                    initialItems={data?.recent_transactions || []}
-                    loading={loading}
-                    onUnauthorized={goLogin}
-                  />
-
-                  <AppointmentsList onUnauthorized={goLogin} />
-                </>
-              )}
-            </div>
-          </div>
-
-          <footer className="pt-8 pb-6 text-center">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-dark-muted">
-              AsistPro · Datos en tiempo real
-            </p>
-          </footer>
-        </main>
+        <MesaDeskProps />
       </div>
 
       <CategoryManager

@@ -104,6 +104,28 @@ body::after {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* ── Mesa (Escritorio) dashboard keyframes ── */
+@keyframes om-float { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-6px) rotate(var(--r, 0deg)); } }
+@keyframes om-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.75); } }
+@keyframes om-spin  { to { transform: rotate(360deg); } }
+@keyframes om-steam { 0% { opacity: 0; transform: translateY(2px) scaleX(.8); } 35% { opacity: .45; } 100% { opacity: 0; transform: translateY(-16px) scaleX(1.5); } }
+
+/* ── Mesa (Escritorio) hover states (porta los style-hover del prototipo) ── */
+.mesa-nav-item:not([data-active]):hover { background: rgba(180,150,70,.18); }
+.mesa-lift { transition: transform .18s ease, box-shadow .18s ease; }
+.mesa-lift:hover { transform: translateY(-3px) rotate(0deg) !important; box-shadow: 0 18px 34px rgba(70,55,28,.2) !important; }
+.mesa-card:hover { transform: rotate(0deg) translateY(-3px) !important; box-shadow: 0 26px 46px rgba(70,55,28,.22) !important; }
+.mesa-card { transition: transform .2s ease, box-shadow .2s ease; }
+.mesa-row:hover { background: #F7F1DE; }
+.mesa-btn-dark:hover { transform: translateY(-2px); background: #2c2a26 !important; }
+.mesa-btn-accent:hover { transform: translateY(-2px); background: #b0421f !important; }
+.mesa-btn-ghost:hover { border-color: #1A1816 !important; }
+.mesa-btn-outline:hover { background: #C94E2C !important; color: #fff !important; }
+.mesa-paper:hover { transform: rotate(0deg) !important; }
+.mesa-vinyl:hover { animation: om-spin 4s linear infinite; }
+.mesa-today:hover { border-color: #1A1816 !important; color: #1A1816 !important; }
+.mesa-btn-dark, .mesa-btn-accent, .mesa-btn-ghost, .mesa-paper, .mesa-row, .mesa-today { transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease; }
+
 /* ── Animation utilities ── */
 .animate-float       { animation: float 5s ease-in-out infinite; }
 .animate-glow-pulse  { animation: glowPulse 3s ease-in-out infinite; }

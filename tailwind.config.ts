@@ -20,6 +20,23 @@ const config: Config = {
       colors: {
         light: lightColors,
         dark: darkColors,
+        // ── Mesa (Escritorio) desk-paper palette ──
+        mesa: {
+          desk: '#E4DCC8',
+          paper: '#FCFAF2',
+          ink: '#1A1816',
+          'ink-soft': '#221f1b',
+          manila: '#EBDBAB',
+          'manila-deep': '#E3D0A0',
+          gold: '#D9A82E',
+          terracotta: '#C94E2C',
+          violet: '#6652B5',
+          green: '#547552',
+          amber: '#C48B1E',
+          cork: '#C19A6B',
+          muted: '#A8997A',
+          'muted-deep': '#8a7c5e',
+        },
       },
 
       // ── Spacing ──
@@ -56,6 +73,12 @@ const config: Config = {
       fontFamily: {
         display: ['Fraunces', 'serif'],
         sans: ['IBM Plex Sans', 'sans-serif'],
+        // ── Mesa (Escritorio) typefaces ──
+        serifMesa: ['"Playfair Display"', 'Georgia', 'serif'],
+        sansMesa: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        monoMesa: ['"JetBrains Mono"', 'monospace'],
+        hand: ['"Dancing Script"', 'cursive'],
+        note: ['Caveat', 'cursive'],
       },
     },
   },
