@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&family=Dancing+Script:wght@600;700&family=Caveat:wght@500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -45,21 +45,21 @@ html {
 body {
   font-family: 'DM Sans', system-ui, sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(201, 78, 44, 0.14), transparent 28%),
-    radial-gradient(circle at top right, rgba(102, 82, 181, 0.12), transparent 24%),
-    linear-gradient(180deg, var(--bg-base) 0%, color-mix(in srgb, var(--bg-base) 88%, #ffffff 12%) 100%);
-  color: var(--text-primary);
+    radial-gradient(140% 110% at 50% -10%, rgba(255,253,246,.65), rgba(220,210,186,0) 50%),
+    radial-gradient(130% 120% at 50% 125%, rgba(120,105,75,.18), rgba(120,105,75,0) 55%),
+    #E4DCC8;
+  color: #1A1816;
   overflow-x: hidden;
   letter-spacing: -0.01em;
 }
 
-/* Subtle paper grain for depth */
+/* Mesa paper grain */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  opacity: 0.05;
   pointer-events: none;
   z-index: 9998;
   mix-blend-mode: multiply;

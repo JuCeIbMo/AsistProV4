@@ -35,7 +35,7 @@ function App() {
   const whatsappRedirect = () => window.open('https://wa.me/5492604086606', '_blank');
 
   return (
-    <div className="min-h-screen bg-light-bg font-sans text-light-text overflow-x-hidden">
+    <div className="min-h-screen font-sans overflow-x-hidden" style={{ color: '#1A1816' }}>
       <LandingHeader
         isMenuOpen={isMenuOpen}
         scrolled={scrolled}
