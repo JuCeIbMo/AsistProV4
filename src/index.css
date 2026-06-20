@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..900,50,1&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -13,9 +13,9 @@
   --text-primary: #131A26;
   --text-secondary: #4F5B70;
   --text-muted: #7A808D;
-  --accent: #B68A3E;
-  --accent-dark: #8D6827;
-  --accent-light: #F0E3C7;
+  --accent: #C94E2C;
+  --accent-dark: #A83E22;
+  --accent-light: #FAE8E2;
   --border: rgba(19, 26, 38, 0.10);
   --shadow-sm: 0 8px 18px rgba(10, 17, 27, 0.08), 0 2px 6px rgba(10, 17, 27, 0.04);
   --shadow-md: 0 22px 40px rgba(10, 17, 27, 0.12), 0 6px 16px rgba(10, 17, 27, 0.07);
@@ -43,10 +43,10 @@ html {
 }
 
 body {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(182, 138, 62, 0.18), transparent 28%),
-    radial-gradient(circle at top right, rgba(93, 133, 179, 0.14), transparent 24%),
+    radial-gradient(circle at top left, rgba(201, 78, 44, 0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(102, 82, 181, 0.12), transparent 24%),
     linear-gradient(180deg, var(--bg-base) 0%, color-mix(in srgb, var(--bg-base) 88%, #ffffff 12%) 100%);
   color: var(--text-primary);
   overflow-x: hidden;
