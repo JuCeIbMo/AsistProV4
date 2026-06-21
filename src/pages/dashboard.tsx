@@ -2,8 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { AuthCheckingPanel, ErrorPanel } from '../components/dashboard/DashboardSections';
-import { CategoryManager } from '../components/dashboard/CategoryManager';
-import { MesaSidebar } from '../components/dashboard/mesa/MesaSidebar';
+import { MesaSidebar, type DashboardView } from '../components/dashboard/mesa/MesaSidebar';
 import { MesaHeader } from '../components/dashboard/mesa/MesaHeader';
 import { MesaMetrics, type MesaMetric } from '../components/dashboard/mesa/MesaMetrics';
 import { MesaAgenda } from '../components/dashboard/mesa/MesaAgenda';
@@ -11,6 +10,9 @@ import { MesaBookings } from '../components/dashboard/mesa/MesaBookings';
 import { MesaCorkBoard } from '../components/dashboard/mesa/MesaCorkBoard';
 import { MesaFinance } from '../components/dashboard/mesa/MesaFinance';
 import { MesaDeskProps } from '../components/dashboard/mesa/MesaDeskProps';
+import { MesaAgendaView } from '../components/dashboard/mesa/MesaAgendaView';
+import { MesaFinanzasView } from '../components/dashboard/mesa/MesaFinanzasView';
+import { MesaAjustesView } from '../components/dashboard/mesa/MesaAjustesView';
 import { fmt } from '../components/dashboard/format';
 import { useDashboardPageData } from '../hooks/useDashboardPageData';
 
@@ -36,7 +38,7 @@ function isToday(iso: string, now: Date): boolean {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [activeView, setActiveView] = useState<DashboardView>('inicio');
 
   const goLogin = useCallback(() => {
     router.replace('/login');
@@ -50,7 +52,7 @@ export default function DashboardPage() {
     router.push('/login');
   }, [logout, router]);
 
-  const now = useMemo(() => new Date(), []);
+  const now      = useMemo(() => new Date(), []);
   const currency = data?.currency || 'Bs';
 
   const dateLabel = useMemo(
@@ -148,60 +150,90 @@ export default function DashboardPage() {
           <MesaSidebar
             userName="Mi cuenta"
             userRole="Plan Pro · WhatsApp"
-            onSettings={() => setCategoriesOpen(true)}
+            activeView={activeView}
+            onNavigate={view => {
+              setActiveView(view);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             onLogout={handleLogout}
           />
 
           <main style={{ flex: 1, minWidth: 0 }}>
-            <MesaHeader
-              dateLabel={dateLabel}
-              greeting={greetingForHour(now.getHours())}
-              subtitle={subtitle}
-              onReminder={() => setCategoriesOpen(true)}
-            />
 
-            {authChecking ? (
-              <div style={{ marginTop: 26 }}>
-                <AuthCheckingPanel />
-              </div>
-            ) : error ? (
-              <div style={{ marginTop: 26 }}>
-                <ErrorPanel onRetry={load} />
-              </div>
-            ) : (
+            {/* ── INICIO ── */}
+            {activeView === 'inicio' && (
               <>
-                <MesaMetrics metrics={metrics} />
+                <MesaHeader
+                  dateLabel={dateLabel}
+                  greeting={greetingForHour(now.getHours())}
+                  subtitle={subtitle}
+                  onReminder={() => setActiveView('agenda')}
+                />
 
-                <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', marginTop: 26, flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1.5, minWidth: 340, display: 'flex', flexDirection: 'column', gap: 30 }}>
-                    <MesaAgenda dayNumber={dayNumber} monthLabel={monthLabel} appointments={todays} />
-                    <MesaBookings transactions={data?.recent_transactions || []} currency={currency} />
-                  </div>
-
-                  <div style={{ flex: 1, minWidth: 300, display: 'flex', flexDirection: 'column', gap: 34 }}>
-                    <MesaCorkBoard />
-                    <MesaFinance
-                      monthLabel={data?.month_label || ''}
-                      income={data?.month.income || '0'}
-                      expense={data?.month.expense || '0'}
-                      net={data?.month.net || '0'}
-                      currency={currency}
-                    />
-                  </div>
-                </div>
+                {authChecking ? (
+                  <div style={{ marginTop: 26 }}><AuthCheckingPanel /></div>
+                ) : error ? (
+                  <div style={{ marginTop: 26 }}><ErrorPanel onRetry={load} /></div>
+                ) : (
+                  <>
+                    <MesaMetrics metrics={metrics} />
+                    <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', marginTop: 26, flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1.5, minWidth: 340, display: 'flex', flexDirection: 'column', gap: 30 }}>
+                        <MesaAgenda dayNumber={dayNumber} monthLabel={monthLabel} appointments={todays} />
+                        <MesaBookings transactions={data?.recent_transactions || []} currency={currency} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 300, display: 'flex', flexDirection: 'column', gap: 34 }}>
+                        <MesaCorkBoard />
+                        <MesaFinance
+                          monthLabel={data?.month_label || ''}
+                          income={data?.month.income || '0'}
+                          expense={data?.month.expense || '0'}
+                          net={data?.month.net || '0'}
+                          currency={currency}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
               </>
             )}
+
+            {/* ── AGENDA ── */}
+            {activeView === 'agenda' && (
+              authChecking ? (
+                <div style={{ marginTop: 26 }}><AuthCheckingPanel /></div>
+              ) : error ? (
+                <div style={{ marginTop: 26 }}><ErrorPanel onRetry={load} /></div>
+              ) : (
+                <MesaAgendaView appointments={appointments} now={now} />
+              )
+            )}
+
+            {/* ── FINANZAS ── */}
+            {activeView === 'finanzas' && (
+              authChecking ? (
+                <div style={{ marginTop: 26 }}><AuthCheckingPanel /></div>
+              ) : error ? (
+                <div style={{ marginTop: 26 }}><ErrorPanel onRetry={load} /></div>
+              ) : data ? (
+                <MesaFinanzasView data={data} currency={currency} appointments={appointments} />
+              ) : null
+            )}
+
+            {/* ── AJUSTES ── */}
+            {activeView === 'ajustes' && (
+              <MesaAjustesView
+                currentCurrency={currency}
+                onSaved={load}
+                onUnauthorized={goLogin}
+              />
+            )}
+
           </main>
         </div>
 
         <MesaDeskProps />
       </div>
-
-      <CategoryManager
-        isOpen={categoriesOpen}
-        onClose={() => setCategoriesOpen(false)}
-        onUnauthorized={goLogin}
-      />
     </>
   );
 }

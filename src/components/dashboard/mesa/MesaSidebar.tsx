@@ -1,18 +1,21 @@
 import type { CSSProperties } from 'react';
 
+export type DashboardView = 'inicio' | 'agenda' | 'finanzas' | 'ajustes';
+
 interface NavItem {
   label: string;
   dot: string;
+  view: DashboardView | null;
   badge?: string;
 }
 
 const NAV: NavItem[] = [
-  { label: 'Inicio', dot: '#352507' },
-  { label: 'Agenda', dot: '#6652B5' },
-  { label: 'Finanzas', dot: '#547552' },
-  { label: 'Clientes', dot: '#C94E2C' },
-  { label: 'Mensajes', dot: '#C48B1E', badge: '4' },
-  { label: 'Ajustes', dot: '#A8997A' },
+  { label: 'Inicio',    dot: '#352507', view: 'inicio' },
+  { label: 'Agenda',   dot: '#6652B5', view: 'agenda' },
+  { label: 'Finanzas', dot: '#547552', view: 'finanzas' },
+  { label: 'Clientes', dot: '#C94E2C', view: null },
+  { label: 'Mensajes', dot: '#C48B1E', view: null, badge: '4' },
+  { label: 'Ajustes',  dot: '#A8997A', view: 'ajustes' },
 ];
 
 const mono: CSSProperties = { fontFamily: "'JetBrains Mono',monospace" };
@@ -20,11 +23,12 @@ const mono: CSSProperties = { fontFamily: "'JetBrains Mono',monospace" };
 interface MesaSidebarProps {
   userName: string;
   userRole: string;
-  onSettings: () => void;
+  activeView: DashboardView;
+  onNavigate: (view: DashboardView) => void;
   onLogout: () => void;
 }
 
-export function MesaSidebar({ userName, userRole, onSettings, onLogout }: MesaSidebarProps) {
+export function MesaSidebar({ userName, userRole, activeView, onNavigate, onLogout }: MesaSidebarProps) {
   const initials = userName
     .split(' ')
     .map(w => w[0])
@@ -80,16 +84,16 @@ export function MesaSidebar({ userName, userRole, onSettings, onLogout }: MesaSi
         </div>
 
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {NAV.map((item, i) => {
-            const active = i === 0;
-            const interactive = item.label === 'Ajustes';
+          {NAV.map((item) => {
+            const active = item.view !== null && activeView === item.view;
             return (
               <button
                 key={item.label}
                 type="button"
-                onClick={interactive ? onSettings : undefined}
+                onClick={item.view ? () => onNavigate(item.view!) : undefined}
                 className="mesa-nav-item"
                 data-active={active || undefined}
+                disabled={item.view === null}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -99,15 +103,16 @@ export function MesaSidebar({ userName, userRole, onSettings, onLogout }: MesaSi
                   border: 'none',
                   textAlign: 'left',
                   width: '100%',
-                  cursor: 'pointer',
+                  cursor: item.view ? 'pointer' : 'default',
                   fontFamily: "'DM Sans',sans-serif",
                   fontSize: 14,
                   fontWeight: active ? 600 : 500,
                   background: active ? '#D9A82E' : 'transparent',
-                  color: active ? '#352507' : '#6a5828',
+                  color: active ? '#352507' : item.view === null ? '#a89e7e' : '#6a5828',
                   boxShadow: active
                     ? 'inset 0 1px 0 rgba(255,255,255,.4), 0 3px 8px rgba(150,110,20,.3)'
                     : 'none',
+                  opacity: item.view === null ? 0.6 : 1,
                 }}
               >
                 <span
