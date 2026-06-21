@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { AuthCheckingPanel, ErrorPanel } from '../components/dashboard/DashboardSections';
 import { MesaSidebar, type DashboardView } from '../components/dashboard/mesa/MesaSidebar';
+import { MesaBottomNav } from '../components/dashboard/mesa/MesaBottomNav';
 import { MesaHeader } from '../components/dashboard/mesa/MesaHeader';
 import { MesaMetrics, type MesaMetric } from '../components/dashboard/mesa/MesaMetrics';
 import { MesaAgenda } from '../components/dashboard/mesa/MesaAgenda';
@@ -15,6 +16,7 @@ import { MesaFinanzasView } from '../components/dashboard/mesa/MesaFinanzasView'
 import { MesaAjustesView } from '../components/dashboard/mesa/MesaAjustesView';
 import { fmt } from '../components/dashboard/format';
 import { useDashboardPageData } from '../hooks/useDashboardPageData';
+import { useMobile } from '../hooks/useMobile';
 
 const DESK_BG =
   "radial-gradient(140% 110% at 50% -10%, rgba(255,253,246,.65), rgba(220,210,186,0) 50%)," +
@@ -39,6 +41,7 @@ function isToday(iso: string, now: Date): boolean {
 export default function DashboardPage() {
   const router = useRouter();
   const [activeView, setActiveView] = useState<DashboardView>('inicio');
+  const isMobile = useMobile();
 
   const goLogin = useCallback(() => {
     router.replace('/login');
@@ -128,7 +131,7 @@ export default function DashboardPage() {
         style={{
           position: 'relative',
           minHeight: '100vh',
-          padding: '30px 40px 70px',
+          padding: isMobile ? '16px 12px 84px' : '30px 40px 70px',
           overflow: 'hidden',
           fontFamily: "'DM Sans',system-ui,sans-serif",
           color: '#1A1816',
@@ -139,7 +142,7 @@ export default function DashboardPage() {
         <div
           style={{
             display: 'flex',
-            gap: 30,
+            gap: isMobile ? 0 : 30,
             maxWidth: 1500,
             margin: '0 auto',
             alignItems: 'flex-start',
@@ -147,16 +150,18 @@ export default function DashboardPage() {
             zIndex: 2,
           }}
         >
-          <MesaSidebar
-            userName="Mi cuenta"
-            userRole="Plan Pro · WhatsApp"
-            activeView={activeView}
-            onNavigate={view => {
-              setActiveView(view);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            onLogout={handleLogout}
-          />
+          {!isMobile && (
+            <MesaSidebar
+              userName="Mi cuenta"
+              userRole="Plan Pro · WhatsApp"
+              activeView={activeView}
+              onNavigate={view => {
+                setActiveView(view);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onLogout={handleLogout}
+            />
+          )}
 
           <main style={{ flex: 1, minWidth: 0 }}>
 
@@ -232,8 +237,18 @@ export default function DashboardPage() {
           </main>
         </div>
 
-        <MesaDeskProps />
+        {!isMobile && <MesaDeskProps />}
       </div>
+
+      {isMobile && (
+        <MesaBottomNav
+          activeView={activeView}
+          onNavigate={view => {
+            setActiveView(view);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
+      )}
     </>
   );
 }

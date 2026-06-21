@@ -1,5 +1,6 @@
 import { useMemo, type CSSProperties } from 'react';
 import type { Appointment, AppointmentStatus } from '../../../services/dashboardService';
+import { useMobile } from '../../../hooks/useMobile';
 
 const mono: CSSProperties = { fontFamily: "'JetBrains Mono',monospace" };
 
@@ -57,6 +58,7 @@ interface MesaAgendaViewProps {
 }
 
 export function MesaAgendaView({ appointments, now }: MesaAgendaViewProps) {
+  const isMobile = useMobile();
   const weekDays = useMemo(() => getWeekDays(now), [now]);
 
   const byDay = useMemo(() => {
@@ -101,117 +103,123 @@ export function MesaAgendaView({ appointments, now }: MesaAgendaViewProps) {
   const apptDays     = new Set(appointments.map(a => new Date(a.starts_at).getDate()));
 
   const monthLabel = `${capitalize(MONTH_NAMES[now.getMonth()])} ${now.getFullYear()}`;
-  const weekLabel  = `Semana del ${weekDays[0].getDate()} al ${weekDays[6].getDate()} · ${capitalize(MONTH_NAMES[now.getMonth()])} ${now.getFullYear()}`;
+  const weekLabel  = isMobile
+    ? `Sem. ${weekDays[0].getDate()}–${weekDays[6].getDate()} ${capitalize(MONTH_NAMES[now.getMonth()])}`
+    : `Semana del ${weekDays[0].getDate()} al ${weekDays[6].getDate()} · ${capitalize(MONTH_NAMES[now.getMonth()])} ${now.getFullYear()}`;
 
   return (
     <section>
       {/* HEADER */}
-      <header style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap', marginBottom: 22 }}>
-        <div>
+      <header style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', marginBottom: 22 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ ...mono, fontSize: 11, letterSpacing: '.14em', color: '#8a7c5e', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 9 }}>
-            <span style={{ display: 'block', width: 18, height: 1, background: '#6652B5' }} />
-            {weekLabel}
+            <span style={{ display: 'block', width: 18, height: 1, background: '#6652B5', flexShrink: 0 }} />
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{weekLabel}</span>
           </div>
-          <h1 style={{ fontFamily: "'Dancing Script',cursive", fontWeight: 700, fontSize: 52, lineHeight: 1.05, margin: '4px 0 10px', color: '#221f1b', whiteSpace: 'nowrap' }}>
+          <h1 style={{ fontFamily: "'Dancing Script',cursive", fontWeight: 700, fontSize: isMobile ? 38 : 52, lineHeight: 1.05, margin: '4px 0 10px', color: '#221f1b' }}>
             Tu agenda
           </h1>
-          <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.16em', textTransform: 'uppercase', color: '#6B6560', margin: 0 }}>
-            {weekAppts.length} citas esta semana · {todayAppts.length} citas hoy
+          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.12em', textTransform: 'uppercase', color: '#6B6560', margin: 0 }}>
+            {weekAppts.length} citas esta semana · {todayAppts.length} hoy
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-          <button className="mesa-btn-dark" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 18px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 14, fontWeight: 600, background: '#1A1816', color: '#F5F1E8', boxShadow: '0 6px 16px rgba(26,24,22,.28)' }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <button className="mesa-btn-dark" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: isMobile ? '9px 14px' : '10px 18px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 14, fontWeight: 600, background: '#1A1816', color: '#F5F1E8', boxShadow: '0 6px 16px rgba(26,24,22,.28)' }}>
             <span style={{ fontSize: 17, lineHeight: 0 }}>+</span> Nueva cita
           </button>
-          <button className="mesa-btn-ghost" style={{ padding: '10px 16px', borderRadius: 9, cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 14, fontWeight: 500, background: 'rgba(255,253,246,.7)', color: '#1A1816', border: '1.5px solid rgba(168,153,122,.6)' }}>
-            Bloquear horario
-          </button>
+          {!isMobile && (
+            <button className="mesa-btn-ghost" style={{ padding: '10px 16px', borderRadius: 9, cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 14, fontWeight: 500, background: 'rgba(255,253,246,.7)', color: '#1A1816', border: '1.5px solid rgba(168,153,122,.6)' }}>
+              Bloquear horario
+            </button>
+          )}
         </div>
       </header>
 
       {/* WEEK STRIP */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 30, flexWrap: 'wrap' }}>
-        {weekDays.map((d, i) => {
-          const dayAppts = byDay.get(d.toDateString()) || [];
-          const isToday  = isSameDay(d, now);
-          const fillPct  = dayAppts.length > 0 ? Math.round((dayAppts.length / maxDay) * 100) : 0;
-          return (
-            <div
-              key={d.toDateString()}
-              className="mesa-lift"
-              style={{
-                flex: 1,
-                minWidth: 92,
-                position: 'relative',
-                background: i === 6 ? '#F4EFE2' : '#FCFAF2',
-                borderRadius: 8,
-                padding: '14px 10px 12px',
-                textAlign: 'center',
-                boxShadow: isToday ? '0 12px 24px rgba(70,55,28,.18)' : '0 8px 16px rgba(70,55,28,.1)',
-                transform: isToday ? 'translateY(-4px) rotate(-.6deg)' : `rotate(${DAY_ROTS[i]}deg)`,
-                border: isToday ? '1.5px solid #6652B5' : 'none',
-                cursor: 'pointer',
-                opacity: i === 6 && dayAppts.length === 0 ? 0.72 : 1,
-              }}
-            >
-              {isToday && (
-                <div aria-hidden="true" style={{ position: 'absolute', top: -9, left: '50%', transform: 'translateX(-50%) rotate(-4deg)', width: 54, height: 16, background: 'repeating-linear-gradient(45deg,rgba(102,82,181,.4) 0 6px,rgba(102,82,181,.24) 6px 12px)', boxShadow: '0 2px 3px rgba(0,0,0,.08)' }} />
-              )}
-              <div style={{ ...mono, fontSize: 10, letterSpacing: '.1em', color: isToday ? '#6652B5' : '#9a824a', textTransform: 'uppercase' }}>{DAY_LABELS[i]}</div>
-              <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 28, color: '#221f1b', lineHeight: 1.1 }}>
-                {isToday
-                  ? <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, borderRadius: '50%', background: '#D9A82E', color: '#352507', fontSize: 22, boxShadow: '0 2px 6px rgba(150,110,20,.35)' }}>{d.getDate()}</span>
-                  : <span style={{ color: i === 6 && dayAppts.length === 0 ? '#A8997A' : '#221f1b' }}>{d.getDate()}</span>
-                }
+      <div style={{ overflowX: isMobile ? 'auto' : 'visible', marginBottom: 30, paddingBottom: isMobile ? 6 : 0 }}>
+        <div style={{ display: 'flex', gap: isMobile ? 8 : 12, flexWrap: isMobile ? 'nowrap' : 'wrap' }}>
+          {weekDays.map((d, i) => {
+            const dayAppts = byDay.get(d.toDateString()) || [];
+            const isToday  = isSameDay(d, now);
+            const fillPct  = dayAppts.length > 0 ? Math.round((dayAppts.length / maxDay) * 100) : 0;
+            return (
+              <div
+                key={d.toDateString()}
+                className="mesa-lift"
+                style={{
+                  flex: isMobile ? '0 0 68px' : 1,
+                  minWidth: isMobile ? 68 : 92,
+                  position: 'relative',
+                  background: i === 6 ? '#F4EFE2' : '#FCFAF2',
+                  borderRadius: 8,
+                  padding: isMobile ? '10px 6px 8px' : '14px 10px 12px',
+                  textAlign: 'center',
+                  boxShadow: isToday ? '0 12px 24px rgba(70,55,28,.18)' : '0 8px 16px rgba(70,55,28,.1)',
+                  transform: isToday ? 'translateY(-4px) rotate(-.6deg)' : `rotate(${DAY_ROTS[i]}deg)`,
+                  border: isToday ? '1.5px solid #6652B5' : 'none',
+                  cursor: 'pointer',
+                  opacity: i === 6 && dayAppts.length === 0 ? 0.72 : 1,
+                }}
+              >
+                {isToday && (
+                  <div aria-hidden="true" style={{ position: 'absolute', top: -9, left: '50%', transform: 'translateX(-50%) rotate(-4deg)', width: 44, height: 14, background: 'repeating-linear-gradient(45deg,rgba(102,82,181,.4) 0 6px,rgba(102,82,181,.24) 6px 12px)', boxShadow: '0 2px 3px rgba(0,0,0,.08)' }} />
+                )}
+                <div style={{ ...mono, fontSize: 9, letterSpacing: '.1em', color: isToday ? '#6652B5' : '#9a824a', textTransform: 'uppercase' }}>{DAY_LABELS[i]}</div>
+                <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: isMobile ? 20 : 28, color: '#221f1b', lineHeight: 1.1 }}>
+                  {isToday
+                    ? <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: isMobile ? 26 : 34, height: isMobile ? 26 : 34, borderRadius: '50%', background: '#D9A82E', color: '#352507', fontSize: isMobile ? 16 : 22, boxShadow: '0 2px 6px rgba(150,110,20,.35)' }}>{d.getDate()}</span>
+                    : <span style={{ color: i === 6 && dayAppts.length === 0 ? '#A8997A' : '#221f1b' }}>{d.getDate()}</span>
+                  }
+                </div>
+                <div style={{ height: 4, borderRadius: 100, background: '#ECE4D0', overflow: 'hidden', margin: '5px 4px 0' }}>
+                  {fillPct > 0 && <div style={{ width: `${fillPct}%`, height: '100%', background: FILL_COLORS[i], borderRadius: 100 }} />}
+                </div>
+                <div style={{ ...mono, fontSize: 9, color: dayAppts.length === 0 ? '#A8997A' : '#9a824a', marginTop: 4 }}>
+                  {dayAppts.length === 0 ? 'Libre' : `${dayAppts.length}c`}
+                </div>
               </div>
-              <div style={{ height: 5, borderRadius: 100, background: '#ECE4D0', overflow: 'hidden', margin: '6px 6px 0' }}>
-                {fillPct > 0 && <div style={{ width: `${fillPct}%`, height: '100%', background: FILL_COLORS[i], borderRadius: 100 }} />}
-              </div>
-              <div style={{ ...mono, fontSize: 10, color: dayAppts.length === 0 ? '#A8997A' : '#9a824a', marginTop: 5 }}>
-                {dayAppts.length === 0 ? 'Libre' : `${dayAppts.length} cita${dayAppts.length === 1 ? '' : 's'}`}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
       {/* TWO COLUMN */}
       <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', flexWrap: 'wrap' }}>
 
         {/* PLANNER */}
-        <div style={{ flex: 1.7, minWidth: 360 }}>
+        <div style={{ flex: 1.7, minWidth: isMobile ? '100%' : 360 }}>
           <section style={{ position: 'relative', background: '#FCFAF2', borderRadius: 8, boxShadow: '0 16px 34px rgba(70,55,28,.16), inset 0 1px 0 rgba(255,255,255,.6)', overflow: 'hidden' }}>
             <div aria-hidden="true" style={{ position: 'absolute', top: -12, right: 60, width: 96, height: 26, background: 'repeating-linear-gradient(45deg,rgba(84,117,82,.4) 0 7px,rgba(84,117,82,.26) 7px 14px)', transform: 'rotate(3deg)', boxShadow: '0 3px 5px rgba(0,0,0,.08)', zIndex: 5 }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '22px 26px 16px', borderBottom: '1px dashed #D9CDA8' }}>
-              <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 24, color: '#221f1b' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: isMobile ? '16px 16px 12px' : '22px 26px 16px', borderBottom: '1px dashed #D9CDA8', flexWrap: 'wrap' }}>
+              <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: isMobile ? 18 : 24, color: '#221f1b' }}>
                 {capitalize(now.toLocaleDateString('es-ES', { weekday: 'long' }))} {now.getDate()}
               </div>
               <div style={{ ...mono, fontSize: 11, color: '#9a824a' }}>{todayAppts.length} citas</div>
-              <div style={{ marginLeft: 'auto', display: 'flex', border: '1px solid rgba(168,153,122,.5)', borderRadius: 7, overflow: 'hidden', ...mono, fontSize: 11 }}>
-                <span style={{ padding: '6px 12px', background: '#1A1816', color: '#F5F1E8' }}>Día</span>
-                <span style={{ padding: '6px 12px', color: '#8a7c5e', cursor: 'pointer' }}>Semana</span>
-              </div>
+              {!isMobile && (
+                <div style={{ marginLeft: 'auto', display: 'flex', border: '1px solid rgba(168,153,122,.5)', borderRadius: 7, overflow: 'hidden', ...mono, fontSize: 11 }}>
+                  <span style={{ padding: '6px 12px', background: '#1A1816', color: '#F5F1E8' }}>Día</span>
+                  <span style={{ padding: '6px 12px', color: '#8a7c5e', cursor: 'pointer' }}>Semana</span>
+                </div>
+              )}
             </div>
 
-            <div style={{ display: 'flex', padding: '14px 22px 22px 10px' }}>
+            <div style={{ display: 'flex', padding: isMobile ? '10px 12px 16px 6px' : '14px 22px 22px 10px' }}>
               {/* hour gutter */}
-              <div style={{ width: 52, flex: 'none' }}>
+              <div style={{ width: 44, flex: 'none' }}>
                 {HOURS.map(h => (
-                  <div key={h} style={{ height: 56, ...mono, fontSize: 11, color: '#b3a785', textAlign: 'right', paddingRight: 10, display: 'flex', alignItems: 'flex-start', paddingTop: 2 }}>
+                  <div key={h} style={{ height: 56, ...mono, fontSize: 10, color: '#b3a785', textAlign: 'right', paddingRight: 8, display: 'flex', alignItems: 'flex-start', paddingTop: 2 }}>
                     {String(h).padStart(2, '0')}:00
                   </div>
                 ))}
               </div>
               {/* ruled grid */}
               <div style={{ position: 'relative', flex: 1, height: 56 * HOURS.length, backgroundImage: 'repeating-linear-gradient(#EFE8D5 0 1px,transparent 1px 56px)', borderLeft: '2px solid #F0CFC4' }}>
-                {/* now indicator */}
                 {isNowVisible && (
                   <div style={{ position: 'absolute', left: 0, right: 0, top: nowOffset, height: 0, borderTop: '2px dashed #C94E2C', zIndex: 4 }}>
                     <div style={{ position: 'absolute', left: -5, top: -5, width: 9, height: 9, borderRadius: '50%', background: '#C94E2C' }} />
-                    <div style={{ position: 'absolute', right: 0, top: -18, ...mono, fontSize: 9, color: '#C94E2C', background: '#FCFAF2', padding: '0 5px' }}>ahora</div>
+                    <div style={{ position: 'absolute', right: 0, top: -18, ...mono, fontSize: 9, color: '#C94E2C', background: '#FCFAF2', padding: '0 4px' }}>ahora</div>
                   </div>
                 )}
-                {/* appointment blocks */}
                 {todayAppts.map(a => {
                   const top    = timeToOffset(a.starts_at);
                   const height = durationPx(a.starts_at, a.ends_at);
@@ -223,16 +231,15 @@ export function MesaAgendaView({ appointments, now }: MesaAgendaViewProps) {
                     <div
                       key={a.id}
                       className="mesa-lift"
-                      style={{ position: 'absolute', left: 8, right: 10, top, height, background: col.bg, borderLeft: `4px solid ${col.bar}`, borderRadius: 6, padding: '7px 11px', boxShadow: '0 5px 12px rgba(70,55,28,.12)', cursor: 'pointer', overflow: 'hidden' }}
+                      style={{ position: 'absolute', left: 6, right: 6, top, height, background: col.bg, borderLeft: `4px solid ${col.bar}`, borderRadius: 6, padding: '6px 8px', boxShadow: '0 5px 12px rgba(70,55,28,.12)', cursor: 'pointer', overflow: 'hidden' }}
                     >
-                      <div style={{ fontWeight: 600, fontSize: 13, color: '#221f1b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{person}</div>
-                      <div style={{ ...mono, fontSize: 10, color: col.fg }}>{t0}{t1 ? `–${t1}` : ''}{a.category ? ` · ${a.category.display_name}` : ''}</div>
+                      <div style={{ fontWeight: 600, fontSize: 12, color: '#221f1b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{person}</div>
+                      <div style={{ ...mono, fontSize: 10, color: col.fg }}>{t0}{t1 ? `–${t1}` : ''}{!isMobile && a.category ? ` · ${a.category.display_name}` : ''}</div>
                     </div>
                   );
                 })}
-                {/* empty state */}
                 {todayAppts.length === 0 && (
-                  <div style={{ position: 'absolute', left: 8, right: 10, top: 56, height: 52, border: '1.5px dashed #C9BD9A', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', ...mono, fontSize: 11, color: '#A8997A', cursor: 'pointer' }}>
+                  <div style={{ position: 'absolute', left: 6, right: 6, top: 56, height: 52, border: '1.5px dashed #C9BD9A', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', ...mono, fontSize: 11, color: '#A8997A', cursor: 'pointer' }}>
                     Sin citas para hoy
                   </div>
                 )}
@@ -242,7 +249,7 @@ export function MesaAgendaView({ appointments, now }: MesaAgendaViewProps) {
         </div>
 
         {/* SIDEBAR */}
-        <div style={{ flex: 1, minWidth: 280, display: 'flex', flexDirection: 'column', gap: 30 }}>
+        <div style={{ flex: 1, minWidth: isMobile ? '100%' : 280, display: 'flex', flexDirection: 'column', gap: 30 }}>
 
           {/* MINI CALENDAR */}
           <section className="mesa-card" style={{ position: 'relative', background: '#FCFAF2', borderRadius: 8, padding: '18px 18px 20px', boxShadow: '0 14px 30px rgba(70,55,28,.16)', transform: 'rotate(-.5deg)' }}>
@@ -281,21 +288,21 @@ export function MesaAgendaView({ appointments, now }: MesaAgendaViewProps) {
           <section className="mesa-card" style={{ background: '#FCFAF2', borderRadius: 8, padding: 20, boxShadow: '0 14px 30px rgba(70,55,28,.16)', transform: 'rotate(.4deg)' }}>
             <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 18, color: '#221f1b', marginBottom: 14 }}>Estado de la semana</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-              <div style={{ width: 108, height: 108, borderRadius: '50%', flex: 'none', background: donut, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 14px rgba(70,55,28,.18)' }}>
-                <div style={{ width: 70, height: 70, borderRadius: '50%', background: '#FCFAF2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 24, color: '#221f1b', lineHeight: 1 }}>{weekAppts.length}</div>
+              <div style={{ width: 96, height: 96, borderRadius: '50%', flex: 'none', background: donut, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 14px rgba(70,55,28,.18)' }}>
+                <div style={{ width: 62, height: 62, borderRadius: '50%', background: '#FCFAF2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 22, color: '#221f1b', lineHeight: 1 }}>{weekAppts.length}</div>
                   <div style={{ ...mono, fontSize: 8.5, color: '#9a824a' }}>citas</div>
                 </div>
               </div>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 9, ...mono, fontSize: 11 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#5c5648' }}>
-                  <span style={{ width: 9, height: 9, borderRadius: 2, background: '#6652B5' }} />Confirmadas<span style={{ marginLeft: 'auto', color: '#221f1b' }}>{scheduledCount}</span>
+                  <span style={{ width: 9, height: 9, borderRadius: 2, background: '#6652B5', flexShrink: 0 }} />Confirmadas<span style={{ marginLeft: 'auto', color: '#221f1b' }}>{scheduledCount}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#5c5648' }}>
-                  <span style={{ width: 9, height: 9, borderRadius: 2, background: '#547552' }} />Completadas<span style={{ marginLeft: 'auto', color: '#221f1b' }}>{completedCount}</span>
+                  <span style={{ width: 9, height: 9, borderRadius: 2, background: '#547552', flexShrink: 0 }} />Completadas<span style={{ marginLeft: 'auto', color: '#221f1b' }}>{completedCount}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#5c5648' }}>
-                  <span style={{ width: 9, height: 9, borderRadius: 2, background: '#C94E2C' }} />Canceladas<span style={{ marginLeft: 'auto', color: '#221f1b' }}>{cancelledCount}</span>
+                  <span style={{ width: 9, height: 9, borderRadius: 2, background: '#C94E2C', flexShrink: 0 }} />Canceladas<span style={{ marginLeft: 'auto', color: '#221f1b' }}>{cancelledCount}</span>
                 </div>
               </div>
             </div>

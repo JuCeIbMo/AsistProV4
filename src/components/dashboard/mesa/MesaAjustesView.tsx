@@ -5,6 +5,7 @@ import {
   updateSettings,
   type Category,
 } from '../../../services/dashboardService';
+import { useMobile } from '../../../hooks/useMobile';
 
 const mono: CSSProperties = { fontFamily: "'JetBrains Mono',monospace" };
 
@@ -63,6 +64,7 @@ function SectionCard({ title, subtitle, rotation, children }: {
 }
 
 export function MesaAjustesView({ currentCurrency, onSaved, onUnauthorized }: MesaAjustesViewProps) {
+  const isMobile = useMobile();
   // ── currency ──
   const [currency, setCurrency]       = useState(currentCurrency);
   const [savingCur, setSavingCur]     = useState(false);
@@ -159,7 +161,7 @@ export function MesaAjustesView({ currentCurrency, onSaved, onUnauthorized }: Me
             <span style={{ display: 'block', width: 18, height: 1, background: '#A8997A' }} />
             Configuración de cuenta
           </div>
-          <h1 style={{ fontFamily: "'Dancing Script',cursive", fontWeight: 700, fontSize: 52, lineHeight: 1.05, margin: '4px 0 10px', color: '#221f1b', whiteSpace: 'nowrap' }}>
+          <h1 style={{ fontFamily: "'Dancing Script',cursive", fontWeight: 700, fontSize: isMobile ? 38 : 52, lineHeight: 1.05, margin: '4px 0 10px', color: '#221f1b' }}>
             Ajustes
           </h1>
         </div>
@@ -168,7 +170,7 @@ export function MesaAjustesView({ currentCurrency, onSaved, onUnauthorized }: Me
       <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', flexWrap: 'wrap' }}>
 
         {/* LEFT: currency + plan info */}
-        <div style={{ flex: 1, minWidth: 300, display: 'flex', flexDirection: 'column', gap: 28 }}>
+        <div style={{ flex: 1, minWidth: isMobile ? '100%' : 300, display: 'flex', flexDirection: 'column', gap: 28 }}>
 
           {/* MONEDA */}
           <SectionCard title="Moneda base" subtitle="afecta registros nuevos" rotation={-0.4}>
@@ -239,7 +241,7 @@ export function MesaAjustesView({ currentCurrency, onSaved, onUnauthorized }: Me
         </div>
 
         {/* RIGHT: categories */}
-        <div style={{ flex: 1.6, minWidth: 360 }}>
+        <div style={{ flex: 1.6, minWidth: isMobile ? '100%' : 360 }}>
           <SectionCard title="Categorías" subtitle="activar · renombrar · organizar" rotation={0.3}>
 
             {feedback && (

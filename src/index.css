@@ -199,6 +199,16 @@ body::after {
   opacity: 0.65;
 }
 
+/* ── Touch devices: disable hover lift animations ── */
+@media (hover: none) {
+  .mesa-lift:hover { transform: none !important; box-shadow: 0 10px 22px rgba(70,55,28,.13) !important; }
+  .mesa-card:hover { transform: none !important; box-shadow: 0 14px 30px rgba(70,55,28,.16) !important; }
+  .mesa-nav-item:not([data-active]):hover { background: transparent !important; }
+  .mesa-btn-dark:hover,
+  .mesa-btn-accent:hover,
+  .mesa-btn-ghost:hover { transform: none !important; }
+}
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   *,
