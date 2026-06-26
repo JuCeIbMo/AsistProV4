@@ -5,6 +5,7 @@ import { Bot, Phone, ArrowRight, ChevronLeft, ShieldCheck, Sparkles } from 'luci
 import { requestOtp, verifyOtp, resendOtp, checkAuth } from '../services/authService';
 import { TextInput } from '../components/ui/TextInput';
 import { Button } from '../components/ui/Button';
+import { buildWhatsAppOtpRecoveryUrl } from '../config/whatsapp';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,10 +14,12 @@ export default function LoginPage() {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [errorCode, setErrorCode] = useState('');
   const [countdown, setCountdown] = useState(0);
   const [checking, setChecking] = useState(true);
   const phoneRef = useRef<HTMLInputElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
+  const whatsappWindowExpired = errorCode === 'WHATSAPP_WINDOW_EXPIRED';
 
   useEffect(() => {
     checkAuth().then(res => {
@@ -42,6 +45,7 @@ export default function LoginPage() {
   async function handleRequestOtp(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+    setErrorCode('');
     setLoading(true);
     try {
       const res = await requestOtp(phone);
@@ -49,9 +53,11 @@ export default function LoginPage() {
         setStep(2);
         setCountdown(60);
       } else {
+        setErrorCode(res.code || '');
         setError(res.error || 'No se pudo enviar el código. Intenta de nuevo.');
       }
     } catch {
+      setErrorCode('');
       setError('Error de conexión.');
     }
     setLoading(false);
@@ -60,17 +66,20 @@ export default function LoginPage() {
   async function handleVerifyOtp(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+    setErrorCode('');
     setLoading(true);
     try {
       const res = await verifyOtp(phone, code);
       if (res.ok) {
         router.push('/dashboard');
       } else {
+        setErrorCode(res.code || '');
         setError(res.error || 'Código incorrecto o expirado.');
         setCode('');
         setTimeout(() => codeRef.current?.focus(), 50);
       }
     } catch {
+      setErrorCode('');
       setError('Error de conexión.');
     }
     setLoading(false);
@@ -78,6 +87,7 @@ export default function LoginPage() {
 
   async function handleResendOtp() {
     setError('');
+    setErrorCode('');
     setLoading(true);
     try {
       const res = await resendOtp(phone);
@@ -86,9 +96,11 @@ export default function LoginPage() {
         setCode('');
         setTimeout(() => codeRef.current?.focus(), 50);
       } else {
+        setErrorCode(res.code || '');
         setError(res.error || 'No se pudo reenviar el código. Intenta de nuevo.');
       }
     } catch {
+      setErrorCode('');
       setError('Error de conexión.');
     }
     setLoading(false);
@@ -187,13 +199,34 @@ export default function LoginPage() {
                           label="Número de WhatsApp"
                           type="tel"
                           value={phone}
-                          onChange={e => setPhone(e.target.value)}
+                          onChange={e => {
+                            setPhone(e.target.value);
+                            if (error || errorCode) {
+                              setError('');
+                              setErrorCode('');
+                            }
+                          }}
                           placeholder="+591 70 000 000"
                           autoComplete="tel"
                           disabled={loading}
                           icon={Phone}
-                          error={error || undefined}
+                          error={!whatsappWindowExpired ? error || undefined : undefined}
                         />
+                        {whatsappWindowExpired && (
+                          <div className="section-frame rounded-2xl bg-dark-card/70 p-4">
+                            <p className="text-sm text-dark-text-primary">
+                              Antes de recibir tu código, primero debes enviarnos un mensaje por WhatsApp para reabrir la conversación.
+                            </p>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              className="w-full mt-3"
+                              onClick={() => window.open(buildWhatsAppOtpRecoveryUrl(phone), '_blank')}
+                            >
+                              Abrir WhatsApp
+                            </Button>
+                          </div>
+                        )}
                         <Button
                           type="submit"
                           variant="primary"
@@ -227,14 +260,36 @@ export default function LoginPage() {
                             inputMode="numeric"
                             maxLength={6}
                             value={code}
-                            onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
+                            onChange={e => {
+                              setCode(e.target.value.replace(/\D/g, ''));
+                              if (error || errorCode) {
+                                setError('');
+                                setErrorCode('');
+                              }
+                            }}
                             placeholder="000000"
                             autoComplete="one-time-code"
                             disabled={loading}
                             className="text-2xl sm:text-3xl tracking-[0.3em] sm:tracking-[0.55em] text-center font-mono"
-                            error={error || undefined}
+                            error={!whatsappWindowExpired ? error || undefined : undefined}
                           />
                         </div>
+
+                        {whatsappWindowExpired && (
+                          <div className="section-frame rounded-2xl bg-dark-card/70 p-4">
+                            <p className="text-sm text-dark-text-primary">
+                              Antes de recibir tu código, primero debes enviarnos un mensaje por WhatsApp para reabrir la conversación.
+                            </p>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              className="w-full mt-3"
+                              onClick={() => window.open(buildWhatsAppOtpRecoveryUrl(phone), '_blank')}
+                            >
+                              Abrir WhatsApp
+                            </Button>
+                          </div>
+                        )}
 
                         <Button
                           type="submit"
@@ -269,6 +324,7 @@ export default function LoginPage() {
                             setStep(1);
                             setCode('');
                             setError('');
+                            setErrorCode('');
                             setCountdown(0);
                           }}
                           className="w-full py-2 text-xs text-dark-muted hover:text-dark-secondary transition flex items-center justify-center gap-1 cursor-pointer"

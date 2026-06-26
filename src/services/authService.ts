@@ -1,7 +1,7 @@
 import { getApiUrl, API_CONFIG } from '../config/api';
 import { fetchWithTimeout } from './httpClient';
 
-type ApiResult = { ok: boolean; error?: string };
+type ApiResult = { ok: boolean; error?: string; code?: string };
 
 async function postForm(endpoint: string, form?: FormData): Promise<ApiResult> {
   try {
@@ -15,6 +15,7 @@ async function postForm(endpoint: string, form?: FormData): Promise<ApiResult> {
     if (!res.ok) {
       return {
         ok: false,
+        code: payload?.code,
         error: payload?.error || 'No se pudo completar la solicitud.',
       };
     }
