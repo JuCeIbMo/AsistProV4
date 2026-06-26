@@ -14,6 +14,41 @@ export interface MesaMetric {
   secondaryLabel?: string;
   secondaryValue?: string;
   secondaryValueColor?: string;
+  currency?: string;
+}
+
+function MoneyValue({
+  currency,
+  amount,
+  color,
+  size,
+}: {
+  currency: string;
+  amount: string;
+  color: string;
+  size: number;
+}) {
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 6, color, minWidth: 0 }}>
+      <span
+        data-currency-token="true"
+        style={{ ...mono, fontSize: '0.62em', letterSpacing: '.08em', opacity: 0.82, flexShrink: 0 }}
+      >
+        {currency}
+      </span>
+      <span
+        style={{
+          fontFamily: "'Playfair Display',serif",
+          fontWeight: 700,
+          fontSize: size,
+          lineHeight: 1.1,
+          overflowWrap: 'anywhere',
+        }}
+      >
+        {amount}
+      </span>
+    </span>
+  );
 }
 
 function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
@@ -40,14 +75,31 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
       {metric.kind === 'single' || metric.kind === undefined ? (
         <div
           style={{
-            fontFamily: "'Playfair Display',serif",
-            fontWeight: 700,
-            fontSize: isMobile ? 26 : 34,
-            lineHeight: 1.1,
             color: metric.valueColor || '#221f1b',
+            marginTop: 4,
+            minWidth: 0,
           }}
         >
-          {metric.value}
+          {metric.currency ? (
+            <MoneyValue
+              currency={metric.currency}
+              amount={metric.value}
+              color={metric.valueColor || '#221f1b'}
+              size={isMobile ? 26 : 34}
+            />
+          ) : (
+            <span
+              style={{
+                fontFamily: "'Playfair Display',serif",
+                fontWeight: 700,
+                fontSize: isMobile ? 26 : 34,
+                lineHeight: 1.1,
+                overflowWrap: 'anywhere',
+              }}
+            >
+              {metric.value}
+            </span>
+          )}
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
@@ -56,15 +108,28 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
               Ingresos
             </span>
             <span
-              style={{
-                fontFamily: "'Playfair Display',serif",
-                fontWeight: 700,
-                fontSize: isMobile ? 22 : 28,
-                lineHeight: 1.1,
-                color: metric.valueColor || '#547552',
-              }}
+              style={{ color: metric.valueColor || '#547552', minWidth: 0, textAlign: 'right' }}
             >
-              {metric.value}
+              {metric.currency ? (
+                <MoneyValue
+                  currency={metric.currency}
+                  amount={metric.value}
+                  color={metric.valueColor || '#547552'}
+                  size={isMobile ? 20 : 26}
+                />
+              ) : (
+                <span
+                  style={{
+                    fontFamily: "'Playfair Display',serif",
+                    fontWeight: 700,
+                    fontSize: isMobile ? 20 : 26,
+                    lineHeight: 1.1,
+                    overflowWrap: 'anywhere',
+                  }}
+                >
+                  {metric.value}
+                </span>
+              )}
             </span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
@@ -72,15 +137,28 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
               {metric.secondaryLabel}
             </span>
             <span
-              style={{
-                fontFamily: "'Playfair Display',serif",
-                fontWeight: 700,
-                fontSize: isMobile ? 22 : 28,
-                lineHeight: 1.1,
-                color: metric.secondaryValueColor || '#C94E2C',
-              }}
+              style={{ color: metric.secondaryValueColor || '#C94E2C', minWidth: 0, textAlign: 'right' }}
             >
-              {metric.secondaryValue}
+              {metric.currency ? (
+                <MoneyValue
+                  currency={metric.currency}
+                  amount={metric.secondaryValue || ''}
+                  color={metric.secondaryValueColor || '#C94E2C'}
+                  size={isMobile ? 20 : 26}
+                />
+              ) : (
+                <span
+                  style={{
+                    fontFamily: "'Playfair Display',serif",
+                    fontWeight: 700,
+                    fontSize: isMobile ? 20 : 26,
+                    lineHeight: 1.1,
+                    overflowWrap: 'anywhere',
+                  }}
+                >
+                  {metric.secondaryValue}
+                </span>
+              )}
             </span>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { Appointment, AppointmentStatus } from '../../../services/dashboardService';
+import { useMobile } from '../../../hooks/useMobile';
 import { STATUS_LABEL } from '../appointmentStatus';
 
 const mono: CSSProperties = { fontFamily: "'JetBrains Mono',monospace" };
@@ -22,6 +23,8 @@ interface MesaAgendaProps {
 }
 
 export function MesaAgenda({ dayNumber, monthLabel, appointments }: MesaAgendaProps) {
+  const isMobile = useMobile();
+
   return (
     <section
       className="mesa-card"
@@ -41,20 +44,44 @@ export function MesaAgenda({ dayNumber, monthLabel, appointments }: MesaAgendaPr
         <div style={{ position: 'absolute', left: 2.5, top: 5, right: 2.5, bottom: 11, border: '2.5px solid #c9ccd2', borderRadius: 6 }} />
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 18, padding: '24px 26px 16px', borderBottom: '1px dashed #D9CDA8' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          gap: isMobile ? 14 : 18,
+          padding: isMobile ? '20px 18px 14px' : '24px 26px 16px',
+          borderBottom: '1px dashed #D9CDA8',
+          flexWrap: 'wrap',
+        }}
+      >
         <div style={{ textAlign: 'center', lineHeight: 1 }}>
-          <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 52, color: '#221f1b' }}>{dayNumber}</div>
+          <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: isMobile ? 42 : 52, color: '#221f1b' }}>{dayNumber}</div>
         </div>
-        <div style={{ borderLeft: '1px solid #E0D5B4', paddingLeft: 16 }}>
+        <div style={{ borderLeft: '1px solid #E0D5B4', paddingLeft: 16, minWidth: 0, flex: 1 }}>
           <div style={{ ...mono, fontSize: 10, letterSpacing: '.14em', color: '#9a824a', textTransform: 'uppercase' }}>{monthLabel}</div>
-          <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, color: '#221f1b', marginTop: 2 }}>Agenda de hoy</div>
+          <div style={{ fontFamily: "'Playfair Display',serif", fontSize: isMobile ? 19 : 22, color: '#221f1b', marginTop: 2 }}>Agenda de hoy</div>
         </div>
-        <div className="mesa-today" style={{ ...mono, marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#8a7c5e', cursor: 'pointer', border: '1px solid rgba(168,153,122,.5)', borderRadius: 7, padding: '6px 12px' }}>
+        <div
+          className="mesa-today"
+          style={{
+            ...mono,
+            marginLeft: isMobile ? 0 : 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            fontSize: 11,
+            color: '#8a7c5e',
+            cursor: 'pointer',
+            border: '1px solid rgba(168,153,122,.5)',
+            borderRadius: 7,
+            padding: '6px 12px',
+          }}
+        >
           Hoy ▾
         </div>
       </div>
 
-      <div style={{ padding: '6px 0 14px' }}>
+      <div style={{ padding: isMobile ? '6px 0 10px' : '6px 0 14px' }}>
         {appointments.length === 0 ? (
           <div style={{ ...mono, fontSize: 13, color: '#A8997A', padding: '28px 26px', textAlign: 'center' }}>
             Sin citas para hoy.
@@ -72,17 +99,20 @@ export function MesaAgenda({ dayNumber, monthLabel, appointments }: MesaAgendaPr
                 className="mesa-row"
                 style={{
                   display: 'flex',
-                  alignItems: 'center',
-                  gap: 14,
-                  padding: '13px 26px',
+                  alignItems: isMobile ? 'flex-start' : 'center',
+                  gap: isMobile ? 10 : 14,
+                  padding: isMobile ? '12px 18px' : '13px 26px',
                   borderBottom: last ? 'none' : '1px solid #F1EBD9',
+                  flexWrap: isMobile ? 'wrap' : 'nowrap',
                 }}
               >
-                <div style={{ ...mono, fontSize: 13, color: '#6B6560', width: 46 }}>{time(appt.starts_at)}</div>
-                <div style={{ width: 3, height: 38, borderRadius: 2, background: color.bar }} />
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ ...mono, fontSize: 13, color: '#6B6560', width: isMobile ? 'auto' : 46, minWidth: 46 }}>
+                  {time(appt.starts_at)}
+                </div>
+                <div style={{ width: 3, height: 38, borderRadius: 2, background: color.bar, flexShrink: 0 }} />
+                <div style={{ flex: 1, minWidth: isMobile ? 'calc(100% - 59px)' : 0 }}>
                   <div style={{ fontWeight: 600, fontSize: 15, color: '#221f1b' }}>{person}</div>
-                  <div style={{ ...mono, fontSize: 11, color: '#A8997A', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div style={{ ...mono, fontSize: 11, color: '#A8997A', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                     {detail}
                     {viaWhatsApp && (
                       <>
@@ -92,7 +122,18 @@ export function MesaAgenda({ dayNumber, monthLabel, appointments }: MesaAgendaPr
                     )}
                   </div>
                 </div>
-                <span style={{ ...mono, fontSize: 10, fontWeight: 500, padding: '3px 10px', borderRadius: 100, background: color.bg, color: color.fg }}>
+                <span
+                  style={{
+                    ...mono,
+                    fontSize: 10,
+                    fontWeight: 500,
+                    padding: '3px 10px',
+                    borderRadius: 100,
+                    background: color.bg,
+                    color: color.fg,
+                    marginLeft: isMobile ? 59 : 0,
+                  }}
+                >
                   {STATUS_LABEL[appt.status]}
                 </span>
               </div>

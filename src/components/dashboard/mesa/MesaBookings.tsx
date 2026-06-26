@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { Transaction } from '../../../services/dashboardService';
+import { useMobile } from '../../../hooks/useMobile';
 import { fmt } from '../format';
 
 const mono: CSSProperties = { fontFamily: "'JetBrains Mono',monospace" };
@@ -24,27 +25,28 @@ interface MesaBookingsProps {
 }
 
 export function MesaBookings({ transactions, currency }: MesaBookingsProps) {
+  const isMobile = useMobile();
   const items = transactions.slice(0, 3);
 
   return (
     <section style={{ position: 'relative' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-        <h3 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 400, fontSize: 21, color: '#221f1b', margin: 0 }}>
+      <div style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
+        <h3 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 400, fontSize: isMobile ? 19 : 21, color: '#221f1b', margin: 0 }}>
           Movimientos recientes
         </h3>
-        <span style={{ ...mono, display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#547552', background: '#E2EDDE', padding: '3px 9px', borderRadius: 100 }}>
+        <span style={{ ...mono, display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#547552', background: '#E2EDDE', padding: '3px 9px', borderRadius: 100, maxWidth: '100%' }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#547552', animation: 'om-pulse 2s ease-in-out infinite' }} />
           vía WhatsApp
         </span>
       </div>
       {/* clip sobre la pila */}
-      <div aria-hidden="true" style={{ position: 'absolute', top: 36, left: 24, width: 16, height: 44, border: '2.5px solid #b3b6bd', borderRadius: 9, transform: 'rotate(-6deg)', zIndex: 5, boxShadow: '0 1px 2px rgba(0,0,0,.18)' }}>
+      <div aria-hidden="true" style={{ position: 'absolute', top: isMobile ? 48 : 36, left: isMobile ? 14 : 24, width: 16, height: 44, border: '2.5px solid #b3b6bd', borderRadius: 9, transform: 'rotate(-6deg)', zIndex: 5, boxShadow: '0 1px 2px rgba(0,0,0,.18)' }}>
         <div style={{ position: 'absolute', left: 2.5, top: 5, right: 2.5, bottom: 11, border: '2.5px solid #c9ccd2', borderRadius: 6 }} />
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {items.length === 0 ? (
-          <div style={{ ...mono, fontSize: 13, color: '#A8997A', padding: '20px 0 0 46px' }}>Sin movimientos recientes.</div>
+          <div style={{ ...mono, fontSize: 13, color: '#A8997A', padding: isMobile ? '20px 0 0 18px' : '20px 0 0 46px' }}>Sin movimientos recientes.</div>
         ) : (
           items.map((tx, i) => (
             <div
@@ -52,7 +54,7 @@ export function MesaBookings({ transactions, currency }: MesaBookingsProps) {
               className="mesa-paper"
               style={{
                 background: PAPER[i] || PAPER[2],
-                padding: '14px 18px 14px 46px',
+                padding: isMobile ? '14px 14px 14px 34px' : '14px 18px 14px 46px',
                 boxShadow: '0 8px 18px rgba(70,55,28,.13)',
                 transform: `rotate(${ROT[i] ?? 0}deg)`,
                 clipPath: TORN,
@@ -60,8 +62,9 @@ export function MesaBookings({ transactions, currency }: MesaBookingsProps) {
                 position: 'relative',
                 zIndex: items.length - i,
                 display: 'flex',
-                alignItems: 'center',
-                gap: 14,
+                alignItems: isMobile ? 'flex-start' : 'center',
+                gap: isMobile ? 10 : 14,
+                flexWrap: isMobile ? 'wrap' : 'nowrap',
               }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -72,7 +75,7 @@ export function MesaBookings({ transactions, currency }: MesaBookingsProps) {
                   {(tx.category || (tx.direction === 'income' ? 'Ingreso' : 'Gasto'))} · {relativeTime(tx.occurred_at)}
                 </div>
               </div>
-              <div style={{ ...mono, fontSize: 13, color: tx.direction === 'income' ? '#547552' : '#C94E2C' }}>
+              <div style={{ ...mono, fontSize: 13, color: tx.direction === 'income' ? '#547552' : '#C94E2C', width: isMobile ? '100%' : 'auto', textAlign: isMobile ? 'right' : 'left' }}>
                 {tx.direction === 'income' ? '+' : '−'} {currency} {fmt(tx.amount)}
               </div>
             </div>
