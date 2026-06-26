@@ -139,7 +139,7 @@ export default function DashboardPage() {
         style={{
           position: 'relative',
           minHeight: '100vh',
-          padding: isMobile ? '16px 12px 84px' : '30px 40px 70px',
+          padding: isMobile ? '14px 14px 84px' : '30px 40px 70px',
           overflow: 'hidden',
           fontFamily: "'DM Sans',system-ui,sans-serif",
           color: '#1A1816',
@@ -190,12 +190,12 @@ export default function DashboardPage() {
                 ) : (
                   <>
                     <MesaMetrics metrics={metrics} />
-                    <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', marginTop: 26, flexWrap: 'wrap' }}>
-                      <div style={{ flex: 1.5, minWidth: 340, display: 'flex', flexDirection: 'column', gap: 30 }}>
+                    <div style={{ display: 'flex', gap: isMobile ? 18 : 28, alignItems: 'flex-start', marginTop: isMobile ? 18 : 26, flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1.5, minWidth: isMobile ? '100%' : 340, display: 'flex', flexDirection: 'column', gap: isMobile ? 18 : 30 }}>
                         <MesaAgenda dayNumber={dayNumber} monthLabel={monthLabel} appointments={todays} />
                         <MesaBookings transactions={data?.recent_transactions || []} currency={currency} />
                       </div>
-                      <div style={{ flex: 1, minWidth: 300, display: 'flex', flexDirection: 'column', gap: 34 }}>
+                      <div style={{ flex: 1, minWidth: isMobile ? '100%' : 300, display: 'flex', flexDirection: 'column', gap: isMobile ? 22 : 34 }}>
                         <MesaCorkBoard items={data?.pending_items || []} />
                         <MesaFinance
                           monthLabel={data?.month_label || ''}

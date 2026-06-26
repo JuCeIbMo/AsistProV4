@@ -22,14 +22,26 @@ function MoneyValue({
   amount,
   color,
   size,
+  align = 'left',
 }: {
   currency: string;
   amount: string;
   color: string;
   size: number;
+  align?: 'left' | 'right';
 }) {
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 6, color, minWidth: 0 }}>
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'baseline',
+        justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
+        gap: 6,
+        color,
+        minWidth: 0,
+        maxWidth: '100%',
+      }}
+    >
       <span
         data-currency-token="true"
         style={{ ...mono, fontSize: '0.62em', letterSpacing: '.08em', opacity: 0.82, flexShrink: 0 }}
@@ -57,18 +69,22 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
       className="mesa-lift"
       style={{
         position: 'relative',
-        flex: 1,
-        minWidth: isMobile ? 'calc(50% - 9px)' : 170,
+        flex: isMobile ? '1 1 100%' : 1,
+        minWidth: isMobile ? '100%' : 170,
         background: '#FCFAF2',
         borderRadius: 7,
-        padding: isMobile ? '14px 16px' : '16px 20px',
-        boxShadow: '0 10px 22px rgba(70,55,28,.13)',
-        transform: `rotate(${metric.rotation}deg)`,
+        padding: isMobile ? '14px 16px 15px' : '16px 20px',
+        boxShadow: isMobile ? '0 8px 18px rgba(70,55,28,.11)' : '0 10px 22px rgba(70,55,28,.13)',
+        transform: isMobile ? 'none' : `rotate(${metric.rotation}deg)`,
         overflow: 'hidden',
       }}
     >
-      <div style={{ position: 'absolute', left: -7, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, borderRadius: '50%', background: '#E4DCC8' }} />
-      <div style={{ position: 'absolute', right: -7, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, borderRadius: '50%', background: '#E4DCC8' }} />
+      {!isMobile && (
+        <>
+          <div style={{ position: 'absolute', left: -7, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, borderRadius: '50%', background: '#E4DCC8' }} />
+          <div style={{ position: 'absolute', right: -7, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, borderRadius: '50%', background: '#E4DCC8' }} />
+        </>
+      )}
       <div style={{ ...mono, fontSize: 9.5, letterSpacing: '.14em', color: '#9a824a', textTransform: 'uppercase' }}>
         {metric.label}
       </div>
@@ -85,7 +101,7 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
               currency={metric.currency}
               amount={metric.value}
               color={metric.valueColor || '#221f1b'}
-              size={isMobile ? 26 : 34}
+              size={isMobile ? 25 : 34}
             />
           ) : (
             <span
@@ -102,20 +118,27 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
           )}
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? 'repeat(2,minmax(0,1fr))' : '1fr',
+            gap: isMobile ? 14 : 8,
+            marginTop: 10,
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'flex-start' : 'stretch', gap: 3, minWidth: 0 }}>
             <span style={{ ...mono, fontSize: 10, color: '#9a824a', textTransform: 'uppercase' }}>
               Ingresos
             </span>
             <span
-              style={{ color: metric.valueColor || '#547552', minWidth: 0, textAlign: 'right' }}
+              style={{ color: metric.valueColor || '#547552', minWidth: 0, textAlign: isMobile ? 'left' : 'right' }}
             >
               {metric.currency ? (
                 <MoneyValue
                   currency={metric.currency}
                   amount={metric.value}
                   color={metric.valueColor || '#547552'}
-                  size={isMobile ? 20 : 26}
+                  size={isMobile ? 21 : 26}
                 />
               ) : (
                 <span
@@ -132,7 +155,7 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
               )}
             </span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'flex-end' : 'stretch', gap: 3, minWidth: 0 }}>
             <span style={{ ...mono, fontSize: 10, color: '#9a824a', textTransform: 'uppercase' }}>
               {metric.secondaryLabel}
             </span>
@@ -144,7 +167,8 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
                   currency={metric.currency}
                   amount={metric.secondaryValue || ''}
                   color={metric.secondaryValueColor || '#C94E2C'}
-                  size={isMobile ? 20 : 26}
+                  size={isMobile ? 21 : 26}
+                  align="right"
                 />
               ) : (
                 <span
@@ -163,7 +187,7 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
           </div>
         </div>
       )}
-      <div style={{ ...mono, display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, color: metric.hintColor, marginTop: 2 }}>
+      <div style={{ ...mono, display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, color: metric.hintColor, marginTop: isMobile ? 8 : 2 }}>
         {metric.hint}
       </div>
     </div>
@@ -193,7 +217,7 @@ export function MesaMetrics({ metrics }: { metrics: MesaMetric[] }) {
           }}
         />
       )}
-      <div style={{ display: 'flex', gap: 18, margin: '26px 0 6px', flexWrap: 'wrap', position: 'relative', zIndex: 2 }}>
+      <div style={{ display: 'flex', gap: isMobile ? 10 : 18, margin: isMobile ? '18px 0 6px' : '26px 0 6px', flexWrap: 'wrap', position: 'relative', zIndex: 2 }}>
         {metrics.map(m => (
           <Stub key={m.label} metric={m} isMobile={isMobile} />
         ))}

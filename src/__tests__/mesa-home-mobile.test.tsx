@@ -1,13 +1,46 @@
 import { render, screen } from '@testing-library/react';
 import { MesaAgenda } from '../components/dashboard/mesa/MesaAgenda';
 import { MesaBookings } from '../components/dashboard/mesa/MesaBookings';
+import { MesaMetrics, type MesaMetric } from '../components/dashboard/mesa/MesaMetrics';
 
 vi.mock('../hooks/useMobile', () => ({
   useMobile: () => true,
 }));
 
 describe('Mesa home mobile layout', () => {
-  it('lets agenda rows wrap cleanly on mobile', () => {
+  it('renders money metrics as full-width cards on mobile', () => {
+    const metrics: MesaMetric[] = [
+      {
+        kind: 'split',
+        label: 'Ingresos y gastos del mes',
+        value: '2000,00',
+        secondaryLabel: 'Gastos',
+        secondaryValue: '599,50',
+        hint: 'Junio 2026',
+        hintColor: '#547552',
+        rotation: 0,
+        currency: 'BOB',
+      },
+      {
+        label: 'Gastado hoy',
+        value: '18,00',
+        hint: 'Solo gastos del día',
+        hintColor: '#9a824a',
+        rotation: 0,
+        currency: 'BOB',
+      },
+    ];
+
+    render(<MesaMetrics metrics={metrics} />);
+
+    expect(screen.getByText('Ingresos y gastos del mes').closest('.mesa-lift')).toHaveStyle({
+      minWidth: '100%',
+      transform: 'none',
+    });
+    expect(screen.getByText('Gastado hoy').closest('.mesa-lift')).toHaveStyle({ minWidth: '100%' });
+  });
+
+  it('keeps agenda rows compact on mobile', () => {
     render(
       <MesaAgenda
         dayNumber="26"
@@ -31,7 +64,8 @@ describe('Mesa home mobile layout', () => {
     );
 
     expect(screen.getByText('Agenda de hoy')).toBeInTheDocument();
-    expect(screen.getByText('Programada')).toHaveStyle({ marginLeft: '59px' });
+    expect(screen.queryByText('Hoy')).not.toBeInTheDocument();
+    expect(screen.getByText('Programada')).toHaveStyle({ padding: '2px 8px' });
   });
 
   it('moves the recent amount below the description on mobile', () => {
