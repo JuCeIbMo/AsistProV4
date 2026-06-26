@@ -25,7 +25,7 @@ async function postForm(endpoint: string, form?: FormData): Promise<ApiResult> {
   }
 }
 
-export async function requestOtp(phone: string): Promise<{ ok: boolean; error?: string }> {
+export async function requestOtp(phone: string): Promise<ApiResult> {
   const form = new FormData();
   form.append('phone', phone);
   return postForm(API_CONFIG.ENDPOINTS.OTP_REQUEST, form);
@@ -34,14 +34,14 @@ export async function requestOtp(phone: string): Promise<{ ok: boolean; error?: 
 export async function verifyOtp(
   phone: string,
   code: string,
-): Promise<{ ok: boolean; error?: string }> {
+): Promise<ApiResult> {
   const form = new FormData();
   form.append('phone', phone);
   form.append('code', code);
   return postForm(API_CONFIG.ENDPOINTS.OTP_VERIFY, form);
 }
 
-export async function resendOtp(phone: string): Promise<{ ok: boolean; error?: string }> {
+export async function resendOtp(phone: string): Promise<ApiResult> {
   const form = new FormData();
   form.append('phone', phone);
   return postForm(API_CONFIG.ENDPOINTS.OTP_REQUEST, form);
