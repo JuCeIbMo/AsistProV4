@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Check, Phone, CreditCard, Globe, Mail, MessageCircle } from 'lucide-react';
 import Select, { type SingleValue, type StylesConfig } from 'react-select';
 import { validateEmail, validatePhoneE164, formatPhoneE164, mapPlanName } from '../utils/validation';
+import { buildWhatsAppUrl } from '../config/whatsapp';
 import { Modal } from './ui/Modal';
 import { Button } from './ui/Button';
 import { lightColors, borderRadius, spacing } from '../styles/tokens';
@@ -164,7 +165,7 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
       `Email: ${email.trim()}`,
     ].join('\n');
 
-    window.open(`https://wa.me/5492604086606?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(buildWhatsAppUrl(message), '_blank');
     onClose();
   };
 

@@ -16,6 +16,7 @@ import {
   ProofSection,
   SiteFooter,
 } from './components/landing/sections';
+import { buildWhatsAppUrl } from './config/whatsapp';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,7 +33,7 @@ function App() {
     setModalOpen(true);
   };
 
-  const whatsappRedirect = () => window.open('https://wa.me/5492604086606', '_blank');
+  const whatsappRedirect = () => window.open(buildWhatsAppUrl(), '_blank');
 
   return (
     <div className="min-h-screen font-sans overflow-x-hidden" style={{ color: '#1A1816' }}>

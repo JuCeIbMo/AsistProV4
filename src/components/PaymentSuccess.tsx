@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { MessageCircle, CheckCircle, Clock, Shield, Bot, Copy, Check } from 'lucide-react';
 import { Button } from './ui/Button';
 import { PaymentSuccessProps, MercadoPagoParams, PayPalParams } from '../types/payment';
+import { buildWhatsAppUrl } from '../config/whatsapp';
 
 export default function PaymentSuccess() {
   const router = useRouter();
@@ -45,7 +46,7 @@ export default function PaymentSuccess() {
   }, [router.query]);
 
   const whatsappRedirect = () => {
-    window.open('https://wa.me/5492604086606', '_blank');
+    window.open(buildWhatsAppUrl(), '_blank');
   };
 
   const copyTransactionId = async (id: string) => {

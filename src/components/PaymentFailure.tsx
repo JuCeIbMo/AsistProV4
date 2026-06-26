@@ -1,12 +1,13 @@
 import { useRouter } from 'next/router';
 import { XCircle, ArrowLeft, MessageCircle, Bot } from 'lucide-react';
 import { Button } from './ui/Button';
+import { buildWhatsAppUrl } from '../config/whatsapp';
 
 export default function PaymentFailure() {
   const router = useRouter();
 
   const whatsappRedirect = () => {
-    window.open('https://wa.me/5492604086606', '_blank');
+    window.open(buildWhatsAppUrl(), '_blank');
   };
 
   return (
