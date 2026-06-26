@@ -11,11 +11,52 @@ interface MesaFinanceProps {
   currency: string;
 }
 
-function Row({ label, value, color }: { label: string; value: string; color?: string }) {
+function MoneyValue({
+  currency,
+  amount,
+  color,
+  size,
+}: {
+  currency: string;
+  amount: string;
+  color: string;
+  size: number;
+}) {
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 6, color }}>
+      <span
+        data-currency-token="true"
+        style={{ ...mono, fontSize: '0.62em', letterSpacing: '.08em', opacity: 0.82, flexShrink: 0 }}
+      >
+        {currency}
+      </span>
+      <span style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: size, lineHeight: 1.1 }}>
+        {fmt(amount)}
+      </span>
+    </span>
+  );
+}
+
+function Row({
+  label,
+  amount,
+  currency,
+  color,
+  negative,
+}: {
+  label: string;
+  amount: string;
+  currency: string;
+  color?: string;
+  negative?: boolean;
+}) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#5c5648', padding: '5px 0' }}>
       <span>{label}</span>
-      <span style={{ color: color || '#221f1b' }}>{value}</span>
+      <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 6, color: color || '#221f1b' }}>
+        {negative ? <span aria-hidden="true">−</span> : null}
+        <MoneyValue currency={currency} amount={amount} color={color || '#221f1b'} size={16} />
+      </span>
     </div>
   );
 }
@@ -65,13 +106,11 @@ export function MesaFinance({ monthLabel, income, expense, net, currency }: Mesa
             Caja — {monthLabel}
           </div>
         </div>
-        <Row label="Ingresos" value={`${currency} ${fmt(income)}`} />
-        <Row label="Gastos" value={`− ${currency} ${fmt(expense)}`} color="#C94E2C" />
+        <Row label="Ingresos" amount={income} currency={currency} />
+        <Row label="Gastos" amount={expense} currency={currency} color="#C94E2C" negative />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '4px 0 12px', borderTop: '1.5px dashed #cfc4a4', marginTop: 8, paddingTop: 12 }}>
           <span style={{ fontSize: 11, letterSpacing: '.1em', color: '#221f1b' }}>NETO</span>
-          <span style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 26, color: '#547552' }}>
-            {currency} {fmt(net)}
-          </span>
+          <MoneyValue currency={currency} amount={net} color="#547552" size={26} />
         </div>
         <div style={{ height: 34, borderRadius: 1, background: 'repeating-linear-gradient(90deg,#1A1816 0 2px,#FFFDF7 2px 3px,#1A1816 3px 6px,#FFFDF7 6px 9px,#1A1816 9px 11px,#FFFDF7 11px 13px,#1A1816 13px 14px,#FFFDF7 14px 17px)' }} />
         <div style={{ textAlign: 'center', fontSize: 8.5, letterSpacing: '.14em', color: '#9a824a', marginTop: 8 }}>

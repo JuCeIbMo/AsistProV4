@@ -1,5 +1,5 @@
 import { type CSSProperties, useMemo } from 'react';
-import type { Appointment, DashboardSummary } from '../../../services/dashboardService';
+import type { DashboardSummary } from '../../../services/dashboardService';
 import { fmt } from '../format';
 import { useMobile } from '../../../hooks/useMobile';
 
@@ -27,7 +27,7 @@ function TicketHole({ side }: { side: 'left' | 'right' }) {
 
 interface KpiStub {
   label: string;
-  value: string;
+  amount: string;
   hint: string;
   hintColor: string;
   valueColor?: string;
@@ -38,10 +38,58 @@ interface KpiStub {
 interface MesaFinanzasViewProps {
   data: DashboardSummary;
   currency: string;
-  appointments: Appointment[];
 }
 
-export function MesaFinanzasView({ data, currency, appointments }: MesaFinanzasViewProps) {
+function MoneyValue({
+  currency,
+  amount,
+  color,
+  size,
+}: {
+  currency: string;
+  amount: string;
+  color: string;
+  size: number;
+}) {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'baseline',
+        gap: 8,
+        color,
+        minWidth: 0,
+      }}
+    >
+      <span
+        data-currency-token="true"
+        style={{
+          ...mono,
+          fontSize: '0.62em',
+          letterSpacing: '.08em',
+          opacity: 0.82,
+          flexShrink: 0,
+        }}
+      >
+        {currency}
+      </span>
+      <span
+        style={{
+          fontFamily: "'Playfair Display',serif",
+          fontWeight: 700,
+          fontSize: size,
+          lineHeight: 1.1,
+          minWidth: 0,
+          wordBreak: 'break-word',
+        }}
+      >
+        {fmt(amount)}
+      </span>
+    </span>
+  );
+}
+
+export function MesaFinanzasView({ data, currency }: MesaFinanzasViewProps) {
   const isMobile = useMobile();
 
   const chartData = useMemo(() => {
@@ -57,14 +105,14 @@ export function MesaFinanzasView({ data, currency, appointments }: MesaFinanzasV
   const kpis: KpiStub[] = [
     {
       label: 'Ingresos',
-      value: `${currency} ${fmt(data.month.income)}`,
+      amount: data.month.income,
       hint: data.month_label,
       hintColor: '#547552',
       rotation: -0.5,
     },
     {
       label: 'Gastos',
-      value: `${currency} ${fmt(data.month.expense)}`,
+      amount: data.month.expense,
       hint: `${data.month_label}`,
       hintColor: '#C94E2C',
       valueColor: '#C94E2C',
@@ -72,27 +120,20 @@ export function MesaFinanzasView({ data, currency, appointments }: MesaFinanzasV
     },
     {
       label: 'Balance total',
-      value: `${currency} ${fmt(data.total_balance)}`,
+      amount: data.total_balance,
       hint: `${data.accounts.length} cuenta${data.accounts.length === 1 ? '' : 's'}`,
       hintColor: '#9a824a',
       rotation: -0.3,
     },
     {
       label: 'Neto del mes',
-      value: `${currency} ${fmt(data.month.net)}`,
+      amount: data.month.net,
       hint: `ahorro ${Math.round(data.month.savings_rate * 100)}%`,
       hintColor: '#9cb89a',
       rotation: 0.5,
       dark: true,
     },
   ];
-
-  const pendingAppts = useMemo(() =>
-    appointments
-      .filter(a => a.status === 'scheduled')
-      .slice(0, 5),
-    [appointments],
-  );
 
   const categories = data.expense_categories || [];
   const maxShare   = Math.max(...categories.map(c => c.share), 0.01);
@@ -137,8 +178,13 @@ export function MesaFinanzasView({ data, currency, appointments }: MesaFinanzasV
             <TicketHole side="left" />
             <TicketHole side="right" />
             <div style={{ ...mono, fontSize: 9.5, letterSpacing: '.14em', color: k.dark ? '#C9A86A' : '#9a824a', textTransform: 'uppercase' }}>{k.label}</div>
-            <div style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: isMobile ? 22 : 30, lineHeight: 1.1, color: k.dark ? '#F5F1E8' : (k.valueColor || '#221f1b') }}>
-              {k.value}
+            <div style={{ marginTop: 6 }}>
+              <MoneyValue
+                currency={currency}
+                amount={k.amount}
+                color={k.dark ? '#F5F1E8' : (k.valueColor || '#221f1b')}
+                size={isMobile ? 22 : 30}
+              />
             </div>
             <div style={{ ...mono, fontSize: 10, color: k.hintColor, marginTop: 2 }}>{k.hint}</div>
           </div>
@@ -187,38 +233,6 @@ export function MesaFinanzasView({ data, currency, appointments }: MesaFinanzasV
             )}
           </section>
 
-          {/* PENDING APPOINTMENTS */}
-          <section style={{ position: 'relative' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
-              <h3 style={{ fontFamily: "'Playfair Display',serif", fontWeight: 400, fontSize: 21, color: '#221f1b', margin: 0 }}>Citas por confirmar</h3>
-              <span style={{ ...mono, fontSize: 10, color: '#C94E2C', background: '#FAE8E2', padding: '3px 9px', borderRadius: 100 }}>{pendingAppts.length} pendientes</span>
-            </div>
-            {pendingAppts.length === 0 ? (
-              <div style={{ ...mono, fontSize: 13, color: '#A8997A', padding: '20px 0' }}>¡Todo al día! Sin citas pendientes.</div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {pendingAppts.map((a, i) => {
-                  const person  = a.with_person || a.title;
-                  const cat     = a.category?.display_name || '';
-                  const dateStr = new Date(a.starts_at).toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
-                  const rots    = [-0.3, 0.3, -0.2, 0.2, -0.1];
-                  return (
-                    <div
-                      key={a.id}
-                      className="mesa-lift"
-                      style={{ background: '#FBF6E6', padding: '12px 16px', borderRadius: 6, boxShadow: '0 8px 18px rgba(70,55,28,.12)', borderLeft: '4px solid #C94E2C', display: 'flex', alignItems: 'center', gap: 12, transform: `rotate(${rots[i] ?? 0}deg)` }}
-                    >
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: 600, fontSize: 14, color: '#221f1b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{person}</div>
-                        <div style={{ ...mono, fontSize: 11, color: '#A8997A' }}>{cat ? `${cat} · ` : ''}{dateStr}</div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </section>
-
         </div>
 
         {/* RIGHT */}
@@ -236,11 +250,20 @@ export function MesaFinanzasView({ data, currency, appointments }: MesaFinanzasV
                 <div style={{ fontSize: 12, letterSpacing: '.22em', color: '#221f1b' }}>★ MESA ★</div>
                 <div style={{ fontSize: 9.5, letterSpacing: '.12em', color: '#9a824a', marginTop: 3, textTransform: 'uppercase' }}>CAJA — {data.month_label}</div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#5c5648', padding: '5px 0' }}><span>Cobrado</span><span style={{ color: '#221f1b' }}>{currency} {fmt(data.month.income)}</span></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#5c5648', padding: '5px 0', borderBottom: '1.5px dashed #cfc4a4', paddingBottom: 10, marginBottom: 8 }}><span>Gastos</span><span style={{ color: '#C94E2C' }}>− {currency} {fmt(data.month.expense)}</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, fontSize: 12, color: '#5c5648', padding: '5px 0' }}>
+                <span>Ingresos</span>
+                <MoneyValue currency={currency} amount={data.month.income} color="#221f1b" size={16} />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, fontSize: 12, color: '#5c5648', padding: '5px 0', borderBottom: '1.5px dashed #cfc4a4', paddingBottom: 10, marginBottom: 8 }}>
+                <span>Gastos</span>
+                <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 6, color: '#C94E2C' }}>
+                  <span aria-hidden="true">−</span>
+                  <MoneyValue currency={currency} amount={data.month.expense} color="#C94E2C" size={16} />
+                </span>
+              </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '4px 0 12px' }}>
                 <span style={{ fontSize: 11, letterSpacing: '.1em', color: '#221f1b' }}>NETO</span>
-                <span style={{ fontFamily: "'Playfair Display',serif", fontWeight: 700, fontSize: 26, color: '#547552' }}>{currency} {fmt(data.month.net)}</span>
+                <MoneyValue currency={currency} amount={data.month.net} color="#547552" size={26} />
               </div>
               <div style={{ height: 34, borderRadius: 1, background: 'repeating-linear-gradient(90deg,#1A1816 0 2px,#FFFDF7 2px 3px,#1A1816 3px 6px,#FFFDF7 6px 9px,#1A1816 9px 11px,#FFFDF7 11px 13px,#1A1816 13px 14px,#FFFDF7 14px 17px)' }} />
               <div style={{ textAlign: 'center', fontSize: 8.5, letterSpacing: '.14em', color: '#9a824a', marginTop: 8 }}>GRACIAS · ASISTPRO</div>

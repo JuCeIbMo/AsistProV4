@@ -227,7 +227,7 @@ export default function DashboardPage() {
               ) : error ? (
                 <div style={{ marginTop: 26 }}><ErrorPanel onRetry={load} /></div>
               ) : data ? (
-                <MesaFinanzasView data={data} currency={currency} appointments={appointments} />
+                <MesaFinanzasView data={data} currency={currency} />
               ) : null
             )}
 
