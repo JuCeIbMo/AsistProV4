@@ -8,7 +8,7 @@ vi.mock('../hooks/useMobile', () => ({
 }));
 
 describe('Mesa home mobile layout', () => {
-  it('renders money metrics as full-width cards on mobile', () => {
+  it('renders the month metric full-width and daily metrics side by side on mobile', () => {
     const metrics: MesaMetric[] = [
       {
         kind: 'split',
@@ -37,7 +37,9 @@ describe('Mesa home mobile layout', () => {
       minWidth: '100%',
       transform: 'none',
     });
-    expect(screen.getByText('Gastado hoy').closest('.mesa-lift')).toHaveStyle({ minWidth: '100%' });
+    expect(screen.getByText('Gastado hoy').closest('.mesa-lift')).toHaveStyle({
+      minWidth: 'calc(50% - 5px)',
+    });
   });
 
   it('keeps agenda rows compact on mobile', () => {

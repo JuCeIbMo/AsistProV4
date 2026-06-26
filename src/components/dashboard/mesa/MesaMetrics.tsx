@@ -64,16 +64,18 @@ function MoneyValue({
 }
 
 function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
+  const isMobileSplit = isMobile && metric.kind === 'split';
+
   return (
     <div
       className="mesa-lift"
       style={{
         position: 'relative',
-        flex: isMobile ? '1 1 100%' : 1,
-        minWidth: isMobile ? '100%' : 170,
+        flex: isMobile ? (isMobileSplit ? '1 1 100%' : '1 1 calc(50% - 5px)') : 1,
+        minWidth: isMobile ? (isMobileSplit ? '100%' : 'calc(50% - 5px)') : 170,
         background: '#FCFAF2',
         borderRadius: 7,
-        padding: isMobile ? '14px 16px 15px' : '16px 20px',
+        padding: isMobile ? (isMobileSplit ? '14px 16px 15px' : '13px 16px 14px') : '16px 20px',
         boxShadow: isMobile ? '0 8px 18px rgba(70,55,28,.11)' : '0 10px 22px rgba(70,55,28,.13)',
         transform: isMobile ? 'none' : `rotate(${metric.rotation}deg)`,
         overflow: 'hidden',
@@ -101,7 +103,7 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
               currency={metric.currency}
               amount={metric.value}
               color={metric.valueColor || '#221f1b'}
-              size={isMobile ? 25 : 34}
+              size={isMobile ? 24 : 34}
             />
           ) : (
             <span
