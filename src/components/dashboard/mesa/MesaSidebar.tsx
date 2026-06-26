@@ -13,8 +13,6 @@ const NAV: NavItem[] = [
   { label: 'Inicio',    dot: '#352507', view: 'inicio' },
   { label: 'Agenda',   dot: '#6652B5', view: 'agenda' },
   { label: 'Finanzas', dot: '#547552', view: 'finanzas' },
-  { label: 'Clientes', dot: '#C94E2C', view: null },
-  { label: 'Mensajes', dot: '#C48B1E', view: null, badge: '4' },
   { label: 'Ajustes',  dot: '#A8997A', view: 'ajustes' },
 ];
 

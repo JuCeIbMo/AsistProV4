@@ -56,7 +56,7 @@ export function MesaFinanzasView({ data, currency, appointments }: MesaFinanzasV
 
   const kpis: KpiStub[] = [
     {
-      label: 'Cobrado',
+      label: 'Ingresos',
       value: `${currency} ${fmt(data.month.income)}`,
       hint: data.month_label,
       hintColor: '#547552',
@@ -113,16 +113,6 @@ export function MesaFinanzasView({ data, currency, appointments }: MesaFinanzasV
           <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.12em', textTransform: 'uppercase', color: '#6B6560', margin: 0 }}>
             {currency} {fmt(data.month.net)} neto · {currency} {fmt(data.month.income)} cobrado
           </p>
-        </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-          <button className="mesa-btn-accent" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: isMobile ? '9px 14px' : '10px 18px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 14, fontWeight: 600, background: '#C94E2C', color: '#fff', boxShadow: '0 6px 16px rgba(201,78,44,.3)' }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#7bdc8a', boxShadow: '0 0 0 3px rgba(123,220,138,.35)' }} /> Cobrar
-          </button>
-          {!isMobile && (
-            <button className="mesa-btn-ghost" style={{ padding: '10px 16px', borderRadius: 9, cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 14, fontWeight: 500, background: 'rgba(255,253,246,.7)', color: '#1A1816', border: '1.5px solid rgba(168,153,122,.6)' }}>
-              Exportar
-            </button>
-          )}
         </div>
       </header>
 
@@ -222,9 +212,6 @@ export function MesaFinanzasView({ data, currency, appointments }: MesaFinanzasV
                         <div style={{ fontWeight: 600, fontSize: 14, color: '#221f1b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{person}</div>
                         <div style={{ ...mono, fontSize: 11, color: '#A8997A' }}>{cat ? `${cat} · ` : ''}{dateStr}</div>
                       </div>
-                      <button style={{ ...mono, fontSize: 11, border: 'none', color: '#fff', background: '#C94E2C', borderRadius: 6, padding: '6px 11px', cursor: 'pointer', flexShrink: 0 }}>
-                        Recordar
-                      </button>
                     </div>
                   );
                 })}

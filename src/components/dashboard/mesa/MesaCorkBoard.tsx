@@ -1,9 +1,10 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import { useDraggableNotes } from '../../../hooks/useDraggableNotes';
+import type { PendingItem } from '../../../services/dashboardService';
 
 const mono: CSSProperties = { fontFamily: "'JetBrains Mono',monospace" };
 
-interface Note {
+interface NoteStyle {
   id: string;
   rot: number;
   pos: CSSProperties;
@@ -12,11 +13,10 @@ interface Note {
   paper: string;
   color: string;
   pin: string;
-  kicker?: { label: string; color: string };
-  body: ReactNode;
+  kickerColor: string;
 }
 
-const NOTES: Note[] = [
+const NOTE_STYLES: NoteStyle[] = [
   {
     id: 'n1',
     rot: -4,
@@ -26,8 +26,7 @@ const NOTES: Note[] = [
     paper: 'linear-gradient(165deg,#F6DC84,#EFCF63)',
     color: '#42360f',
     pin: 'radial-gradient(circle at 35% 30%,#ff9a8b,#C94E2C 62%,#8f2e18)',
-    kicker: { label: 'Hoy', color: '#9a7d2a' },
-    body: 'Enviar recordatorio a Lucía antes de las 13:00',
+    kickerColor: '#9a7d2a',
   },
   {
     id: 'n2',
@@ -38,8 +37,7 @@ const NOTES: Note[] = [
     paper: 'linear-gradient(165deg,#EFE6FB,#E0D2F6)',
     color: '#3a2c5e',
     pin: 'radial-gradient(circle at 35% 30%,#b9a6e8,#6652B5 62%,#42357d)',
-    kicker: { label: 'Pago', color: '#8170b0' },
-    body: 'Confirmar transferencia de Camila — Bs 180',
+    kickerColor: '#8170b0',
   },
   {
     id: 'n3',
@@ -50,7 +48,7 @@ const NOTES: Note[] = [
     paper: 'linear-gradient(165deg,#FCE4DC,#F6CFC2)',
     color: '#6e2f1a',
     pin: 'radial-gradient(circle at 35% 30%,#a9c7a3,#547552 62%,#385237)',
-    body: 'Reagendar a Andrés → jueves 11:00',
+    kickerColor: '#547552',
   },
   {
     id: 'n4',
@@ -61,12 +59,22 @@ const NOTES: Note[] = [
     paper: 'linear-gradient(165deg,#E5EFDD,#D3E5C6)',
     color: '#33451f',
     pin: 'radial-gradient(circle at 35% 30%,#f0c97a,#C48B1E 62%,#8a6112)',
-    body: 'Llamar a la contadora 14:00 📞',
+    kickerColor: '#8a6112',
   },
 ];
 
-export function MesaCorkBoard() {
+function timeLabel(iso: string): string {
+  return new Date(iso).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+}
+
+function kickerForItem(item: PendingItem): string {
+  if (item.note_kind === 'up_next') return 'Sigue';
+  return 'Hoy';
+}
+
+export function MesaCorkBoard({ items }: { items: PendingItem[] }) {
   const { register, startDrag } = useDraggableNotes();
+  const notes = items.slice(0, NOTE_STYLES.length);
 
   return (
     <section
@@ -89,11 +97,35 @@ export function MesaCorkBoard() {
         Pendientes
       </div>
 
-      {NOTES.map(note => (
+      {notes.length === 0 ? (
         <div
-          key={note.id}
+          style={{
+            position: 'absolute',
+            inset: 24,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: 24,
+            background: 'rgba(255,250,240,.55)',
+            border: '1px dashed rgba(80,52,24,.45)',
+            borderRadius: 8,
+            color: '#4b3519',
+            fontFamily: "'Caveat',cursive",
+            fontSize: 28,
+            lineHeight: 1.15,
+          }}
+        >
+          No hay pendientes para hoy. Tu agenda está al día.
+        </div>
+      ) : notes.map((item, index) => {
+        const note = NOTE_STYLES[index];
+        const person = item.with_person ? `con ${item.with_person}` : '';
+        return (
+        <div
+          key={item.id}
           ref={register}
-          data-id={note.id}
+          data-id={item.id}
           data-rot={note.rot}
           onPointerDown={startDrag}
           style={{
@@ -117,14 +149,19 @@ export function MesaCorkBoard() {
           }}
         >
           <div style={{ position: 'absolute', top: -9, left: '50%', transform: 'translateX(-50%)', width: 16, height: 16, borderRadius: '50%', background: note.pin, boxShadow: '0 4px 6px rgba(0,0,0,.32)' }} />
-          {note.kicker && (
-            <div style={{ ...mono, fontSize: 9, letterSpacing: '.1em', color: note.kicker.color, textTransform: 'uppercase', marginBottom: 4, fontWeight: 500 }}>
-              {note.kicker.label}
-            </div>
-          )}
-          {note.body}
+          <div style={{ ...mono, fontSize: 9, letterSpacing: '.1em', color: note.kickerColor, textTransform: 'uppercase', marginBottom: 4, fontWeight: 500 }}>
+            {kickerForItem(item)}
+          </div>
+          <div>{item.title}</div>
+          <div style={{ marginTop: 8, fontSize: 18, lineHeight: 1.1 }}>
+            {person || 'Sin acompañante'}
+          </div>
+          <div style={{ ...mono, marginTop: 10, fontSize: 11, color: note.kickerColor }}>
+            {timeLabel(item.starts_at)}
+            {item.reminder_minutes !== null ? ` · aviso ${item.reminder_minutes} min antes` : ''}
+          </div>
         </div>
-      ))}
+      )})}
     </section>
   );
 }

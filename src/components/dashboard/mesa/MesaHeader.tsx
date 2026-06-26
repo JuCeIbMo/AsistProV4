@@ -70,59 +70,6 @@ export function MesaHeader({ dateLabel, greeting, subtitle, onReminder }: MesaHe
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
         <button
           type="button"
-          className="mesa-btn-dark"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 7,
-            padding: isMobile ? '9px 14px' : '10px 18px',
-            borderRadius: 9,
-            border: 'none',
-            cursor: 'pointer',
-            fontFamily: "'DM Sans',sans-serif",
-            fontSize: 14,
-            fontWeight: 600,
-            background: '#1A1816',
-            color: '#F5F1E8',
-            boxShadow: '0 6px 16px rgba(26,24,22,.28)',
-          }}
-        >
-          <span style={{ fontSize: 17, lineHeight: 0 }}>+</span> Nueva cita
-        </button>
-        {!isMobile && (
-          <button
-            type="button"
-            className="mesa-btn-accent"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 7,
-              padding: '10px 18px',
-              borderRadius: 9,
-              border: 'none',
-              cursor: 'pointer',
-              fontFamily: "'DM Sans',sans-serif",
-              fontSize: 14,
-              fontWeight: 600,
-              background: '#C94E2C',
-              color: '#fff',
-              boxShadow: '0 6px 16px rgba(201,78,44,.3)',
-            }}
-          >
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: '#7bdc8a',
-                boxShadow: '0 0 0 3px rgba(123,220,138,.35)',
-              }}
-            />{' '}
-            Cobrar
-          </button>
-        )}
-        <button
-          type="button"
           onClick={onReminder}
           className="mesa-btn-ghost"
           style={{

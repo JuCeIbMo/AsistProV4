@@ -4,12 +4,16 @@ import { useMobile } from '../../../hooks/useMobile';
 const mono: CSSProperties = { fontFamily: "'JetBrains Mono',monospace" };
 
 export interface MesaMetric {
+  kind?: 'single' | 'split';
   label: string;
   value: string;
   hint: string;
   hintColor: string;
   valueColor?: string;
   rotation: number;
+  secondaryLabel?: string;
+  secondaryValue?: string;
+  secondaryValueColor?: string;
 }
 
 function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
@@ -33,17 +37,54 @@ function Stub({ metric, isMobile }: { metric: MesaMetric; isMobile: boolean }) {
       <div style={{ ...mono, fontSize: 9.5, letterSpacing: '.14em', color: '#9a824a', textTransform: 'uppercase' }}>
         {metric.label}
       </div>
-      <div
-        style={{
-          fontFamily: "'Playfair Display',serif",
-          fontWeight: 700,
-          fontSize: isMobile ? 26 : 34,
-          lineHeight: 1.1,
-          color: metric.valueColor || '#221f1b',
-        }}
-      >
-        {metric.value}
-      </div>
+      {metric.kind === 'single' || metric.kind === undefined ? (
+        <div
+          style={{
+            fontFamily: "'Playfair Display',serif",
+            fontWeight: 700,
+            fontSize: isMobile ? 26 : 34,
+            lineHeight: 1.1,
+            color: metric.valueColor || '#221f1b',
+          }}
+        >
+          {metric.value}
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
+            <span style={{ ...mono, fontSize: 10, color: '#9a824a', textTransform: 'uppercase' }}>
+              Ingresos
+            </span>
+            <span
+              style={{
+                fontFamily: "'Playfair Display',serif",
+                fontWeight: 700,
+                fontSize: isMobile ? 22 : 28,
+                lineHeight: 1.1,
+                color: metric.valueColor || '#547552',
+              }}
+            >
+              {metric.value}
+            </span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
+            <span style={{ ...mono, fontSize: 10, color: '#9a824a', textTransform: 'uppercase' }}>
+              {metric.secondaryLabel}
+            </span>
+            <span
+              style={{
+                fontFamily: "'Playfair Display',serif",
+                fontWeight: 700,
+                fontSize: isMobile ? 22 : 28,
+                lineHeight: 1.1,
+                color: metric.secondaryValueColor || '#C94E2C',
+              }}
+            >
+              {metric.secondaryValue}
+            </span>
+          </div>
+        </div>
+      )}
       <div style={{ ...mono, display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, color: metric.hintColor, marginTop: 2 }}>
         {metric.hint}
       </div>

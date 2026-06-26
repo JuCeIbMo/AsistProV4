@@ -123,16 +123,6 @@ export function MesaAgendaView({ appointments, now }: MesaAgendaViewProps) {
             {weekAppts.length} citas esta semana · {todayAppts.length} hoy
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-          <button className="mesa-btn-dark" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: isMobile ? '9px 14px' : '10px 18px', borderRadius: 9, border: 'none', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 14, fontWeight: 600, background: '#1A1816', color: '#F5F1E8', boxShadow: '0 6px 16px rgba(26,24,22,.28)' }}>
-            <span style={{ fontSize: 17, lineHeight: 0 }}>+</span> Nueva cita
-          </button>
-          {!isMobile && (
-            <button className="mesa-btn-ghost" style={{ padding: '10px 16px', borderRadius: 9, cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 14, fontWeight: 500, background: 'rgba(255,253,246,.7)', color: '#1A1816', border: '1.5px solid rgba(168,153,122,.6)' }}>
-              Bloquear horario
-            </button>
-          )}
-        </div>
       </header>
 
       {/* WEEK STRIP */}
@@ -198,7 +188,7 @@ export function MesaAgendaView({ appointments, now }: MesaAgendaViewProps) {
               {!isMobile && (
                 <div style={{ marginLeft: 'auto', display: 'flex', border: '1px solid rgba(168,153,122,.5)', borderRadius: 7, overflow: 'hidden', ...mono, fontSize: 11 }}>
                   <span style={{ padding: '6px 12px', background: '#1A1816', color: '#F5F1E8' }}>Día</span>
-                  <span style={{ padding: '6px 12px', color: '#8a7c5e', cursor: 'pointer' }}>Semana</span>
+                  <span style={{ padding: '6px 12px', color: '#8a7c5e' }}>Semana</span>
                 </div>
               )}
             </div>
@@ -254,10 +244,10 @@ export function MesaAgendaView({ appointments, now }: MesaAgendaViewProps) {
           {/* MINI CALENDAR */}
           <section className="mesa-card" style={{ position: 'relative', background: '#FCFAF2', borderRadius: 8, padding: '18px 18px 20px', boxShadow: '0 14px 30px rgba(70,55,28,.16)', transform: 'rotate(-.5deg)' }}>
             <div aria-hidden="true" style={{ position: 'absolute', top: -11, left: 24, width: 80, height: 24, background: 'repeating-linear-gradient(45deg,rgba(201,78,44,.4) 0 7px,rgba(201,78,44,.26) 7px 14px)', transform: 'rotate(-4deg)', boxShadow: '0 3px 5px rgba(0,0,0,.08)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
               <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 19, color: '#221f1b' }}>{monthLabel}</div>
               <div style={{ display: 'flex', gap: 8, ...mono, fontSize: 13, color: '#8a7c5e' }}>
-                <span style={{ cursor: 'pointer' }}>‹</span><span style={{ cursor: 'pointer' }}>›</span>
+                <span>‹</span><span>›</span>
               </div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 3, ...mono, fontSize: 9.5, color: '#b3a785', textAlign: 'center', marginBottom: 6, textTransform: 'uppercase' }}>

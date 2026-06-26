@@ -83,38 +83,44 @@ export default function DashboardPage() {
   );
 
   const scheduledToday = todays.filter(a => a.status === 'scheduled').length;
+  const todaysEventCount = data?.today.event_count ?? todays.length;
+  const todaysExpense = data?.today.expense ?? '0';
 
   const metrics: MesaMetric[] = useMemo(
     () => [
       {
-        label: 'Ingresos del mes',
+        kind: 'split',
+        label: 'Ingresos y gastos del mes',
         value: `${currency} ${fmt(data?.month.income)}`,
+        secondaryLabel: 'Gastos',
+        secondaryValue: `${currency} ${fmt(data?.month.expense)}`,
+        secondaryValueColor: '#C94E2C',
         hint: data?.month_label || '',
         hintColor: '#547552',
         rotation: -0.6,
       },
       {
-        label: 'Citas hoy',
-        value: String(todays.length),
+        label: 'Eventos de hoy',
+        value: String(todaysEventCount),
         hint: `${scheduledToday} programadas`,
         hintColor: '#C48B1E',
         rotation: 0.5,
       },
       {
-        label: 'Neto del mes',
-        value: `${currency} ${fmt(data?.month.net)}`,
-        hint: `Ahorro ${data ? Math.round(data.month.savings_rate * 100) : 0}%`,
+        label: 'Gastado hoy',
+        value: `${currency} ${fmt(todaysExpense)}`,
+        hint: 'Solo gastos del día',
         hintColor: '#9a824a',
         valueColor: '#C94E2C',
         rotation: -0.3,
       },
     ],
-    [currency, data, todays.length, scheduledToday],
+    [currency, data, todaysEventCount, scheduledToday, todaysExpense],
   );
 
-  const subtitle = `${todays.length} citas hoy · ${scheduledToday} programadas · ${currency} ${fmt(
-    data?.month.expense,
-  )} en gastos`;
+  const subtitle = `${todaysEventCount} eventos hoy · ${scheduledToday} programados · ${currency} ${fmt(
+    todaysExpense,
+  )} gastado hoy`;
 
   return (
     <>
@@ -188,7 +194,7 @@ export default function DashboardPage() {
                         <MesaBookings transactions={data?.recent_transactions || []} currency={currency} />
                       </div>
                       <div style={{ flex: 1, minWidth: 300, display: 'flex', flexDirection: 'column', gap: 34 }}>
-                        <MesaCorkBoard />
+                        <MesaCorkBoard items={data?.pending_items || []} />
                         <MesaFinance
                           monthLabel={data?.month_label || ''}
                           income={data?.month.income || '0'}

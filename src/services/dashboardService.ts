@@ -17,6 +17,22 @@ export interface MonthSummary {
   savings_rate: number;
 }
 
+export interface TodaySummary {
+  income: string;
+  expense: string;
+  event_count: number;
+}
+
+export interface PendingItem {
+  id: string;
+  title: string;
+  with_person: string | null;
+  starts_at: string;
+  status: AppointmentStatus;
+  reminder_minutes: number | null;
+  note_kind: 'up_next' | 'later_today';
+}
+
 export interface BudgetItem {
   id: string;
   category: { display_name: string };
@@ -59,6 +75,8 @@ export interface DashboardSummary {
   month_label: string;
   accounts: AccountBalance[];
   month: MonthSummary;
+  today: TodaySummary;
+  pending_items: PendingItem[];
   budgets: BudgetItem[];
   expense_categories: ExpenseCategoryItem[];
   monthly_trend: MonthlyTrendPoint[];
