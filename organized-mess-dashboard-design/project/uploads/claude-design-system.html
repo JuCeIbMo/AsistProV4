@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude × Design System</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #F5F1E8;
+  --paper: #EDE8D4;
+  --ink: #1A1816;
+  --ink-secondary: #6B6560;
+  --ink-ghost: #B4ADA5;
+  --coral: #C94E2C;
+  --coral-light: #FAE8E2;
+  --coral-mid: #E8A48E;
+  --purple: #6652B5;
+  --purple-light: #EAE5F7;
+  --purple-mid: #A596D6;
+  --sage: #547552;
+  --sage-light: #E2EDDE;
+  --amber: #C48B1E;
+  --amber-light: #FAF0D6;
+  --sand: #D4C9A6;
+  --sand-dark: #A8997A;
+  --terminal-bg: #0D1117;
+  --terminal-text: #CDD9E5;
+  --terminal-green: #56D364;
+  --terminal-muted: #8B949E;
+  --terminal-coral: #FF7B72;
+  --terminal-blue: #79C0FF;
+  --terminal-yellow: #E3B341;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+body {
+  background: var(--cream);
+  font-family: var(--font-body);
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--sand);
+}
+
+/* HERO */
+.hero {
+  padding: 80px 0 80px;
+  position: relative;
+}
+
+.hero-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-label::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--coral);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 8vw, 84px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin-bottom: 24px;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--coral);
+}
+
+.hero-subtitle {
+  font-size: 17px;
+  color: var(--ink-secondary);
+  max-width: 460px;
+  line-height: 1.75;
+}
+
+.float-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: #F5F1E8;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 7px 16px;
+  border-radius: 100px;
+  position: absolute;
+  top: 88px;
+  right: 0;
+  transform: rotate(2.5deg);
+  letter-spacing: 0.04em;
+}
+
+.float-badge .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--terminal-green);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* SECTION HEADERS */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.section-number {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-ghost);
+  letter-spacing: 0.04em;
+  padding-top: 6px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.section-desc {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  margin-top: 2px;
+  font-family: var(--font-mono);
+}
+
+/* COLOR GRID */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 20px;
+}
+.color-chip { display: flex; flex-direction: column; gap: 8px; }
+.color-chip:nth-child(2) .swatch { transform: rotate(-1.5deg); }
+.color-chip:nth-child(4) .swatch { transform: rotate(1deg); }
+.color-chip:nth-child(7) .swatch { transform: rotate(-0.5deg); }
+.swatch {
+  height: 76px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.07);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.swatch:hover { transform: rotate(0deg) scale(1.05) !important; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.color-name { font-size: 13px; font-weight: 500; }
+.color-hex { font-family: var(--font-mono); font-size: 11px; color: var(--ink-secondary); }
+.color-role { font-size: 11px; color: var(--ink-ghost); }
+
+/* TYPOGRAPHY */
+.type-samples { display: flex; flex-direction: column; gap: 40px; }
+.type-sample {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 24px;
+  align-items: baseline;
+  padding-bottom: 40px;
+  border-bottom: 1px dashed var(--sand);
+}
+.type-sample:last-child { border-bottom: none; padding-bottom: 0; }
+.type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-ghost); line-height: 1.7; }
+.type-meta strong { display: block; color: var(--ink-secondary); font-size: 12px; margin-bottom: 4px; }
+
+/* COMPONENTS */
+.comp-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-ghost);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 20px;
+}
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* CARDS */
+.card {
+  background: white;
+  border: 1px solid var(--sand);
+  border-radius: 14px;
+  padding: 24px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card:hover {
+  transform: translateY(-3px) rotate(0deg) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+.card-float-l { animation: floatL 5s ease-in-out infinite; }
+.card-float-r { animation: floatR 6s ease-in-out infinite; }
+
+@keyframes floatL {
+  0%, 100% { transform: rotate(-1.5deg) translateY(0); }
+  50% { transform: rotate(-1.5deg) translateY(-5px); }
+}
+@keyframes floatR {
+  0%, 100% { transform: rotate(1deg) translateY(0); }
+  50% { transform: rotate(1deg) translateY(-4px); }
+}
+
+/* TERMINAL */
+.terminal-card {
+  background: var(--terminal-bg);
+  border-radius: 14px;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.terminal-header {
+  padding: 10px 16px;
+  background: #161B22;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-bottom: 1px solid #21262D;
+}
+.terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+.terminal-title { font-size: 11px; color: var(--terminal-muted); flex: 1; text-align: center; letter-spacing: 0.02em; }
+.terminal-body { padding: 16px 20px; color: var(--terminal-text); }
+.terminal-line { display: flex; align-items: baseline; gap: 8px; margin-bottom: 2px; }
+.t-prompt { color: var(--terminal-green); user-select: none; }
+.t-str { color: var(--terminal-yellow); }
+.t-var { color: var(--terminal-blue); }
+.t-comment { color: var(--terminal-muted); }
+.t-success { color: var(--terminal-green); padding-left: 16px; }
+.t-output { color: var(--terminal-muted); padding-left: 16px; }
+
+/* STICKY NOTES */
+.sticky {
+  background: var(--amber-light);
+  border-radius: 3px 12px 12px 3px;
+  padding: 14px 18px;
+  border-left: 3.5px solid var(--amber);
+  font-size: 13px;
+  line-height: 1.65;
+  transform: rotate(-0.8deg);
+  transition: transform 0.2s ease;
+}
+.sticky:hover { transform: rotate(0deg) scale(1.02); }
+.sticky.purple { background: var(--purple-light); border-left-color: var(--purple); transform: rotate(0.5deg); }
+.sticky.coral { background: var(--coral-light); border-left-color: var(--coral); transform: rotate(-1deg); }
+.sticky.sage { background: var(--sage-light); border-left-color: var(--sage); transform: rotate(1.2deg); }
+.sticky-label { font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 5px; }
+
+/* BUTTONS */
+.btn-group { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+.btn-primary { background: var(--ink); color: var(--cream); }
+.btn-primary:hover { background: #2C2A26; transform: translateY(-1px); }
+.btn-coral { background: var(--coral); color: white; }
+.btn-coral:hover { background: #A83E22; transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+.btn-outline:hover { background: var(--ink); color: var(--cream); }
+.btn-ghost { background: var(--paper); color: var(--ink); border: 1.5px solid var(--sand); }
+.btn-ghost:hover { border-color: var(--ink); }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+
+/* TAGS */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 11px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+.tag-coral { background: var(--coral-light); color: var(--coral); }
+.tag-purple { background: var(--purple-light); color: var(--purple); }
+.tag-sage { background: var(--sage-light); color: var(--sage); }
+.tag-amber { background: var(--amber-light); color: var(--amber); }
+.tag-ink { background: var(--ink); color: var(--cream); }
+
+/* CHAT */
+.chat { display: flex; flex-direction: column; gap: 8px; }
+.bubble {
+  max-width: 80%;
+  padding: 9px 15px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.bubble-user {
+  background: var(--ink);
+  color: var(--cream);
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+}
+.bubble-ai {
+  background: white;
+  color: var(--ink);
+  border: 1px solid var(--sand);
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+}
+
+/* INPUT */
+.input {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--sand);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  background: white;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px var(--purple-light);
+}
+.input::placeholder { color: var(--ink-ghost); }
+
+/* SPACING */
+.spacing-grid { display: flex; gap: 20px; align-items: flex-end; }
+.space-chip { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.space-block {
+  background: var(--purple-light);
+  border: 1px solid var(--purple-mid);
+  border-radius: 4px;
+  width: 40px;
+}
+.space-label { font-family: var(--font-mono); font-size: 10px; color: var(--ink-secondary); text-align: center; line-height: 1.4; }
+
+/* FOOTER */
+.footer {
+  padding: 64px 0 96px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.footer-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+.footer-title em { color: var(--coral); font-style: italic; }
+.footer-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-ghost); text-align: right; line-height: 1.9; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="container">
+  <div class="hero">
+    <div class="float-badge">
+      <span class="dot"></span>
+      v1.0 · Claude Design System
+    </div>
+    <div class="hero-label">Design System</div>
+    <h1 class="hero-title">
+      Build with<br>
+      <em>soul.</em>
+    </h1>
+    <p class="hero-subtitle">
+      Tokens, componentes y patrones para interfaces 
+      donde lo técnico y lo táctil conviven — 
+      inspirado en la tensión entre terminal y papel.
+    </p>
+  </div>
+</div>
+
+<!-- 01 COLORS -->
+<div class="container">
+  <section>
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <div>
+        <h2 class="section-title">Colors</h2>
+        <p class="section-desc">paleta de tokens</p>
+      </div>
+    </div>
+
+    <div class="color-grid">
+      <div class="color-chip">
+        <div class="swatch" style="background:#F5F1E8;border-color:#D4C9A6;"></div>
+        <span class="color-name">Cream</span>
+        <span class="color-hex">#F5F1E8</span>
+        <span class="color-role">Background</span>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#1A1816;"></div>
+        <span class="color-name">Ink</span>
+        <span class="color-hex">#1A1816</span>
+        <span class="color-role">Text primario</span>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#C94E2C;"></div>
+        <span class="color-name">Coral</span>
+        <span class="color-hex">#C94E2C</span>
+        <span class="color-role">Acento principal</span>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#6652B5;"></div>
+        <span class="color-name">Purple</span>
+        <span class="color-hex">#6652B5</span>
+        <span class="color-role">Acento Claude</span>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#547552;"></div>
+        <span class="color-name">Sage</span>
+        <span class="color-hex">#547552</span>
+        <span class="color-role">Éxito / activo</span>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#C48B1E;"></div>
+        <span class="color-name">Amber</span>
+        <span class="color-hex">#C48B1E</span>
+        <span class="color-role">Advertencia</span>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#EDE8D4;border-color:#D4C9A6;"></div>
+        <span class="color-name">Paper</span>
+        <span class="color-hex">#EDE8D4</span>
+        <span class="color-role">Surface card</span>
+      </div>
+      <div class="color-chip">
+        <div class="swatch" style="background:#0D1117;"></div>
+        <span class="color-name">Terminal</span>
+        <span class="color-hex">#0D1117</span>
+        <span class="color-role">Dark surface</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 02 TYPOGRAPHY -->
+<div class="container">
+  <section>
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <div>
+        <h2 class="section-title">Typography</h2>
+        <p class="section-desc">escala tipográfica</p>
+      </div>
+    </div>
+
+    <div class="type-samples">
+      <div class="type-sample">
+        <div class="type-meta">
+          <strong>Display / Hero</strong>
+          Playfair Display<br>
+          700 · ~80px<br>
+          −0.025em tracking<br>
+          → Títulos grandes
+        </div>
+        <div style="font-family:var(--font-display);font-size:clamp(44px,6vw,72px);font-weight:700;line-height:1.04;letter-spacing:-0.025em;">
+          Think, then<br><em style="color:var(--coral);">build.</em>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-meta">
+          <strong>Heading 1</strong>
+          Playfair Display<br>
+          400 italic · 40px<br>
+          → Secciones clave
+        </div>
+        <div style="font-family:var(--font-display);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.2;letter-spacing:-0.01em;">
+          Conversations that<br>feel <em style="color:var(--purple);">human.</em>
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-meta">
+          <strong>Heading 2</strong>
+          DM Sans<br>
+          500 · 24px<br>
+          → Subtítulos / cards
+        </div>
+        <div style="font-size:24px;font-weight:500;letter-spacing:-0.005em;">
+          Doppel — WhatsApp AI Agent
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-meta">
+          <strong>Body</strong>
+          DM Sans<br>
+          400 · 16px · 1.75lh<br>
+          → Texto de lectura
+        </div>
+        <div style="font-size:16px;line-height:1.75;max-width:480px;color:var(--ink);">
+          Un agente que acompaña al cliente desde el primer mensaje hasta el cierre — con personalidad, contexto y memoria persistente.
+        </div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-meta">
+          <strong>Mono / Code</strong>
+          JetBrains Mono<br>
+          400 · 13px · 1.7lh<br>
+          → Terminal, labels, IDs
+        </div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--ink-secondary);line-height:1.7;">
+          session_id = <span style="color:var(--coral);">"doppel_client_42"</span><br>
+          agent.<span style="color:var(--purple);">run</span>(user_msg, session_id)<br>
+          <span style="color:var(--ink-ghost);"># → AgentResponse</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 03 COMPONENTS -->
+<div class="container">
+  <section>
+    <div class="section-header">
+      <span class="section-number">03</span>
+      <div>
+        <h2 class="section-title">Components</h2>
+        <p class="section-desc">kit de piezas</p>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div style="margin-bottom:48px;">
+      <p class="comp-label">Cards</p>
+      <div class="two-col">
+        <div class="card card-float-l">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+            <span class="tag tag-coral">Agent</span>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-ghost);">active</span>
+          </div>
+          <p style="font-size:18px;font-weight:500;margin-bottom:8px;font-family:var(--font-display);">WhatsApp Sales Bot</p>
+          <p style="font-size:13px;color:var(--ink-secondary);line-height:1.65;margin-bottom:18px;">Califica leads, responde objeciones y agenda demos — sin salir de WhatsApp.</p>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="tag tag-purple">Agno</span>
+            <span class="tag tag-sage">Gemini</span>
+            <span class="tag tag-amber">Redis</span>
+          </div>
+        </div>
+
+        <div class="terminal-card card-float-r">
+          <div class="terminal-header">
+            <div class="terminal-dot" style="background:#FF5F56;"></div>
+            <div class="terminal-dot" style="background:#FFBD2E;"></div>
+            <div class="terminal-dot" style="background:#27C93F;"></div>
+            <span class="terminal-title">doppel-agent — zsh</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-line">
+              <span class="t-prompt">❯</span>
+              <span>python <span class="t-var">agent.py</span></span>
+            </div>
+            <div class="terminal-line"><span class="t-comment" style="padding-left:16px;"># Cargando skills...</span></div>
+            <div class="terminal-line"><span class="t-success">✔ SalesSkill loaded</span></div>
+            <div class="terminal-line"><span class="t-success">✔ CatalogSkill loaded</span></div>
+            <div class="terminal-line"><span class="t-success">✔ Redis connected</span></div>
+            <div class="terminal-line" style="margin-top:6px;">
+              <span class="t-prompt">❯</span>
+              <span>Listening on <span class="t-str">:8000</span></span>
+            </div>
+            <div class="terminal-line">
+              <span style="color:var(--terminal-blue);padding-left:0;">→</span>
+              <span class="t-output">Waiting for webhooks...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky notes -->
+    <div style="margin-bottom:48px;">
+      <p class="comp-label">Sticky Notes</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;">
+        <div class="sticky coral">
+          <span class="sticky-label" style="color:var(--coral);">TODO</span>
+          Fact-checking con long-context caching
+        </div>
+        <div class="sticky purple">
+          <span class="sticky-label" style="color:var(--purple);">IDEA</span>
+          Singleton agent + session_id por request
+        </div>
+        <div class="sticky">
+          <span class="sticky-label" style="color:var(--amber);">REVISAR</span>
+          Webhook retry logic en Kommo
+        </div>
+        <div class="sticky sage">
+          <span class="sticky-label" style="color:var(--sage);">DONE ✓</span>
+          Supabase RLS dual-client fix
+        </div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div style="margin-bottom:48px;">
+      <p class="comp-label">Buttons</p>
+      <div class="btn-group">
+        <button class="btn btn-primary">Enviar →</button>
+        <button class="btn btn-coral">Conectar Agent</button>
+        <button class="btn btn-outline">Ver código</button>
+        <button class="btn btn-ghost">Cancelar</button>
+        <button class="btn btn-primary btn-sm">Deploy</button>
+      </div>
+    </div>
+
+    <!-- Tags -->
+    <div style="margin-bottom:48px;">
+      <p class="comp-label">Tags / Badges</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <span class="tag tag-coral">Production</span>
+        <span class="tag tag-purple">AI Agent</span>
+        <span class="tag tag-sage">Active</span>
+        <span class="tag tag-amber">Beta</span>
+        <span class="tag tag-ink">v2.0</span>
+      </div>
+    </div>
+
+    <!-- Chat UI -->
+    <div style="margin-bottom:48px;">
+      <p class="comp-label">Chat UI</p>
+      <div class="card" style="max-width:380px;">
+        <div class="chat">
+          <div class="bubble bubble-user">Hola, quiero info sobre el diplomado</div>
+          <div class="bubble bubble-ai">¡Hola! Con gusto te cuento. ¿Eres profesional de salud o estás comenzando en el área? 🧠</div>
+          <div class="bubble bubble-user">Soy terapeuta ocupacional</div>
+          <div class="bubble bubble-ai">Perfecto. El Diplomado en Neurorrehabilitación está diseñado exactamente para tu perfil...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inputs -->
+    <div>
+      <p class="comp-label">Inputs</p>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:400px;">
+        <input class="input" type="text" placeholder="Nombre del cliente...">
+        <input class="input" type="text" placeholder="system_prompt = '...'" style="font-family:var(--font-mono);font-size:12px;">
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 04 SPACING & RADIUS -->
+<div class="container">
+  <section>
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <div>
+        <h2 class="section-title">Space & Radius</h2>
+        <p class="section-desc">ritmo y forma</p>
+      </div>
+    </div>
+
+    <div style="margin-bottom:48px;">
+      <p class="comp-label">Spacing Scale</p>
+      <div class="spacing-grid">
+        <div class="space-chip"><div class="space-block" style="height:4px;"></div><span class="space-label">xs<br>4px</span></div>
+        <div class="space-chip"><div class="space-block" style="height:8px;"></div><span class="space-label">sm<br>8px</span></div>
+        <div class="space-chip"><div class="space-block" style="height:16px;"></div><span class="space-label">md<br>16px</span></div>
+        <div class="space-chip"><div class="space-block" style="height:24px;"></div><span class="space-label">lg<br>24px</span></div>
+        <div class="space-chip"><div class="space-block" style="height:40px;"></div><span class="space-label">xl<br>40px</span></div>
+        <div class="space-chip"><div class="space-block" style="height:64px;"></div><span class="space-label">2xl<br>64px</span></div>
+        <div class="space-chip"><div class="space-block" style="height:96px;"></div><span class="space-label">3xl<br>96px</span></div>
+      </div>
+    </div>
+
+    <div>
+      <p class="comp-label">Border Radius</p>
+      <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:56px;height:56px;background:var(--coral-light);border:1.5px solid var(--coral-mid);border-radius:4px;"></div>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-ghost);">sm · 4px</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:56px;height:56px;background:var(--coral-light);border:1.5px solid var(--coral-mid);border-radius:8px;"></div>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-ghost);">md · 8px</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:56px;height:56px;background:var(--coral-light);border:1.5px solid var(--coral-mid);border-radius:12px;"></div>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-ghost);">lg · 12px</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:56px;height:56px;background:var(--coral-light);border:1.5px solid var(--coral-mid);border-radius:20px;"></div>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-ghost);">xl · 20px</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:80px;height:32px;background:var(--coral-light);border:1.5px solid var(--coral-mid);border-radius:100px;"></div>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-ghost);">pill · 100px</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<div class="container">
+  <div class="footer">
+    <div class="footer-title">
+      Built with <em>Claude</em>,<br>
+      shipped with intent.
+    </div>
+    <div class="footer-meta">
+      Claude Design System<br>
+      v1.0.0 — Julio · Strokegroup<br>
+      Tarija, Bolivia 🇧🇴
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

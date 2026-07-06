@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#E4DCC8">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect x="150" y="170" width="900" height="470" rx="20" fill="#FCFAF2" stroke="#D9CDA8" stroke-width="4"/>
+    <rect x="150" y="150" width="220" height="60" rx="16" fill="#EBDBAB"/>
+    <rect x="430" y="120" width="150" height="44" rx="6" fill="#C94E2C" opacity="0.5" transform="rotate(-5 505 142)"/>
+    <rect x="250" y="280" width="260" height="260" rx="6" fill="#F6DC84" transform="rotate(-4 380 410)"/>
+    <circle cx="380" cy="285" r="13" fill="#C94E2C"/>
+    <rect x="600" y="290" width="320" height="40" rx="8" fill="#EDE8D4"/>
+    <rect x="600" y="360" width="320" height="40" rx="8" fill="#EDE8D4"/>
+    <rect x="600" y="430" width="220" height="40" rx="8" fill="#EDE8D4"/>
+    <text x="600" y="720" font-family="Georgia, serif" font-size="64" font-style="italic" fill="#221f1b" text-anchor="middle">Mesa.</text>
+  </svg>
+</template>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&family=Dancing+Script:wght@600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:#E4DCC8;}
+::selection{background:#D9A82E;color:#1A1816;}
+@keyframes om-float{0%,100%{transform:translateY(0) rotate(var(--r,0deg));}50%{transform:translateY(-6px) rotate(var(--r,0deg));}}
+@keyframes om-pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.75);}}
+@keyframes om-spin{to{transform:rotate(360deg);}}
+@keyframes om-steam{0%{opacity:0;transform:translateY(2px) scaleX(.8);}35%{opacity:.45;}100%{opacity:0;transform:translateY(-16px) scaleX(1.5);}}
+</style>
+</helmet>
+
+<div data-screen-label="Escritorio · Dashboard" style="position:relative;min-height:100vh;padding:30px 40px 70px;overflow:hidden;font-family:'DM Sans',system-ui,sans-serif;color:#1A1816;background-color:#E4DCC8;background-image:radial-gradient(140% 110% at 50% -10%, rgba(255,253,246,.65), rgba(220,210,186,0) 50%),radial-gradient(130% 120% at 50% 125%, rgba(120,105,75,.18), rgba(120,105,75,0) 55%),url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E&quot;);">
+
+  <div style="display:flex;gap:30px;max-width:1500px;margin:0 auto;align-items:flex-start;position:relative;z-index:2;">
+
+    <!-- ===== MANILA FOLDER NAV ===== -->
+    <aside style="width:214px;flex:none;position:sticky;top:30px;">
+      <div style="width:118px;height:30px;margin-left:18px;background:linear-gradient(#ECDCAC,#E2CE96);border-radius:10px 14px 0 0;box-shadow:0 -2px 6px rgba(120,95,40,.12);border-bottom:none;"></div>
+      <div style="background:linear-gradient(160deg,#EBDBAB,#E3D0A0);border-radius:2px 12px 14px 14px;padding:20px 18px 22px;box-shadow:0 18px 34px rgba(90,72,34,.22), inset 0 1px 0 rgba(255,255,255,.45);border:1px solid rgba(140,112,52,.25);margin-top:-1px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:#8a7338;text-transform:uppercase;">agenda · pagos · whatsapp</div>
+        <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:30px;line-height:1;margin:3px 0 18px;color:#352a12;">Mesa<span style="color:#C94E2C;">.</span></div>
+
+        <nav style="display:flex;flex-direction:column;gap:3px;">
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:7px;background:#D9A82E;color:#352507;font-weight:600;font-size:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 3px 8px rgba(150,110,20,.3);">
+            <span style="width:8px;height:8px;border-radius:2px;background:#352507;"></span>Inicio
+          </div>
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:7px;color:#6a5828;font-weight:500;font-size:14px;cursor:pointer;" style-hover="background:rgba(180,150,70,.18);">
+            <span style="width:8px;height:8px;border-radius:2px;background:#6652B5;"></span>Agenda
+          </div>
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:7px;color:#6a5828;font-weight:500;font-size:14px;cursor:pointer;" style-hover="background:rgba(180,150,70,.18);">
+            <span style="width:8px;height:8px;border-radius:2px;background:#547552;"></span>Finanzas
+          </div>
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:7px;color:#6a5828;font-weight:500;font-size:14px;cursor:pointer;" style-hover="background:rgba(180,150,70,.18);">
+            <span style="width:8px;height:8px;border-radius:2px;background:#C94E2C;"></span>Clientes
+          </div>
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:7px;color:#6a5828;font-weight:500;font-size:14px;cursor:pointer;" style-hover="background:rgba(180,150,70,.18);">
+            <span style="width:8px;height:8px;border-radius:2px;background:#C48B1E;"></span>Mensajes
+            <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;background:#C94E2C;color:#fff;border-radius:100px;padding:1px 7px;">4</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:7px;color:#6a5828;font-weight:500;font-size:14px;cursor:pointer;" style-hover="background:rgba(180,150,70,.18);">
+            <span style="width:8px;height:8px;border-radius:2px;background:#A8997A;"></span>Ajustes
+          </div>
+        </nav>
+
+        <div style="margin-top:20px;padding:12px;background:rgba(255,253,246,.6);border:1px dashed rgba(140,112,52,.4);border-radius:7px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:#9a824a;text-transform:uppercase;">Plan Pro</div>
+          <div style="font-size:12.5px;color:#5c4d22;margin-top:2px;">Renueva el 30 jun</div>
+          <div style="height:5px;background:rgba(140,112,52,.2);border-radius:100px;margin-top:8px;overflow:hidden;"><div style="width:68%;height:100%;background:#547552;border-radius:100px;"></div></div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:9px;margin-top:18px;padding-top:14px;border-top:1px solid rgba(140,112,52,.25);">
+          <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#C94E2C,#6652B5);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;">SR</div>
+          <div style="line-height:1.2;"><div style="font-size:13px;font-weight:600;color:#352a12;">Sofía Rivas</div><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#9a824a;">Psicóloga · independiente</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main style="flex:1;min-width:0;">
+
+      <!-- header -->
+      <header style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:8px;position:relative;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8a7c5e;text-transform:uppercase;display:flex;align-items:center;gap:9px;">
+            <span style="display:block;width:18px;height:1px;background:#C94E2C;"></span>Lunes 20 · Junio 2026
+          </div>
+          <h1 style="font-family:'Dancing Script',cursive;font-weight:700;font-size:52px;line-height:1.05;margin:4px 0 10px;color:#221f1b;white-space:nowrap;">Buenos días, Sofía</h1>
+          <p style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#6B6560;margin:0;">6 citas hoy · 3 confirmadas · Bs 680 por cobrar</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <button style="display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;background:#1A1816;color:#F5F1E8;box-shadow:0 6px 16px rgba(26,24,22,.28);" style-hover="transform:translateY(-2px);background:#2c2a26;"><span style="font-size:17px;line-height:0;">+</span> Nueva cita</button>
+          <button style="display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;background:#C94E2C;color:#fff;box-shadow:0 6px 16px rgba(201,78,44,.3);" style-hover="transform:translateY(-2px);background:#b0421f;"><span style="width:8px;height:8px;border-radius:50%;background:#7bdc8a;box-shadow:0 0 0 3px rgba(123,220,138,.35);"></span> Cobrar</button>
+          <button style="padding:10px 16px;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;background:rgba(255,253,246,.7);color:#1A1816;border:1.5px solid rgba(168,153,122,.6);" style-hover="border-color:#1A1816;">Recordatorio</button>
+        </div>
+
+        <!-- pencil prop -->
+        <div style="position:absolute;top:-14px;left:330px;width:150px;height:13px;transform:rotate(-28deg);pointer-events:none;z-index:5;filter:drop-shadow(0 7px 6px rgba(60,45,20,.22));">
+          <div style="position:absolute;left:0;top:0;width:0;height:0;border-top:6.5px solid transparent;border-bottom:6.5px solid transparent;border-right:15px solid #3a322a;"></div>
+          <div style="position:absolute;left:13px;top:0;width:0;height:0;border-top:6.5px solid transparent;border-bottom:6.5px solid transparent;border-right:13px solid #E8C98E;"></div>
+          <div style="position:absolute;left:24px;top:0;height:13px;width:96px;background:linear-gradient(#F2C94C,#E0B23C);border-top:1px solid rgba(255,255,255,.4);"></div>
+          <div style="position:absolute;left:118px;top:0;height:13px;width:8px;background:#b9bcc2;"></div>
+          <div style="position:absolute;left:126px;top:0;height:13px;width:16px;background:#E89A9A;border-radius:0 6px 6px 0;"></div>
+        </div>
+      </header>
+
+      <!-- torn coffee ring stain behind metrics -->
+      <div style="position:absolute;width:130px;height:130px;border-radius:50%;border:8px solid rgba(120,75,40,.13);right:120px;top:150px;pointer-events:none;filter:blur(.5px);z-index:1;"></div>
+
+      <!-- metrics: ticket stubs -->
+      <div style="display:flex;gap:18px;margin:26px 0 6px;flex-wrap:wrap;position:relative;z-index:2;">
+        <div style="position:relative;flex:1;min-width:170px;background:#FCFAF2;border-radius:7px;padding:16px 20px;box-shadow:0 10px 22px rgba(70,55,28,.13);transform:rotate(-.6deg);overflow:hidden;" style-hover="transform:translateY(-3px) rotate(0deg);box-shadow:0 18px 34px rgba(70,55,28,.2);">
+          <div style="position:absolute;left:-7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#E4DCC8;"></div>
+          <div style="position:absolute;right:-7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#E4DCC8;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:#9a824a;text-transform:uppercase;">Ingresos hoy</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:34px;line-height:1.1;color:#221f1b;">Bs 1.240</div>
+          <div style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#547552;margin-top:2px;"><span>▲</span> 12% vs. ayer</div>
+        </div>
+        <div style="position:relative;flex:1;min-width:170px;background:#FCFAF2;border-radius:7px;padding:16px 20px;box-shadow:0 10px 22px rgba(70,55,28,.13);transform:rotate(.5deg);overflow:hidden;" style-hover="transform:translateY(-3px) rotate(0deg);box-shadow:0 18px 34px rgba(70,55,28,.2);">
+          <div style="position:absolute;left:-7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#E4DCC8;"></div>
+          <div style="position:absolute;right:-7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#E4DCC8;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:#9a824a;text-transform:uppercase;">Citas hoy</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:34px;line-height:1.1;color:#221f1b;">6</div>
+          <div style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#C48B1E;margin-top:2px;">3 confirmadas · 2 por confirmar</div>
+        </div>
+        <div style="position:relative;flex:1;min-width:170px;background:#FCFAF2;border-radius:7px;padding:16px 20px;box-shadow:0 10px 22px rgba(70,55,28,.13);transform:rotate(-.3deg);overflow:hidden;" style-hover="transform:translateY(-3px) rotate(0deg);box-shadow:0 18px 34px rgba(70,55,28,.2);">
+          <div style="position:absolute;left:-7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#E4DCC8;"></div>
+          <div style="position:absolute;right:-7px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#E4DCC8;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:#9a824a;text-transform:uppercase;">Por cobrar</div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:34px;line-height:1.1;color:#C94E2C;">Bs 680</div>
+          <div style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#9a824a;margin-top:2px;">3 facturas pendientes</div>
+        </div>
+      </div>
+
+      <!-- two-col workspace -->
+      <div style="display:flex;gap:28px;align-items:flex-start;margin-top:26px;flex-wrap:wrap;">
+
+        <!-- LEFT COLUMN -->
+        <div style="flex:1.5;min-width:340px;display:flex;flex-direction:column;gap:30px;">
+
+          <!-- CALENDAR AGENDA -->
+          <section style="position:relative;background:#FCFAF2;border-radius:8px;box-shadow:0 16px 34px rgba(70,55,28,.16), inset 0 1px 0 rgba(255,255,255,.6);transform:rotate(-.4deg);" style-hover="transform:rotate(0deg) translateY(-3px);box-shadow:0 26px 46px rgba(70,55,28,.22);">
+            <!-- washi tapes -->
+            <div style="position:absolute;top:-13px;left:42px;width:104px;height:28px;background:repeating-linear-gradient(45deg,rgba(201,78,44,.42) 0 7px,rgba(201,78,44,.28) 7px 14px);transform:rotate(-5deg);box-shadow:0 3px 5px rgba(0,0,0,.08);border-left:1px solid rgba(255,255,255,.3);border-right:1px solid rgba(255,255,255,.3);"></div>
+            <div style="position:absolute;top:-11px;right:54px;width:88px;height:26px;background:repeating-linear-gradient(45deg,rgba(102,82,181,.4) 0 7px,rgba(102,82,181,.26) 7px 14px);transform:rotate(4deg);box-shadow:0 3px 5px rgba(0,0,0,.08);"></div>
+            <!-- paper clip -->
+            <div style="position:absolute;top:-12px;right:18px;width:17px;height:46px;border:2.5px solid #b3b6bd;border-radius:9px;background:transparent;transform:rotate(8deg);box-shadow:0 1px 2px rgba(0,0,0,.18);z-index:4;">
+              <div style="position:absolute;left:2.5px;top:5px;right:2.5px;bottom:11px;border:2.5px solid #c9ccd2;border-radius:6px;"></div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:18px;padding:24px 26px 16px;border-bottom:1px dashed #D9CDA8;">
+              <div style="text-align:center;line-height:1;">
+                <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:52px;color:#221f1b;">20</div>
+              </div>
+              <div style="border-left:1px solid #E0D5B4;padding-left:16px;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#9a824a;text-transform:uppercase;">Lunes · Junio</div>
+                <div style="font-family:'Playfair Display',serif;font-size:22px;color:#221f1b;margin-top:2px;">Agenda de hoy</div>
+              </div>
+              <div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a7c5e;cursor:pointer;border:1px solid rgba(168,153,122,.5);border-radius:7px;padding:6px 12px;" style-hover="border-color:#1A1816;color:#1A1816;">Hoy ▾</div>
+            </div>
+
+            <div style="padding:6px 0 14px;">
+              <!-- rows -->
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 26px;border-bottom:1px solid #F1EBD9;" style-hover="background:#F7F1DE;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#6B6560;width:46px;">09:00</div>
+                <div style="width:3px;height:38px;border-radius:2px;background:#6652B5;"></div>
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:15px;color:#221f1b;">Mariana López</div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A8997A;display:flex;align-items:center;gap:6px;">Consulta inicial <span style="width:6px;height:6px;border-radius:50%;background:#547552;"></span> WhatsApp</div></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#221f1b;">Bs 250</div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;padding:3px 10px;border-radius:100px;background:#EAE5F7;color:#6652B5;">Confirmada</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 26px;border-bottom:1px solid #F1EBD9;" style-hover="background:#F7F1DE;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#6B6560;width:46px;">10:30</div>
+                <div style="width:3px;height:38px;border-radius:2px;background:#547552;"></div>
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:15px;color:#221f1b;">Diego Fuentes</div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A8997A;">Seguimiento</div></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#221f1b;">Bs 180</div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;padding:3px 10px;border-radius:100px;background:#E2EDDE;color:#547552;">Pagada ✓</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 26px;border-bottom:1px solid #F1EBD9;" style-hover="background:#F7F1DE;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#6B6560;width:46px;">13:30</div>
+                <div style="width:3px;height:38px;border-radius:2px;background:#C94E2C;"></div>
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:15px;color:#221f1b;">Lucía Vargas</div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A8997A;display:flex;align-items:center;gap:6px;">Sesión 1:1 <span style="width:6px;height:6px;border-radius:50%;background:#547552;"></span> WhatsApp</div></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#221f1b;">Bs 220</div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;padding:3px 10px;border-radius:100px;background:#FAE8E2;color:#C94E2C;">Pendiente</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 26px;border-bottom:1px solid #F1EBD9;" style-hover="background:#F7F1DE;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#6B6560;width:46px;">15:00</div>
+                <div style="width:3px;height:38px;border-radius:2px;background:#6652B5;"></div>
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:15px;color:#221f1b;">Andrés Soto</div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A8997A;">Primera cita</div></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#221f1b;">Bs 250</div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;padding:3px 10px;border-radius:100px;background:#EAE5F7;color:#6652B5;">Confirmada</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:13px 26px;" style-hover="background:#F7F1DE;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#6B6560;width:46px;">16:30</div>
+                <div style="width:3px;height:38px;border-radius:2px;background:#C48B1E;"></div>
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:15px;color:#221f1b;">Camila Rojas</div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A8997A;display:flex;align-items:center;gap:6px;">Seguimiento <span style="width:6px;height:6px;border-radius:50%;background:#547552;"></span> WhatsApp</div></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#221f1b;">Bs 180</div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;padding:3px 10px;border-radius:100px;background:#FAF0D6;color:#C48B1E;">Por confirmar</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- RECENT BOOKINGS — torn paper stack -->
+          <section style="position:relative;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+              <h3 style="font-family:'Playfair Display',serif;font-weight:400;font-size:21px;color:#221f1b;margin:0;">Reservas recientes</h3>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#547552;background:#E2EDDE;padding:3px 9px;border-radius:100px;"><span style="width:6px;height:6px;border-radius:50%;background:#547552;animation:om-pulse 2s ease-in-out infinite;"></span>vía WhatsApp</span>
+            </div>
+            <!-- paper clip on stack -->
+            <div style="position:absolute;top:36px;left:24px;width:16px;height:44px;border:2.5px solid #b3b6bd;border-radius:9px;transform:rotate(-6deg);z-index:5;box-shadow:0 1px 2px rgba(0,0,0,.18);"><div style="position:absolute;left:2.5px;top:5px;right:2.5px;bottom:11px;border:2.5px solid #c9ccd2;border-radius:6px;"></div></div>
+
+            <div style="display:flex;flex-direction:column;">
+              <div style="background:#FBF6E6;padding:14px 18px 14px 46px;box-shadow:0 8px 18px rgba(70,55,28,.13);transform:rotate(-.5deg);clip-path:polygon(0 5%,6% 0,13% 5%,20% 0,28% 5%,36% 0,44% 5%,52% 0,60% 5%,68% 0,76% 5%,84% 0,92% 5%,100% 0,100% 100%,0 100%);position:relative;z-index:3;display:flex;align-items:center;gap:14px;" style-hover="transform:rotate(0deg);">
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:14.5px;color:#221f1b;">Valentina Castro</div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A8997A;">Consulta inicial · hace 4 min</div></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#221f1b;">Bs 250</div>
+                <button style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid #C94E2C;color:#C94E2C;background:transparent;border-radius:6px;padding:5px 11px;cursor:pointer;" style-hover="background:#C94E2C;color:#fff;">Confirmar</button>
+              </div>
+              <div style="background:#FBF7EA;padding:14px 18px 14px 46px;box-shadow:0 8px 18px rgba(70,55,28,.13);transform:rotate(.4deg);clip-path:polygon(0 5%,6% 0,13% 5%,20% 0,28% 5%,36% 0,44% 5%,52% 0,60% 5%,68% 0,76% 5%,84% 0,92% 5%,100% 0,100% 100%,0 100%);margin-top:-8px;position:relative;z-index:2;display:flex;align-items:center;gap:14px;" style-hover="transform:rotate(0deg);">
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:14.5px;color:#221f1b;">Joaquín Reyes</div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A8997A;">Seguimiento · hace 22 min</div></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#221f1b;">Bs 180</div>
+                <button style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid #C94E2C;color:#C94E2C;background:transparent;border-radius:6px;padding:5px 11px;cursor:pointer;" style-hover="background:#C94E2C;color:#fff;">Confirmar</button>
+              </div>
+              <div style="background:#FAF8EE;padding:14px 18px 14px 46px;box-shadow:0 8px 18px rgba(70,55,28,.13);transform:rotate(-.3deg);clip-path:polygon(0 5%,6% 0,13% 5%,20% 0,28% 5%,36% 0,44% 5%,52% 0,60% 5%,68% 0,76% 5%,84% 0,92% 5%,100% 0,100% 100%,0 100%);margin-top:-8px;position:relative;z-index:1;display:flex;align-items:center;gap:14px;" style-hover="transform:rotate(0deg);">
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:14.5px;color:#221f1b;">Renata Molina</div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A8997A;">Sesión 1:1 · hace 1 h</div></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#221f1b;">Bs 220</div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#547552;background:#E2EDDE;padding:4px 10px;border-radius:100px;">Confirmada</span>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div style="flex:1;min-width:300px;display:flex;flex-direction:column;gap:34px;">
+
+          <!-- CORK PINBOARD -->
+          <section style="position:relative;border-radius:10px;padding:18px;border:13px solid;border-image:linear-gradient(150deg,#9c6b3c,#6f4824) 1;background:#C19A6B;background-image:radial-gradient(rgba(120,82,42,.5) 1.1px, transparent 1.2px),radial-gradient(rgba(150,110,66,.35) 1.1px, transparent 1.2px);background-size:13px 13px,17px 17px;background-position:0 0,7px 9px;box-shadow:0 18px 36px rgba(70,50,24,.28), inset 0 0 40px rgba(80,52,24,.35);min-height:392px;">
+            <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%) rotate(-1.5deg);background:#1A1816;color:#F5F1E8;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 16px;border-radius:4px;box-shadow:0 5px 12px rgba(0,0,0,.3);z-index:6;">Pendientes</div>
+
+            <!-- post-its (draggable) -->
+            <div data-note data-id="n1" data-rot="-4" onPointerDown="{{ startDrag }}" style="position:absolute;top:14px;left:12px;width:152px;min-height:148px;background:linear-gradient(165deg,#F6DC84,#EFCF63);padding:16px 14px 14px;border-radius:2px;box-shadow:0 10px 20px rgba(70,50,20,.28);transform:rotate(-4deg);font-family:'Caveat',cursive;font-weight:600;font-size:20px;line-height:1.18;color:#42360f;cursor:grab;touch-action:none;user-select:none;">
+              <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9a8b,#C94E2C 62%,#8f2e18);box-shadow:0 4px 6px rgba(0,0,0,.32);"></div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:#9a7d2a;text-transform:uppercase;margin-bottom:4px;font-weight:500;">Hoy</div>
+              Enviar recordatorio a Lucía antes de las 13:00
+            </div>
+
+            <div data-note data-id="n2" data-rot="3" onPointerDown="{{ startDrag }}" style="position:absolute;top:24px;right:8px;width:148px;min-height:140px;background:linear-gradient(165deg,#EFE6FB,#E0D2F6);padding:16px 14px 14px;border-radius:2px;box-shadow:0 10px 20px rgba(70,50,20,.28);transform:rotate(3deg);font-family:'Caveat',cursive;font-weight:600;font-size:20px;line-height:1.18;color:#3a2c5e;cursor:grab;touch-action:none;user-select:none;">
+              <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#b9a6e8,#6652B5 62%,#42357d);box-shadow:0 4px 6px rgba(0,0,0,.32);"></div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:#8170b0;text-transform:uppercase;margin-bottom:4px;font-weight:500;">Pago</div>
+              Confirmar transferencia de Camila — Bs 180
+            </div>
+
+            <div data-note data-id="n3" data-rot="-2" onPointerDown="{{ startDrag }}" style="position:absolute;bottom:14px;left:30px;width:150px;min-height:128px;background:linear-gradient(165deg,#FCE4DC,#F6CFC2);padding:16px 14px 14px;border-radius:2px;box-shadow:0 10px 20px rgba(70,50,20,.28);transform:rotate(-2deg);font-family:'Caveat',cursive;font-weight:600;font-size:20px;line-height:1.18;color:#6e2f1a;cursor:grab;touch-action:none;user-select:none;">
+              <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#a9c7a3,#547552 62%,#385237);box-shadow:0 4px 6px rgba(0,0,0,.32);"></div>
+              Reagendar a Andrés → jueves 11:00
+            </div>
+
+            <div data-note data-id="n4" data-rot="4" onPointerDown="{{ startDrag }}" style="position:absolute;bottom:22px;right:18px;width:140px;min-height:120px;background:linear-gradient(165deg,#E5EFDD,#D3E5C6);padding:16px 14px 14px;border-radius:2px;box-shadow:0 10px 20px rgba(70,50,20,.28);transform:rotate(4deg);font-family:'Caveat',cursive;font-weight:600;font-size:20px;line-height:1.18;color:#33451f;cursor:grab;touch-action:none;user-select:none;">
+              <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f0c97a,#C48B1E 62%,#8a6112);box-shadow:0 4px 6px rgba(0,0,0,.32);"></div>
+              Llamar a la contadora 14:00 📞
+            </div>
+          </section>
+
+          <!-- FINANCE: receipt roll + vinyl -->
+          <section style="position:relative;display:flex;align-items:flex-start;gap:0;">
+            <!-- vinyl behind -->
+            <div style="position:absolute;right:-22px;bottom:8px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,#C94E2C 0 17px,#1c1a18 17px 19px,#262320 19px 30px,#1c1a18 30px 32px,#2a2724 32px 44px,#1c1a18 44px 46px,#2a2724 46px 58px,#161412 58px 60px,#242120 60px 70px);box-shadow:0 14px 30px rgba(0,0,0,.32);transform:rotate(0deg);z-index:0;cursor:pointer;" style-hover="animation:om-spin 4s linear infinite;">
+              <div style="position:absolute;top:50%;left:50%;width:5px;height:5px;border-radius:50%;background:#0a0908;transform:translate(-50%,-50%);"></div>
+            </div>
+
+            <div style="position:relative;z-index:2;width:262px;background:#FFFDF7;padding:18px 22px 34px;box-shadow:0 14px 30px rgba(70,55,28,.2);transform:rotate(.7deg);clip-path:polygon(0 0,100% 0,100% 93%,95% 100%,90% 93%,85% 100%,80% 93%,75% 100%,70% 93%,65% 100%,60% 93%,55% 100%,50% 93%,45% 100%,40% 93%,35% 100%,30% 93%,25% 100%,20% 93%,15% 100%,10% 93%,5% 100%,0 93%);font-family:'JetBrains Mono',monospace;color:#2a2722;" style-hover="transform:rotate(0deg) translateY(-3px);">
+              <div style="text-align:center;border-bottom:1.5px dashed #cfc4a4;padding-bottom:10px;margin-bottom:12px;">
+                <div style="font-size:12px;letter-spacing:.22em;color:#221f1b;">★ MESA ★</div>
+                <div style="font-size:9.5px;letter-spacing:.12em;color:#9a824a;margin-top:3px;">CAJA — JUNIO 2026</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:#5c5648;padding:5px 0;"><span>Cobrado</span><span style="color:#221f1b;">Bs 18.420</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:#5c5648;padding:5px 0;"><span>Pendiente</span><span style="color:#C94E2C;">Bs 2.160</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:#5c5648;padding:5px 0;border-bottom:1.5px dashed #cfc4a4;padding-bottom:10px;margin-bottom:8px;"><span>Comisiones</span><span>− Bs 920</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:4px 0 12px;"><span style="font-size:11px;letter-spacing:.1em;color:#221f1b;">NETO</span><span style="font-family:'Playfair Display',serif;font-weight:700;font-size:26px;color:#547552;">Bs 17.500</span></div>
+              <div style="height:34px;border-radius:1px;background:repeating-linear-gradient(90deg,#1A1816 0 2px,#FFFDF7 2px 3px,#1A1816 3px 6px,#FFFDF7 6px 9px,#1A1816 9px 11px,#FFFDF7 11px 13px,#1A1816 13px 14px,#FFFDF7 14px 17px);"></div>
+              <div style="text-align:center;font-size:8.5px;letter-spacing:.14em;color:#9a824a;margin-top:8px;">GRACIAS · COBRADO POR WHATSAPP</div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== DESK PROPS (decorative, top layer) ===== -->
+  <!-- iced coffee -->
+  <div style="position:absolute;top:14px;right:34px;width:62px;height:96px;z-index:6;pointer-events:none;filter:drop-shadow(0 10px 10px rgba(60,40,20,.22));">
+    <div style="position:absolute;left:11px;top:-30px;width:7px;height:96px;background:linear-gradient(#C94E2C,#a83e22);border-radius:4px;transform:rotate(13deg);transform-origin:bottom;"></div>
+    <div style="position:absolute;bottom:0;left:0;width:62px;height:84px;border-radius:8px 8px 16px 16px;background:linear-gradient(180deg,#cdb089 0 38%,#7c4a26 38% 100%);overflow:hidden;">
+      <div style="position:absolute;top:12px;left:7px;width:15px;height:15px;background:rgba(255,255,255,.55);border-radius:4px;transform:rotate(18deg);"></div>
+      <div style="position:absolute;top:26px;left:26px;width:14px;height:14px;background:rgba(255,255,255,.5);border-radius:4px;transform:rotate(-12deg);"></div>
+      <div style="position:absolute;top:8px;left:32px;width:12px;height:12px;background:rgba(255,255,255,.45);border-radius:4px;transform:rotate(28deg);"></div>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;width:62px;height:84px;border-radius:8px 8px 16px 16px;background:linear-gradient(100deg,rgba(255,255,255,.42) 0 14%,rgba(255,255,255,0) 30%,rgba(255,255,255,0) 78%,rgba(255,255,255,.25) 100%);border:1.5px solid rgba(255,255,255,.45);"></div>
+  </div>
+
+  <!-- potted plant (simple) -->
+  <div style="position:absolute;bottom:24px;right:46px;width:70px;height:96px;z-index:6;pointer-events:none;filter:drop-shadow(0 9px 9px rgba(40,50,30,.22));">
+    <div style="position:absolute;bottom:34px;left:21px;width:11px;height:62px;background:linear-gradient(#6f9460,#4f6f47);border-radius:6px 6px 0 0;clip-path:polygon(50% 0,100% 16%,100% 100%,0 100%,0 16%);transform:rotate(-13deg);transform-origin:bottom;"></div>
+    <div style="position:absolute;bottom:34px;left:30px;width:11px;height:72px;background:linear-gradient(#79a06a,#547552);border-radius:6px 6px 0 0;clip-path:polygon(50% 0,100% 14%,100% 100%,0 100%,0 14%);"></div>
+    <div style="position:absolute;bottom:34px;left:39px;width:11px;height:60px;background:linear-gradient(#6f9460,#4f6f47);border-radius:6px 6px 0 0;clip-path:polygon(50% 0,100% 16%,100% 100%,0 100%,0 16%);transform:rotate(13deg);transform-origin:bottom;"></div>
+    <div style="position:absolute;bottom:0;left:14px;width:42px;height:40px;background:linear-gradient(160deg,#C9744A,#9c5532);clip-path:polygon(10% 0,90% 0,80% 100%,20% 100%);border-radius:3px;"></div>
+    <div style="position:absolute;bottom:36px;left:11px;width:48px;height:9px;background:#b3653f;border-radius:3px;"></div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount() {
+    this.z = 30;
+    this.SHADOW = '0 10px 20px rgba(70,50,20,.28)';
+    try { this.deltas = JSON.parse(localStorage.getItem('om_notes') || '{}'); } catch (e) { this.deltas = {}; }
+    document.querySelectorAll('[data-note]').forEach((n) => {
+      const id = n.getAttribute('data-id');
+      const d = this.deltas[id];
+      if (d) this.apply(n, d.x, d.y, false);
+    });
+  }
+  apply(n, x, y, grabbing) {
+    const rot = parseFloat(n.getAttribute('data-rot') || 0);
+    n.style.transform = 'translate(' + x + 'px,' + y + 'px) rotate(' + rot + 'deg)' + (grabbing ? ' scale(1.05)' : '');
+  }
+  startDrag = (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    const n = e.currentTarget;
+    const id = n.getAttribute('data-id');
+    if (!this.deltas) this.deltas = {};
+    const cur = this.deltas[id] || { x: 0, y: 0 };
+    const sx = e.clientX, sy = e.clientY;
+    let last = cur;
+    n.style.zIndex = ++this.z;
+    n.style.cursor = 'grabbing';
+    n.style.boxShadow = '0 24px 38px rgba(60,40,16,.34)';
+    this.apply(n, cur.x, cur.y, true);
+    const move = (ev) => {
+      last = { x: cur.x + (ev.clientX - sx), y: cur.y + (ev.clientY - sy) };
+      this.apply(n, last.x, last.y, true);
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      this.deltas[id] = last;
+      this.apply(n, last.x, last.y, false);
+      n.style.cursor = 'grab';
+      n.style.boxShadow = this.SHADOW;
+      try { localStorage.setItem('om_notes', JSON.stringify(this.deltas)); } catch (e) {}
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    e.preventDefault();
+  };
+  renderVals() {
+    return { startDrag: this.startDrag };
+  }
+}
+</script>
+</body>
+</html>
