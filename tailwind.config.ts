@@ -71,8 +71,8 @@ const config: Config = {
 
       // ── Font Family (preserved from original config) ──
       fontFamily: {
-        display: ['"Playfair Display"', 'Georgia', 'serif'],
-        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        display: ['Fraunces', 'serif'],
+        sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
         // ── Mesa (Escritorio) typefaces ──
         serifMesa: ['"Playfair Display"', 'Georgia', 'serif'],
