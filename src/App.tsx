@@ -235,7 +235,7 @@ function App() {
                 Iniciar sesión
               </a>
               <a href="#pricing"
-                className="bg-orange-500 hover:bg-orange-400 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md shadow-orange-500/20 min-h-[44px] inline-flex items-center">
+                className="u-press bg-orange-500 hover:bg-orange-400 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-md shadow-orange-500/20 min-h-[44px] inline-flex items-center">
                 Prueba Gratis
               </a>
             </div>
@@ -305,11 +305,11 @@ function App() {
 
               <div className="flex flex-col sm:flex-row gap-3 mb-10 animate-fade-in-up-3">
                   <a href="#pricing"
-                    className="bg-orange-500 hover:bg-orange-400 text-white px-8 py-3.5 rounded-xl font-semibold transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-2">
+                    className="u-press group bg-orange-500 hover:bg-orange-400 text-white px-8 py-3.5 rounded-xl font-semibold shadow-xl shadow-orange-500/20 flex items-center justify-center gap-2">
                     Comenzar Prueba Gratuita
-                    <ChevronRight className="w-4 h-4" aria-hidden="true" />
+                    <ChevronRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
                   </a>
-                <button className="border border-light-text/10 text-light-secondary hover:border-light-text/20 hover:text-light-text px-8 py-3.5 rounded-xl font-semibold transition-all bg-white/60">
+                <button className="u-lift border border-light-text/10 text-light-secondary hover:border-light-text/20 hover:text-light-text px-8 py-3.5 rounded-xl font-semibold bg-white/60">
                   Ver Demo
                 </button>
               </div>
@@ -403,7 +403,7 @@ function App() {
 
               <div className="mt-8 text-center relative z-10">
                 <button onClick={whatsappRedirect}
-                  className="bg-[#25d366] hover:bg-[#20c55a] text-white px-6 py-3 rounded-full font-semibold transition-all hover:scale-105 shadow-xl shadow-[#25d366]/20 flex items-center space-x-2 mx-auto min-h-[44px]">
+                  className="u-press bg-[#25d366] hover:bg-[#20c55a] text-white px-6 py-3 rounded-full font-semibold shadow-xl shadow-[#25d366]/20 flex items-center space-x-2 mx-auto min-h-[44px]">
                   <MessageCircle className="w-5 h-5" aria-hidden="true" />
                   <span>Chatear con AsistPro</span>
                 </button>
@@ -450,8 +450,8 @@ function App() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {features.map((feature, index) => (
               <div key={index}
-                className={`glass rounded-2xl p-6 hover:border-orange-400/40 hover:shadow-md transition-all duration-300 group reveal reveal-delay-${index + 1}`}>
-                <div className="w-11 h-11 bg-orange-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-500/20 transition-colors">
+                className={`u-lift glass rounded-2xl p-6 hover:border-orange-400/40 hover:shadow-xl group reveal reveal-delay-${index + 1}`}>
+                <div className="w-11 h-11 bg-orange-500/10 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:bg-orange-500/20 group-hover:scale-105">
                   {feature.icon}
                 </div>
                 <h3 className="font-display text-lg font-bold text-light-text mb-2">
@@ -486,7 +486,7 @@ function App() {
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, index) => (
               <div key={index}
-                className={`glass rounded-2xl p-6 relative hover:shadow-md transition-all duration-300 overflow-hidden reveal reveal-delay-${index + 1}`}>
+                className={`u-lift glass rounded-2xl p-6 relative hover:shadow-xl overflow-hidden reveal reveal-delay-${index + 1}`}>
                 <div className="text-orange-400/20 text-9xl font-serif leading-none absolute top-2 right-4 select-none pointer-events-none" aria-hidden="true">
                   "
                 </div>
@@ -553,7 +553,7 @@ function App() {
           <div className="grid lg:grid-cols-3 gap-6">
             {pricingPlans.map((plan, index) => (
               <div key={index}
-                className={`rounded-2xl p-8 relative shadow-sm reveal reveal-delay-${index + 1} ${plan.cardClass}`}>
+                className={`u-lift hover:shadow-xl rounded-2xl p-8 relative shadow-sm reveal reveal-delay-${index + 1} ${plan.cardClass}`}>
                 {plan.popular && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                     <span className="bg-orange-500 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-lg shadow-orange-500/30 flex items-center gap-1">
@@ -607,7 +607,7 @@ function App() {
                 </div>
 
                 <button onClick={() => openModal(plan)}
-                  className={`w-full py-3.5 px-6 rounded-xl font-semibold transition-all min-h-[44px] ${plan.buttonClass}`}>
+                  className={`u-press w-full py-3.5 px-6 rounded-xl font-semibold min-h-[44px] ${plan.buttonClass}`}>
                   Comenzar Prueba Gratuita
                 </button>
               </div>
@@ -636,9 +636,9 @@ function App() {
               con AsistPro. Comienza tu prueba gratuita hoy mismo.
             </p>
               <a href="#pricing"
-                className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white px-8 py-4 rounded-xl font-semibold transition-all hover:scale-105 shadow-2xl shadow-orange-500/20 text-lg">
+                className="u-press group inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white px-8 py-4 rounded-xl font-semibold shadow-2xl shadow-orange-500/20 text-lg">
                 Comenzar Ahora — Gratis por 3 Días
-                <ChevronRight className="w-5 h-5" aria-hidden="true" />
+                <ChevronRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
               </a>
             <p className="text-light-muted mt-5 text-sm">
               Sin tarjeta de crédito requerida · Cancela en cualquier momento
