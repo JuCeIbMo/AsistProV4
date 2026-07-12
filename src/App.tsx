@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import PricingModal from './components/PricingModal';
+import { buildWhatsAppUrl } from './config/whatsapp';
 import {
   MessageCircle, Check, Star, Bot, Mic, Users, Clock, Shield,
   Menu, X, Phone, Video, MoreVertical, Send, Calendar, Wallet,
@@ -195,7 +196,7 @@ function App() {
   ];
 
   const openModal = (plan: PricingPlan) => { setSelectedPlan(plan); setModalOpen(true); };
-  const whatsappRedirect = () => window.open('https://wa.me/5492604086606', '_blank');
+  const whatsappRedirect = () => window.open(buildWhatsAppUrl(), '_blank');
 
   return (
     <div className="min-h-screen bg-light-bg font-sans overflow-x-hidden">
