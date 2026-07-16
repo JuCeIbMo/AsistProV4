@@ -14,7 +14,7 @@ import { MesaDeskProps } from '../components/dashboard/mesa/MesaDeskProps';
 import { MesaAgendaView } from '../components/dashboard/mesa/MesaAgendaView';
 import { MesaFinanzasView } from '../components/dashboard/mesa/MesaFinanzasView';
 import { MesaAjustesView } from '../components/dashboard/mesa/MesaAjustesView';
-import { TransactionsList } from '../components/dashboard/TransactionsList';
+import { MesaTransactions } from '../components/dashboard/mesa/MesaTransactions';
 import { fmt } from '../components/dashboard/format';
 import { useDashboardPageData } from '../hooks/useDashboardPageData';
 import { useMobile } from '../hooks/useMobile';
@@ -232,19 +232,10 @@ export default function DashboardPage() {
               ) : data ? (
                 <>
                   <MesaFinanzasView data={data} currency={currency} />
-                  <div
-                    className="mesa-card"
-                    style={{
-                      marginTop: isMobile ? 22 : 34,
-                      background: '#1A1816',
-                      borderRadius: 8,
-                      padding: isMobile ? '16px 14px' : '22px 26px',
-                      boxShadow: '0 14px 30px rgba(70,55,28,.2)',
-                    }}
-                  >
-                    <TransactionsList
+                  <div style={{ marginTop: isMobile ? 22 : 34 }}>
+                    <MesaTransactions
                       initialItems={data.recent_transactions || []}
-                      loading={false}
+                      currency={currency}
                       onUnauthorized={goLogin}
                     />
                   </div>
