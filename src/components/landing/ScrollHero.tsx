@@ -25,18 +25,20 @@ const smoothstep = (e0: number, e1: number, x: number) => {
 const windowOpacity = (p: number, inA: number, inB: number, outA: number, outB: number) =>
   clamp01(smoothstep(inA, inB, p) - smoothstep(outA, outB, p));
 
-type Chaos = { label: string; img: string; angle: number; yScale: number; spin: number; stagger: number };
+type Chaos = { label: string; img: string; size: number; angle: number; yScale: number; spin: number; stagger: number };
 
+// Tamaño base variable por objeto (px): rompe la uniformidad y da profundidad
+// —los objetos más grandes leen como "más cerca". Emparejado a cada asset.
 const CHAOS_RAW = [
-  { label: 'Planillas de Excel', img: 'excel.png' },
-  { label: 'Calendario físico', img: 'calendario-fisico.png' },
-  { label: 'Archivos sueltos', img: 'archivos-sueltos.png' },
-  { label: 'Pizarra de tareas', img: 'pizarra.png' },
-  { label: 'Agenda de papel', img: 'agenda-de-papel.png' },
-  { label: 'Apps que no se hablan', img: 'apps-que-no-se-hablan.png' },
-  { label: 'Emails sin leer', img: 'correo.png' },
-  { label: 'Notas post-it', img: 'postits.png' },
-  { label: 'Alarmas del celular', img: 'reloj-alarma.png' },
+  { label: 'Planillas de Excel', img: 'excel.png', size: 124 },
+  { label: 'Calendario físico', img: 'calendario-fisico.png', size: 96 },
+  { label: 'Archivos sueltos', img: 'archivos-sueltos.png', size: 78 },
+  { label: 'Pizarra de tareas', img: 'pizarra.png', size: 132 },
+  { label: 'Agenda de papel', img: 'agenda-de-papel.png', size: 88 },
+  { label: 'Apps que no se hablan', img: 'apps-que-no-se-hablan.png', size: 108 },
+  { label: 'Emails sin leer', img: 'correo.png', size: 74 },
+  { label: 'Notas post-it', img: 'postits.png', size: 100 },
+  { label: 'Alarmas del celular', img: 'reloj-alarma.png', size: 84 },
 ];
 
 const CHAOS: Chaos[] = CHAOS_RAW.map((it, i, arr) => {
@@ -46,7 +48,7 @@ const CHAOS: Chaos[] = CHAOS_RAW.map((it, i, arr) => {
     angle,
     yScale: Math.sin(angle) > 0 ? 0.72 : 0.86,
     spin: (i % 2 === 0 ? -1 : 1) * (90 + (i % 3) * 46), // giro extra al colapsar (momentum)
-    stagger: (i % 5) * 0.03, // arranque escalonado por tarjeta
+    stagger: (i % 5) * 0.03, // arranque escalonado por objeto
   };
 });
 
@@ -338,28 +340,20 @@ export default function ScrollHero({ onWhatsApp }: { onWhatsApp: () => void }) {
         const scale = 1 - pull * 0.88;
         const opacity = clamp01(1 - smoothstep(0.72, 1, pull)) * (1 - smoothstep(0.62, 0.72, t));
         return (
-          <div
+          <img
             key={c.label}
+            src={`/landing/chaos/${c.img}`}
+            alt=""
             aria-hidden="true"
             style={{
               position: 'absolute', left: '50%', top: '58%',
+              width: c.size, height: 'auto', // respeta el aspect ratio real de cada PNG
               transform: `translate(-50%,-50%) translate(${x}vmin, ${y}vmin) rotate(${rot}deg) scale(${scale})`,
+              transformOrigin: 'center',
               opacity, pointerEvents: 'none', willChange: 'transform, opacity',
+              filter: 'drop-shadow(0 10px 18px rgba(15,23,42,0.14))',
             }}
-          >
-            <div
-              style={{
-                width: 114, padding: '10px 12px', textAlign: 'center', borderRadius: 12,
-                background: '#fff', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-              }}
-            >
-              <img src={`/landing/chaos/${c.img}`} alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
-              <div className="font-display" style={{ fontWeight: 600, fontSize: 11.5, lineHeight: 1.25, color: 'var(--text-primary)' }}>
-                {c.label}
-              </div>
-            </div>
-          </div>
+          />
         );
       })}
 
