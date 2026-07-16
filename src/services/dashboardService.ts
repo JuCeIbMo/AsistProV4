@@ -58,6 +58,8 @@ export interface ExpenseCategoryItem {
   display_name: string;
   amount: string;
   share: number;
+  previous_amount: string | null;
+  change_pct: number | null;
 }
 
 export interface MonthlyTrendPoint {

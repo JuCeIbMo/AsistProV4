@@ -6,9 +6,9 @@ import { MonthlyTrendBars } from '../components/dashboard/MonthlyTrendBars';
 import type { ExpenseCategoryItem, MonthlyTrendPoint } from '../services/dashboardService';
 
 const mockCategories: ExpenseCategoryItem[] = [
-  { slug: 'food', display_name: 'Comida', amount: '500.00', share: 50 },
-  { slug: 'transport', display_name: 'Transporte', amount: '300.00', share: 30 },
-  { slug: 'entertainment', display_name: 'Entretenimiento', amount: '200.00', share: 20 },
+  { slug: 'food', display_name: 'Comida', amount: '500.00', share: 50, previous_amount: null, change_pct: null },
+  { slug: 'transport', display_name: 'Transporte', amount: '300.00', share: 30, previous_amount: null, change_pct: null },
+  { slug: 'entertainment', display_name: 'Entretenimiento', amount: '200.00', share: 20, previous_amount: null, change_pct: null },
 ];
 
 const mockTrend: MonthlyTrendPoint[] = [

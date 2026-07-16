@@ -17,7 +17,7 @@ const summary: DashboardSummary = {
   pending_items: [],
   budgets: [],
   expense_categories: [
-    { slug: 'food', display_name: 'Comida', amount: '400.00', share: 42.4 },
+    { slug: 'food', display_name: 'Comida', amount: '400.00', share: 42.4, previous_amount: null, change_pct: null },
   ],
   monthly_trend: [
     { label: 'May 26', year: 2026, month: 5, income: '10000.00', expense: '8000.00', net: '2000.00' },
@@ -32,6 +32,15 @@ describe('MesaFinanzasView', () => {
 
     expect(screen.queryByText('Citas por confirmar')).not.toBeInTheDocument();
     expect(screen.getByText('Finanzas')).toBeInTheDocument();
+  });
+
+  it('renders backend percentages as-is, without doubling them', () => {
+    render(<MesaFinanzasView data={summary} currency="BOB" />);
+
+    // savings_rate: 21.4 (ya en escala 0-100) -> "ahorro 21%", nunca "2140%"
+    expect(screen.getByText('ahorro 21%')).toBeInTheDocument();
+    // share: 42.4 (ya en escala 0-100) -> "42%", nunca "4240%"
+    expect(screen.getByText('42%')).toBeInTheDocument();
   });
 
   it('renders currency with quieter typography in finance surfaces', () => {

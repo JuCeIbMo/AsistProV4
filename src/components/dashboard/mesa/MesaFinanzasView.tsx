@@ -2,6 +2,7 @@ import { type CSSProperties, useMemo } from 'react';
 import type { DashboardSummary } from '../../../services/dashboardService';
 import { fmt } from '../format';
 import { useMobile } from '../../../hooks/useMobile';
+import { MesaBudgets } from './MesaBudgets';
 
 const mono: CSSProperties = { fontFamily: "'JetBrains Mono',monospace" };
 
@@ -97,8 +98,8 @@ export function MesaFinanzasView({ data, currency }: MesaFinanzasViewProps) {
     return trend.slice(-6);
   }, [data.monthly_trend]);
 
-  const maxIncome = useMemo(() => {
-    const vals = chartData.map(d => parseFloat(d.income) || 0);
+  const maxFlow = useMemo(() => {
+    const vals = chartData.flatMap(d => [parseFloat(d.income) || 0, parseFloat(d.expense) || 0]);
     return Math.max(...vals, 1);
   }, [chartData]);
 
@@ -128,7 +129,7 @@ export function MesaFinanzasView({ data, currency }: MesaFinanzasViewProps) {
     {
       label: 'Neto del mes',
       amount: data.month.net,
-      hint: `ahorro ${Math.round(data.month.savings_rate * 100)}%`,
+      hint: `ahorro ${Math.round(data.month.savings_rate)}%`,
       hintColor: '#9cb89a',
       rotation: 0.5,
       dark: true,
@@ -200,7 +201,7 @@ export function MesaFinanzasView({ data, currency }: MesaFinanzasViewProps) {
           {/* BAR CHART */}
           <section style={{ position: 'relative', borderRadius: 8, padding: isMobile ? '22px 14px 16px' : '24px 26px 20px', background: '#FBF8EC', backgroundImage: 'repeating-linear-gradient(0deg,rgba(102,82,181,.09) 0 1px,transparent 1px 22px),repeating-linear-gradient(90deg,rgba(102,82,181,.09) 0 1px,transparent 1px 22px)', backgroundSize: '22px 22px', boxShadow: '0 16px 34px rgba(70,55,28,.16), inset 0 1px 0 rgba(255,255,255,.6)', border: '1px solid #E6DCC2' }}>
             <div style={{ position: 'absolute', top: -12, left: 20, background: '#1A1816', color: '#F5F1E8', ...mono, fontSize: 10, letterSpacing: '.1em', textTransform: 'uppercase', padding: '5px 12px', borderRadius: 4, transform: 'rotate(-1.5deg)', boxShadow: '0 5px 12px rgba(0,0,0,.28)' }}>
-              Ingresos · últimos {chartData.length} meses
+              Ingresos y gastos · últimos {chartData.length} meses
             </div>
             {chartData.length === 0 ? (
               <div style={{ ...mono, fontSize: 13, color: '#A8997A', textAlign: 'center', paddingTop: 40 }}>Sin datos de tendencia aún.</div>
@@ -208,16 +209,29 @@ export function MesaFinanzasView({ data, currency }: MesaFinanzasViewProps) {
               <>
                 <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: isMobile ? 8 : 14, height: isMobile ? 140 : 200, paddingTop: 18, borderBottom: '2px solid #1A1816' }}>
                   {chartData.map((d, i) => {
-                    const val    = parseFloat(d.income) || 0;
-                    const h      = Math.round((val / maxIncome) * (isMobile ? 120 : 180));
-                    const isLast = i === chartData.length - 1;
+                    const incomeVal  = parseFloat(d.income) || 0;
+                    const expenseVal = parseFloat(d.expense) || 0;
+                    const incomeH    = Math.round((incomeVal / maxFlow) * (isMobile ? 120 : 180));
+                    const expenseH   = Math.round((expenseVal / maxFlow) * (isMobile ? 120 : 180));
+                    const isLast     = i === chartData.length - 1;
                     return (
                       <div key={`${d.year}-${d.month}`} style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'center', gap: 4, height: '100%' }}>
-                        {!isMobile && <div style={{ ...mono, fontSize: 11, color: isLast ? '#C94E2C' : '#7a6e55', fontWeight: isLast ? 500 : 400 }}>{fmt(String(val))}</div>}
-                        <div style={{ width: '100%', maxWidth: isMobile ? 32 : 46, height: h, background: isLast ? 'linear-gradient(#E0673F,#C94E2C)' : 'linear-gradient(#7ba06d,#547552)', borderRadius: '3px 3px 0 0', boxShadow: isLast ? 'inset 0 2px 0 rgba(255,255,255,.3), 0 6px 14px rgba(201,78,44,.28)' : 'inset 0 2px 0 rgba(255,255,255,.25), 0 4px 10px rgba(70,55,28,.16)' }} />
+                        {!isMobile && (
+                          <div style={{ ...mono, fontSize: 10, color: isLast ? '#C94E2C' : '#7a6e55', fontWeight: isLast ? 500 : 400, textAlign: 'center' }}>
+                            {fmt(String(incomeVal))}
+                          </div>
+                        )}
+                        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3 }}>
+                          <div style={{ width: isMobile ? 14 : 20, height: incomeH, background: isLast ? 'linear-gradient(#8bc47d,#547552)' : 'linear-gradient(#7ba06d,#547552)', borderRadius: '3px 3px 0 0', boxShadow: 'inset 0 2px 0 rgba(255,255,255,.25), 0 4px 10px rgba(70,55,28,.16)' }} title="Ingresos" />
+                          <div style={{ width: isMobile ? 14 : 20, height: expenseH, background: isLast ? 'linear-gradient(#E0673F,#C94E2C)' : 'linear-gradient(#d9855f,#C94E2C)', borderRadius: '3px 3px 0 0', boxShadow: 'inset 0 2px 0 rgba(255,255,255,.25), 0 4px 10px rgba(70,55,28,.16)' }} title="Gastos" />
+                        </div>
                       </div>
                     );
                   })}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: 6, ...mono, fontSize: 9.5, color: '#7a6e55' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#547552' }} />Ingresos</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: '#C94E2C' }} />Gastos</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: isMobile ? 8 : 14, marginTop: 9, ...mono, fontSize: 10, color: '#9a824a', textAlign: 'center' }}>
                   {chartData.map((d, i) => {
@@ -279,7 +293,15 @@ export function MesaFinanzasView({ data, currency }: MesaFinanzasViewProps) {
                   <div key={cat.slug || cat.display_name}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', ...mono, fontSize: 11.5, color: '#5c5648', marginBottom: 5 }}>
                       <span>{cat.display_name}</span>
-                      <span style={{ color: '#221f1b' }}>{Math.round(cat.share * 100)}%</span>
+                      <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 6 }}>
+                        {cat.change_pct !== null && (
+                          <span style={{ fontSize: 10, color: cat.change_pct > 0 ? '#C94E2C' : cat.change_pct < 0 ? '#547552' : '#9a824a' }}>
+                            {cat.change_pct > 0 ? '↑' : cat.change_pct < 0 ? '↓' : '='}
+                            {Math.abs(Math.round(cat.change_pct))}%
+                          </span>
+                        )}
+                        <span style={{ color: '#221f1b' }}>{Math.round(cat.share)}%</span>
+                      </span>
                     </div>
                     <div style={{ height: 9, borderRadius: 100, background: '#ECE4D0', overflow: 'hidden' }}>
                       <div style={{ width: `${Math.round((cat.share / maxShare) * 100)}%`, height: '100%', background: catColors[i % catColors.length], borderRadius: 100 }} />
@@ -289,6 +311,8 @@ export function MesaFinanzasView({ data, currency }: MesaFinanzasViewProps) {
               </div>
             </section>
           )}
+
+          <MesaBudgets budgets={data.budgets || []} currency={currency} />
 
         </div>
       </div>
