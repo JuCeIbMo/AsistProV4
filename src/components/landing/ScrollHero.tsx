@@ -68,13 +68,13 @@ function usePrefersReducedMotion() {
 function useIntroTimeline(durationMs: number): number {
   const [t, setT] = useState(1); // SSR / sin-JS / reposo: composición resuelta visible
   const raf = useRef<number>();
-  const started = useRef(false);
 
   useLayoutEffect(() => {
-    if (started.current) return;
-    started.current = true;
     if (typeof window === 'undefined') return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; // sin motion: queda resuelto
+    // Sin guard `started`: en React StrictMode (next dev) el efecto corre
+    // montar→limpiar→remontar; un ref que sobrevive dejaría la animación
+    // cancelada por el cleanup y nunca reiniciada. Cada montaje reinicia limpio.
     setT(0);
     const begin = performance.now() + 220; // pequeña espera antes de arrancar
     const tick = (now: number) => {
