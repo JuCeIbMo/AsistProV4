@@ -248,6 +248,13 @@ body::after {
   .mesa-btn-ghost:hover { transform: none !important; }
 }
 
+/* ── ScrollHero: composición final ── */
+.hero-final-grid { will-change: opacity, transform; }
+@media (max-width: 720px) {
+  .hero-final-grid { grid-template-columns: 1fr !important; }
+  .hero-final-grid > div { justify-self: center !important; }
+}
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -1,21 +1,8 @@
 import { useEffect, useState } from 'react';
 import PricingModal from './components/PricingModal';
+import ScrollHero from './components/landing/ScrollHero';
 import { buildWhatsAppUrl } from './config/whatsapp';
-import {
-  MessageCircle,
-  Check,
-  Bot,
-  Mic,
-  Users,
-  Clock,
-  Shield,
-  Menu,
-  X,
-  Phone,
-  Video,
-  MoreVertical,
-  Send
-} from 'lucide-react';
+import { Check, Bot, Menu, X } from 'lucide-react';
 
 function useScrollReveal() {
   useEffect(() => {
@@ -211,147 +198,8 @@ function App() {
           )}
         </div>
       </header>
-
-      {/* Hero Section */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="reveal">
-              <span className="editorial-kicker font-mono">Tu asistente, organizado</span>
-              <h1 className="mt-4 text-5xl lg:text-6xl font-display font-extrabold mb-6 leading-tight">
-                Tu <span style={{ color: 'var(--accent-dark)' }}>Asistente Virtual</span> Inteligente
-              </h1>
-              <p className="text-xl mb-8 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                AsistPro organiza tu vida automáticamente. Programa citas, controla gastos y genera informes
-                detallados, todo desde WhatsApp con inteligencia artificial avanzada.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <a
-                  href="#pricing"
-                  className="u-press px-8 py-4 rounded-xl font-semibold text-center text-white"
-                  style={{ background: 'var(--accent-dark)' }}
-                >
-                  Comenzar Prueba Gratuita
-                </a>
-                <button
-                  className="u-press px-8 py-4 rounded-xl font-semibold border-2"
-                  style={{ borderColor: 'var(--accent-dark)', color: 'var(--accent-dark)' }}
-                >
-                  Ver Demo
-                </button>
-              </div>
-              <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm" style={{ color: 'var(--text-muted)' }}>
-                <div className="flex items-center space-x-1">
-                  <Shield className="w-4 h-4" aria-hidden="true" />
-                  <span>3 días gratis</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Users className="w-4 h-4" aria-hidden="true" />
-                  <span>+10,000 usuarios</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Clock className="w-4 h-4" aria-hidden="true" />
-                  <span>Disponible 24/7</span>
-                </div>
-              </div>
-            </div>
-            <div className="relative reveal reveal-delay-2">
-              {/* WhatsApp-style Chat Interface — colores reales de WhatsApp: es una
-                  representación literal del producto, no parte del acento de marca. */}
-              <div className="bg-white rounded-2xl overflow-hidden max-w-sm mx-auto" style={{ boxShadow: 'var(--shadow-md)' }}>
-                {/* WhatsApp Header */}
-                <div className="bg-[#075e54] text-white p-4 flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-gray-600" aria-hidden="true" />
-                    </div>
-                    <div>
-                      <p className="font-semibold">AsistPro</p>
-                      <p className="text-xs text-green-200">en línea</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <Video className="w-5 h-5" aria-hidden="true" />
-                    <Phone className="w-5 h-5" aria-hidden="true" />
-                    <MoreVertical className="w-5 h-5" aria-hidden="true" />
-                  </div>
-                </div>
-
-                {/* WhatsApp Background Pattern */}
-                <div
-                  className="p-4 min-h-[400px] relative"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e5e7eb' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                    backgroundColor: '#efeae2'
-                  }}
-                >
-                  <div className="space-y-4">
-                    {/* User Message */}
-                    <div className="flex justify-end">
-                      <div className="bg-[#dcf8c6] text-gray-800 rounded-lg p-3 max-w-xs shadow-sm">
-                        <p className="text-sm">Hola! Recordame agendar reunión con cliente mañana a las 3pm</p>
-                        <p className="text-xs text-gray-600 mt-1 text-right font-mono">14:32</p>
-                      </div>
-                    </div>
-
-                    {/* Bot Response */}
-                    <div className="flex justify-start">
-                      <div className="bg-white rounded-lg p-3 max-w-xs shadow-sm">
-                        <p className="text-sm text-gray-800">✅ Perfecto! He agendado tu reunión para mañana 15:00. También creé un recordatorio 30 minutos antes.</p>
-                        <p className="text-xs text-gray-500 mt-1 font-mono">14:32</p>
-                      </div>
-                    </div>
-
-                    {/* User Message */}
-                    <div className="flex justify-end">
-                      <div className="bg-[#dcf8c6] text-gray-800 rounded-lg p-3 max-w-xs shadow-sm">
-                        <p className="text-sm">Genial! También registra que gasté $2500 en almuerzo</p>
-                        <p className="text-xs text-gray-600 mt-1 text-right font-mono">14:35</p>
-                      </div>
-                    </div>
-
-                    {/* Bot Response */}
-                    <div className="flex justify-start">
-                      <div className="bg-white rounded-lg p-3 max-w-xs shadow-sm">
-                        <p className="text-sm text-gray-800">💰 Registrado! Gasto de $2.500 en categoría "Alimentación". Tu presupuesto mensual va en 65%.</p>
-                        <p className="text-xs text-gray-500 mt-1 font-mono">14:35</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* WhatsApp Input */}
-                <div className="bg-[#f0f0f0] p-3 flex items-center space-x-2">
-                  <div className="flex-1 bg-white rounded-full px-4 py-2 flex items-center space-x-2">
-                    <input
-                      type="text"
-                      placeholder="Escribe un mensaje..."
-                      className="flex-1 outline-none text-sm"
-                      disabled
-                    />
-                    <Mic className="w-4 h-4 text-gray-400" aria-hidden="true" />
-                  </div>
-                  <button className="bg-[#25d366] p-2 rounded-full">
-                    <Send className="w-4 h-4 text-white" aria-hidden="true" />
-                  </button>
-                </div>
-              </div>
-
-              {/* WhatsApp CTA Button */}
-              <div className="mt-6 text-center">
-                <button
-                  onClick={whatsappRedirect}
-                  className="u-press bg-[#25d366] hover:bg-[#20c55a] text-white px-6 py-3 rounded-full font-semibold flex items-center space-x-2 mx-auto shadow-lg"
-                >
-                  <MessageCircle className="w-5 h-5" aria-hidden="true" />
-                  <span>Chatear con AsistPro</span>
-                </button>
-                <p className="text-sm mt-2" style={{ color: 'var(--text-muted)' }}>Comienza tu prueba gratuita ahora</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Hero — scroll cinematográfico: el caos se ordena en AsistPro */}
+      <ScrollHero onWhatsApp={whatsappRedirect} />
 
       {/* Features Section */}
       <section id="features" className="py-20">
