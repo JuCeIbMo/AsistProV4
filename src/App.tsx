@@ -159,7 +159,14 @@ function App() {
               <a href="#contact" className="font-medium transition-colors" style={{ color: 'var(--text-secondary)' }}>Contacto</a>
             </nav>
 
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center gap-2">
+              <a
+                href="/login"
+                className="u-press px-5 py-2 rounded-lg font-semibold transition-colors hover:bg-[rgba(19,26,38,0.05)]"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                Iniciar sesión
+              </a>
               <a
                 href="#pricing"
                 className="u-press px-6 py-2 rounded-lg font-semibold block text-center text-white"
@@ -182,17 +189,27 @@ function App() {
           {isMenuOpen && (
             <div className="md:hidden py-4" style={{ borderTop: '1px solid var(--border)' }}>
               <nav className="flex flex-col space-y-4">
-                <a href="#features" className="font-medium" style={{ color: 'var(--text-secondary)' }}>Funciones</a>
-                <a href="#testimonials" className="font-medium" style={{ color: 'var(--text-secondary)' }}>Testimonios</a>
-                <a href="#pricing" className="font-medium" style={{ color: 'var(--text-secondary)' }}>Precios</a>
-                <a href="#contact" className="font-medium" style={{ color: 'var(--text-secondary)' }}>Contacto</a>
-                <a
-                  href="#pricing"
-                  className="px-6 py-2 rounded-lg text-left font-semibold block text-white"
-                  style={{ background: 'var(--accent-dark)' }}
-                >
-                  Prueba Gratis
-                </a>
+                <a href="#features" onClick={() => setIsMenuOpen(false)} className="font-medium" style={{ color: 'var(--text-secondary)' }}>Funciones</a>
+                <a href="#testimonials" onClick={() => setIsMenuOpen(false)} className="font-medium" style={{ color: 'var(--text-secondary)' }}>Testimonios</a>
+                <a href="#pricing" onClick={() => setIsMenuOpen(false)} className="font-medium" style={{ color: 'var(--text-secondary)' }}>Precios</a>
+                <a href="#contact" onClick={() => setIsMenuOpen(false)} className="font-medium" style={{ color: 'var(--text-secondary)' }}>Contacto</a>
+                <div className="flex flex-col gap-3 pt-2">
+                  <a
+                    href="/login"
+                    className="px-6 py-2.5 rounded-lg text-center font-semibold block border"
+                    style={{ borderColor: 'rgba(19, 26, 38, 0.18)', color: 'var(--text-primary)' }}
+                  >
+                    Iniciar sesión
+                  </a>
+                  <a
+                    href="#pricing"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-6 py-2.5 rounded-lg text-center font-semibold block text-white"
+                    style={{ background: 'var(--accent-dark)' }}
+                  >
+                    Prueba Gratis
+                  </a>
+                </div>
               </nav>
             </div>
           )}

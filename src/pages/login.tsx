@@ -457,7 +457,13 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <p className="text-center text-xs text-light-muted mt-5">
+          <p className="text-center text-[15px] text-light-secondary mt-6">
+            ¿No tenés cuenta?{' '}
+            <a href="/#pricing" className="font-semibold text-light-accent-dark hover:underline">
+              Probá gratis
+            </a>
+          </p>
+          <p className="text-center text-xs text-light-muted mt-3">
             Sesión válida 7 días · el código expira en 10 minutos
           </p>
         </div>
