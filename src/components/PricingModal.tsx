@@ -73,14 +73,10 @@ export default function PricingModal({ isOpen, onClose, selectedPlan, isAnnual }
   // Función para obtener el precio en USD según el plan y periodicidad
   function getUsdPrice(planName: string, isAnnual: boolean) {
     const monthlyPrices: Record<string, string> = {
-      'Starter': '3.99',
       'Pro': '5.99',
-      'Premium': '9.99',
     };
     const annualPrices: Record<string, string> = {
-      'Starter': '39.99',
       'Pro': '59.99',
-      'Premium': '99.99',
     };
     if (isAnnual) {
       return annualPrices[planName] || '';

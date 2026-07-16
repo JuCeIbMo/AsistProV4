@@ -20,9 +20,10 @@ import {
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAnnual, setIsAnnual] = useState(false);
+  const [currency, setCurrency] = useState<'ARS' | 'USD'>('ARS');
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
+  const [selectedIsAnnual, setSelectedIsAnnual] = useState(false);
 
   const features = [
     {
@@ -68,80 +69,39 @@ function App() {
     }
   ];
 
-  const pricingPlans = [
-    {
-      name: "Starter",
-      monthlyPrice: "ARS $3.999",
-      annualPrice: "ARS $39.990",
-      period: isAnnual ? "por año" : "por mes",
-      savings: isAnnual ? "Ahorra ARS $7.998" : null,
-      description: "Ideal para quienes quieren comenzar a organizarse",
-      features: [
-        "40 recordatorios por mes",
-        "Reconocimiento de notas de voz",
-        "Recordatorios recurrentes",
-        "Creación de listas"
-      ],
-      notIncluded: [
-        "Múltiples recordatorios en un solo mensaje",
-        "Acceso anticipado a nuevas funciones",
-        "Respuestas del asistente por audio",
-        "Google Calendar",
-        "Finanzas personales"
-      ],
-      color: "bg-orange-50 border-orange-200",
-      buttonColor: "bg-orange-600 hover:bg-orange-700"
+  // Un solo plan, mostrado en dos modalidades (mensual/anual) y dos monedas (ARS/USD).
+  // El nombre interno se mantiene "Pro" para no romper mapPlanName()/el webhook de
+  // WhatsApp ni el mapa de precios USD de PricingModal, que ya usan ese valor.
+  const plan = {
+    name: "Pro",
+    displayName: "AsistPro",
+    description: "Todo lo que necesitás para organizarte, sin límites",
+    price: {
+      ARS: { monthly: "ARS $5.999", annual: "ARS $59.990", savings: "Ahorra ARS $11.998" },
+      USD: { monthly: "USD $5.99", annual: "USD $59.99", savings: "Ahorra USD $11.89" },
     },
-    {
-      name: "Pro",
-      monthlyPrice: "ARS $5.999",
-      annualPrice: "ARS $59.990",
-      period: isAnnual ? "por año" : "por mes",
-      savings: isAnnual ? "Ahorra ARS $11.998" : null,
-      description: "Para usuarios activos que quieren mayor control",
-      features: [
-        "180 recordatorios por mes",
-        "Reconocimiento de notas de voz",
-        "Recordatorios recurrentes",
-        "Creación de listas",
-        "Múltiples recordatorios en un solo mensaje",
-        "Acceso anticipado a nuevas funciones",
-        "Google Calendar (notificaciones de eventos)"
-      ],
-      notIncluded: [
-        "Respuestas del asistente por audio",
-        "Finanzas personales"
-      ],
-      color: "bg-orange-100 border-orange-300",
-      buttonColor: "bg-orange-700 hover:bg-orange-800",
-      popular: true
-    },
-    {
-      name: "Premium",
-      monthlyPrice: "ARS $9.999",
-      annualPrice: "ARS $99.990",
-      period: isAnnual ? "por año" : "por mes",
-      savings: isAnnual ? "Ahorra ARS $19.998" : null,
-      description: "Todo lo que necesitás, sin límites",
-      features: [
-        "Recordatorios ilimitados",
-        "Reconocimiento de notas de voz",
-        "Recordatorios recurrentes",
-        "Creación de listas",
-        "Múltiples recordatorios en un solo mensaje",
-        "Acceso anticipado a nuevas funciones",
-        "Respuestas del asistente por audio",
-        "Google Calendar (gestión completa de eventos y notificaciones)",
-        "Finanzas personales (asistente por WhatsApp para tus gastos)"
-      ],
-      notIncluded: [],
-      color: "bg-gradient-to-br from-orange-100 to-orange-200 border-orange-400",
-      buttonColor: "bg-gradient-to-r from-orange-700 to-orange-800 hover:from-orange-800 hover:to-orange-900"
-    }
-  ];
+    features: [
+      "Recordatorios ilimitados",
+      "Reconocimiento de notas de voz",
+      "Recordatorios recurrentes",
+      "Creación de listas",
+      "Múltiples recordatorios en un solo mensaje",
+      "Acceso anticipado a nuevas funciones",
+      "Respuestas del asistente por audio",
+      "Google Calendar (gestión completa de eventos y notificaciones)",
+      "Finanzas personales (asistente por WhatsApp para tus gastos)"
+    ],
+  };
 
-  const openModal = (plan: any) => {
-    setSelectedPlan(plan);
+  const openModal = (annual: boolean) => {
+    setSelectedIsAnnual(annual);
+    setSelectedPlan({
+      name: plan.name,
+      description: plan.description,
+      monthlyPrice: plan.price.ARS.monthly,
+      annualPrice: plan.price.ARS.annual,
+      features: plan.features,
+    });
     setModalOpen(true);
   };
 
@@ -408,95 +368,94 @@ function App() {
               Elige el plan perfecto para tus necesidades. Todos incluyen 3 días de prueba gratuita.
             </p>
             
-            {/* Pricing Toggle */}
-            <div className="flex items-center justify-center space-x-4 mb-8">
-              <span className={`font-medium ${!isAnnual ? 'text-orange-600' : 'text-gray-500'}`}>
-                Mensual
+            {/* Currency Toggle */}
+            <div className="flex items-center justify-center space-x-4 mb-10">
+              <span className={`font-medium ${currency === 'ARS' ? 'text-orange-600' : 'text-gray-500'}`}>
+                ARS
               </span>
               <button
-                onClick={() => setIsAnnual(!isAnnual)}
+                onClick={() => setCurrency(currency === 'ARS' ? 'USD' : 'ARS')}
+                aria-label="Cambiar moneda"
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isAnnual ? 'bg-orange-600' : 'bg-gray-300'
+                  currency === 'USD' ? 'bg-orange-600' : 'bg-gray-300'
                 }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    isAnnual ? 'translate-x-6' : 'translate-x-1'
+                    currency === 'USD' ? 'translate-x-6' : 'translate-x-1'
                   }`}
                 />
               </button>
-              <span className={`font-medium ${isAnnual ? 'text-orange-600' : 'text-gray-500'}`}>
-                Anual
+              <span className={`font-medium ${currency === 'USD' ? 'text-orange-600' : 'text-gray-500'}`}>
+                USD
               </span>
-              {isAnnual && (
-                <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-sm font-medium">
-                  Ahorra hasta 20%
-                </span>
-              )}
             </div>
           </div>
-          
-          <div className="grid lg:grid-cols-3 gap-8">
-            {pricingPlans.map((plan, index) => (
-              <div key={index} className={`rounded-2xl p-8 ${plan.color} relative ${plan.popular ? 'ring-2 ring-orange-500' : ''}`}>
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-orange-600 to-orange-700 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                      Más Popular
-                    </span>
-                  </div>
-                )}
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                  <p className="text-gray-600 mb-4">{plan.description}</p>
-                  <div className="mb-4">
-                    <span className="text-4xl font-bold text-gray-900">
-                      {isAnnual ? plan.annualPrice : plan.monthlyPrice}
-                    </span>
-                    <span className="text-gray-600 ml-2">{plan.period}</span>
-                  </div>
-                  {plan.savings && isAnnual && (
-                    <p className="text-sm text-orange-600 font-semibold mb-2">{plan.savings}</p>
-                  )}
-                  <p className="text-sm text-green-600 font-semibold">🆓 Prueba gratis por 3 días</p>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            {/* Mensual */}
+            <div className="rounded-2xl p-8 bg-orange-50 border border-orange-200 relative">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.displayName}</h3>
+                <p className="text-gray-600 mb-4">{plan.description}</p>
+                <div className="mb-4">
+                  <span className="text-4xl font-bold text-gray-900">{plan.price[currency].monthly}</span>
+                  <span className="text-gray-600 ml-2">por mes</span>
                 </div>
-                
-                <div className="space-y-4 mb-8">
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Incluye:</h4>
-                    <ul className="space-y-2">
-                      {plan.features.map((feature, featureIndex) => (
-                        <li key={featureIndex} className="flex items-start space-x-2">
-                          <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                          <span className="text-gray-700 text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  {plan.notIncluded.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">No incluye:</h4>
-                      <ul className="space-y-2">
-                        {plan.notIncluded.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-start space-x-2">
-                            <X className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
-                            <span className="text-gray-500 text-sm">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-                
-                <button 
-                  onClick={() => openModal(plan)}
-                  className={`w-full ${plan.buttonColor} text-white py-3 px-6 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg`}
-                >
-                  Comenzar Prueba Gratuita
-                </button>
+                <p className="text-sm text-green-600 font-semibold">🆓 Prueba gratis por 3 días</p>
               </div>
-            ))}
+
+              <ul className="space-y-2 mb-8">
+                {plan.features.map((feature, i) => (
+                  <li key={i} className="flex items-start space-x-2">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span className="text-gray-700 text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => openModal(false)}
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-6 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg"
+              >
+                Comenzar Prueba Gratuita
+              </button>
+            </div>
+
+            {/* Anual */}
+            <div className="rounded-2xl p-8 bg-gradient-to-br from-orange-100 to-orange-200 border-2 border-orange-400 relative">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <span className="bg-gradient-to-r from-orange-600 to-orange-700 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                  Más conveniente
+                </span>
+              </div>
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.displayName}</h3>
+                <p className="text-gray-600 mb-4">{plan.description}</p>
+                <div className="mb-4">
+                  <span className="text-4xl font-bold text-gray-900">{plan.price[currency].annual}</span>
+                  <span className="text-gray-600 ml-2">por año</span>
+                </div>
+                <p className="text-sm text-orange-600 font-semibold mb-2">{plan.price[currency].savings}</p>
+                <p className="text-sm text-green-600 font-semibold">🆓 Prueba gratis por 3 días</p>
+              </div>
+
+              <ul className="space-y-2 mb-8">
+                {plan.features.map((feature, i) => (
+                  <li key={i} className="flex items-start space-x-2">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span className="text-gray-700 text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => openModal(true)}
+                className="w-full bg-gradient-to-r from-orange-700 to-orange-800 hover:from-orange-800 hover:to-orange-900 text-white py-3 px-6 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg"
+              >
+                Comenzar Prueba Gratuita
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -574,7 +533,7 @@ function App() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         selectedPlan={selectedPlan}
-        isAnnual={isAnnual}
+        isAnnual={selectedIsAnnual}
       />
     </div>
   );
